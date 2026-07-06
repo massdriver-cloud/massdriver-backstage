@@ -15,17 +15,14 @@ organization:
   name: My Company
 
 # Massdriver plugin configuration. Uncomment and provide a service-account token
-# to enable the catalog entity provider and the GraphQL relay. baseUrl/appUrl are
-# optional and default to the SaaS origins — override them for self-hosted
-# Massdriver. Prefer app-config.local.yaml for the token in local development.
+# to enable the GraphQL relay. baseUrl/appUrl are optional and default to the SaaS
+# origins — override them for self-hosted Massdriver. Prefer app-config.local.yaml
+# for the token in local development.
 # massdriver:
 #   organizationId: ${MASSDRIVER_ORG_ID}
 #   apiToken: ${MASSDRIVER_API_TOKEN}
 #   baseUrl: ${MASSDRIVER_API_URL} # optional, defaults to https://api.massdriver.cloud
 #   appUrl: ${MASSDRIVER_APP_URL} # optional, defaults to https://app.massdriver.cloud
-#   schedule:
-#     frequency: { minutes: 30 }
-#     timeout: { minutes: 3 }
 
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins

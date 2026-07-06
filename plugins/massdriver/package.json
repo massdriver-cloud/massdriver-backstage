@@ -31,6 +31,7 @@
     "@backstage/theme": "^0.7.3",
     "@backstage/ui": "^0.16.0",
     "@massdriver-cloud/backstage-plugin-massdriver-common": "workspace:^",
+    "@material-ui/icons": "^4.9.1",
     "react-use": "^17.2.4"
   },
   "peerDependencies": {

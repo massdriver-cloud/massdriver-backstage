@@ -41,8 +41,8 @@ export class MassdriverApiError extends Error {
  *
  * Injects the `Authorization: Bearer` header and defaults `organizationId` into
  * every query's variables so operations only need to declare `$organizationId`.
- * Used server-side by the backend relay and the catalog entity provider; the
- * token must never be exposed to the browser.
+ * Used server-side by the backend relay; the token must never be exposed to the
+ * browser.
  *
  * @public
  */

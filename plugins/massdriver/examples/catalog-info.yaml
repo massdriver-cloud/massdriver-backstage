@@ -1,7 +1,7 @@
-# Example: link hand-authored catalog entities to Massdriver resources.
+# Example: link a catalog entity to a Massdriver resource.
 #
-# The catalog entity provider emits these automatically from your organization,
-# but you can also annotate your own entities to get the Massdriver card + tab.
+# Annotate your own catalog entities to get the Massdriver card + tab. Point at
+# the most specific Massdriver resource the entity maps to.
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:

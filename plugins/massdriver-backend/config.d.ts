@@ -1,5 +1,3 @@
-import { SchedulerServiceTaskScheduleDefinitionConfig } from '@backstage/backend-plugin-api';
-
 export interface Config {
   massdriver?: {
     /**
@@ -29,18 +27,5 @@ export interface Config {
      * @visibility frontend
      */
     appUrl?: string;
-
-    /**
-     * Entity ref used as the owner of synced catalog entities. Defaults to
-     * `group:default/massdriver`.
-     * @visibility frontend
-     */
-    defaultOwner?: string;
-
-    /**
-     * Refresh schedule for the catalog entity provider that syncs Massdriver
-     * projects, environments, and instances into the software catalog.
-     */
-    schedule?: SchedulerServiceTaskScheduleDefinitionConfig;
   };
 }

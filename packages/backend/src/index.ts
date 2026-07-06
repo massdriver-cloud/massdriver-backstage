@@ -68,8 +68,5 @@ backend.add(import('@backstage/plugin-mcp-actions-backend'));
 
 // Massdriver plugins
 backend.add(import('@massdriver-cloud/backstage-plugin-massdriver-backend'));
-backend.add(
-  import('@massdriver-cloud/backstage-plugin-catalog-backend-module-massdriver'),
-);
 
 backend.start();

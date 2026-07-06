@@ -2,8 +2,8 @@
  * Catalog annotations that link a Backstage entity to a Massdriver resource.
  *
  * Frontend components render Massdriver UI only when the relevant annotation is
- * present, and the catalog entity provider stamps these onto the entities it
- * emits.
+ * present on an entity. Add them to your own `catalog-info.yaml` to link an
+ * entity to a Massdriver project, environment, or instance.
  *
  * @public
  */

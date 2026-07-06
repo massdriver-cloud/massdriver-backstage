@@ -9,6 +9,7 @@ import {
   EntityCardBlueprint,
   EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
+import CloudQueueIcon from '@material-ui/icons/CloudQueue';
 import { massdriverApiRef, MassdriverClientApi } from './api';
 import { isMassdriverEntity } from './entity';
 import { rootRouteRef } from './routes';
@@ -28,6 +29,8 @@ const page = PageBlueprint.make({
   params: {
     path: '/massdriver',
     routeRef: rootRouteRef,
+    title: 'Massdriver',
+    icon: <CloudQueueIcon />,
     loader: () =>
       import('./components/MassdriverPage').then(m => <m.MassdriverPage />),
   },

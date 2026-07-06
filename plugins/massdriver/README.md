@@ -1,9 +1,9 @@
 # Massdriver Backstage plugin
 
 Surface your [Massdriver](https://www.massdriver.cloud/) infrastructure inside
-Backstage: projects, environments, and deployed instances are synced into the
-software catalog with status cards, an entity tab, a projects page, and
-deep-links back into the Massdriver app.
+Backstage: browse your projects on a dedicated page, and attach a status card +
+tab to any catalog entity you link to a Massdriver project, environment, or
+instance — with deep-links back into the Massdriver app.
 
 Integration is **API-only** — it talks to the Massdriver v2 GraphQL API through a
 backend relay that injects a service-account token server-side. Nothing is
@@ -15,7 +15,6 @@ iframed and no changes to the Massdriver app are required.
 | --- | --- |
 | `@massdriver-cloud/backstage-plugin-massdriver` | Frontend: entity card, entity tab, and projects page |
 | `@massdriver-cloud/backstage-plugin-massdriver-backend` | Backend: authenticated GraphQL relay |
-| `@massdriver-cloud/backstage-plugin-catalog-backend-module-massdriver` | Catalog entity provider (scheduled sync) |
 | `@massdriver-cloud/backstage-plugin-massdriver-common` | Shared types, annotations, deep-link builders |
 
 ## Install
@@ -26,19 +25,15 @@ From your Backstage repo root:
 # Frontend
 yarn --cwd packages/app add @massdriver-cloud/backstage-plugin-massdriver
 
-# Backend + catalog entity provider
+# Backend relay
 yarn --cwd packages/backend add \
-  @massdriver-cloud/backstage-plugin-massdriver-backend \
-  @massdriver-cloud/backstage-plugin-catalog-backend-module-massdriver
+  @massdriver-cloud/backstage-plugin-massdriver-backend
 ```
 
-Add the backend plugins in `packages/backend/src/index.ts`:
+Add the backend plugin in `packages/backend/src/index.ts`:
 
 ```ts
 backend.add(import('@massdriver-cloud/backstage-plugin-massdriver-backend'));
-backend.add(
-  import('@massdriver-cloud/backstage-plugin-catalog-backend-module-massdriver'),
-);
 ```
 
 With the **New Frontend System** (`app.packages: all`), the frontend extensions
@@ -57,10 +52,6 @@ massdriver:
   # Optional — override for self-hosted Massdriver. Default to the SaaS origins.
   baseUrl: ${MASSDRIVER_API_URL} # default https://api.massdriver.cloud
   appUrl: ${MASSDRIVER_APP_URL} # default https://app.massdriver.cloud
-  # Optional — catalog sync cadence (defaults to every 30 minutes)
-  schedule:
-    frequency: { minutes: 30 }
-    timeout: { minutes: 3 }
 ```
 
 Mint a service-account token in Massdriver under
@@ -70,17 +61,20 @@ reaches the browser.
 
 ## What you get
 
-- **Catalog sync** — Massdriver projects become `Domain`s, environments become
-  `System`s, and instances become `Resource`s, linked by `massdriver.cloud/*`
-  annotations and carrying "Open in Massdriver" deep-links.
-- **Entity overview card** and **Massdriver tab** on any synced entity, showing
-  instance status and versions.
-- **Projects page** at `/massdriver` for organization-wide discovery.
+- **Projects page** at `/massdriver` for organization-wide discovery, queried
+  live from the Massdriver API.
+- **Entity overview card** and **Massdriver tab** on any catalog entity you
+  annotate with a `massdriver.cloud/*` id (below), showing instance status,
+  versions, and an "Open in Massdriver" deep-link.
+
+This version keeps infrastructure in Massdriver — it does **not** mirror it into
+the Backstage catalog. You link your existing catalog entities (services, etc.)
+to Massdriver via annotations.
 
 ## Annotations
 
-The entity provider stamps these automatically; you can also add them to your own
-`catalog-info.yaml` to link a hand-authored entity to Massdriver:
+Add one of these to an entity's `catalog-info.yaml` to attach the Massdriver
+card + tab, pointing at the most specific matching Massdriver resource:
 
 ```yaml
 metadata:
