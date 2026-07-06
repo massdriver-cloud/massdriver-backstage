@@ -1,0 +1,18 @@
+# Example: link hand-authored catalog entities to Massdriver resources.
+#
+# The catalog entity provider emits these automatically from your organization,
+# but you can also annotate your own entities to get the Massdriver card + tab.
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: checkout-service
+  description: Checkout service backed by Massdriver infrastructure
+  annotations:
+    massdriver.cloud/org-id: my-org
+    # Point at the most specific Massdriver resource this component maps to.
+    # Use exactly one of project-id / environment-id / instance-id.
+    massdriver.cloud/environment-id: my-project-prod
+spec:
+  type: service
+  lifecycle: production
+  owner: group:default/checkout-team
