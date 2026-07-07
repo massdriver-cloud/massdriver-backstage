@@ -118,11 +118,26 @@ export const ResultsStep = ({
               </MenuItem>
             ))}
           </ComponentFilterSelect>
-          <SwitchLabel onClick={() => setHideEqual(value => !value)}>
+          <SwitchLabel>
             <Switch
               size="small"
               checked={hideEqual}
               onChange={(event: any) => setHideEqual(event.target.checked)}
+              sx={{
+                // Re-assert v5 small-switch geometry; the shared `.MuiSwitch-*`
+                // class names collide with Backstage's MUI v4.
+                width: 40,
+                height: 24,
+                padding: 0.875,
+                '& .MuiSwitch-switchBase': {
+                  top: 0,
+                  left: 0,
+                  padding: 0.5,
+                  '&.Mui-checked': { transform: 'translateX(16px)' },
+                },
+                '& .MuiSwitch-thumb': { width: 16, height: 16 },
+                '& .MuiSwitch-track': { borderRadius: 12 },
+              }}
             />
             <Typography variant="body2" color="text.secondary">
               Hide identical
@@ -235,6 +250,5 @@ const SwitchLabel = stylin(Box)(({ theme }: { theme: any }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(0.5),
-  cursor: 'pointer',
   userSelect: 'none',
 }));

@@ -68,7 +68,13 @@ export const EnvironmentDefaults = ({
 
   const defaults = value ?? [];
 
-  if (defaults.length === 0) return null;
+  if (defaults.length === 0) {
+    return (
+      <Root ref={rootRef}>
+        <EmptyLabel variant="body2">No environment defaults</EmptyLabel>
+      </Root>
+    );
+  }
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -169,6 +175,12 @@ const DropdownIcon = stylin(ArrowDropDownIcon)(({ theme }: { theme: any }) => ({
 }));
 
 const FallbackIcon = stylin(ExtensionIcon)({ fontSize: 16 });
+
+const EmptyLabel = stylin(Typography)(({ theme }: { theme: any }) => ({
+  color: theme.palette.text.disabled,
+  fontStyle: 'italic',
+  whiteSpace: 'nowrap',
+}));
 
 const ListHeader = stylin('div')(({ theme }: { theme: any }) => ({
   display: 'flex',
