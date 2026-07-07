@@ -9,8 +9,8 @@ import { ReactNode } from 'react';
 export const OpenInMassdriverButton = ({
   url,
   children = 'Open in Massdriver',
-  variant = 'outlined',
-  size = 'small',
+  variant = 'contained',
+  size,
 }: {
   url: string;
   children?: ReactNode;
