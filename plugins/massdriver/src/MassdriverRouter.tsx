@@ -1,6 +1,6 @@
 import Box from '@massdriver/ui/Box';
 import { Route, Routes } from 'react-router-dom';
-import { MassdriverPage } from './components/MassdriverPage';
+import { ProjectsListPage } from './features/projects/ProjectsListPage';
 
 // Placeholder until the corresponding slice lands.
 const ComingSoon = ({ label }: { label: string }) => (
@@ -13,7 +13,7 @@ const ComingSoon = ({ label }: { label: string }) => (
  */
 export const MassdriverRouter = () => (
   <Routes>
-    <Route index element={<MassdriverPage />} />
+    <Route index element={<ProjectsListPage />} />
     <Route
       path="projects/:projectId/*"
       element={<ComingSoon label="Project details" />}

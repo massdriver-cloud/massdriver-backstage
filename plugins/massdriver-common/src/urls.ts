@@ -57,6 +57,14 @@ export const graphqlUrl = (baseUrl: string = DEFAULT_API_URL): string =>
   `${trimTrailingSlash(baseUrl)}${GRAPHQL_PATH}`;
 
 /**
+ * Deep-link into the Massdriver web app's projects list.
+ *
+ * @public
+ */
+export const projectsUrl = (appUrl: string, orgId: string): string =>
+  `${trimTrailingSlash(appUrl)}/orgs/${orgId}/projects`;
+
+/**
  * Deep-link into the Massdriver web app for a project.
  *
  * @public
