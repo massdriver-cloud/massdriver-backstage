@@ -6,6 +6,11 @@ import { Link as RouterLink } from 'react-router-dom';
  * `Link` (which navigates via `to`), so DataList link columns keep the app's
  * styling while doing client-side SPA navigation instead of full reloads.
  */
-export const RouterLinkAdapter = forwardRef<HTMLAnchorElement, { href?: string }>(
-  ({ href, ...rest }, ref) => <RouterLink ref={ref} to={href ?? ''} {...rest} />,
-);
+export const RouterLinkAdapter = forwardRef<
+  HTMLAnchorElement,
+  { href?: string; shallow?: boolean }
+>(({ href, shallow: _shallow, ...rest }, ref) => (
+  // `shallow` is a Next-ism forwarded by PageTabs; drop it so it doesn't land
+  // on the DOM anchor.
+  <RouterLink ref={ref} to={href ?? ''} {...rest} />
+));

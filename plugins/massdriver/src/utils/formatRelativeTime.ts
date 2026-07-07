@@ -29,6 +29,18 @@ export const formatRelativeTime = (iso: string | null | undefined): string => {
   return '--';
 };
 
+/** Format an amount as currency, mirroring the web app's `formatCurrency`. */
+export const formatCurrency = (
+  amount: number | null | undefined,
+  currency = 'USD',
+  fallback = '--',
+): string =>
+  amount != null
+    ? new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(
+        amount,
+      )
+    : fallback;
+
 /** Absolute, human-readable timestamp for tooltips. */
 export const formatAbsoluteTime = (iso: string | null | undefined): string => {
   if (!iso) {
