@@ -1,88 +1,43 @@
-import Box from '@massdriver/ui/Box';
-import Chip from '@massdriver/ui/Chip';
 import { col } from '@massdriver/ui/DataList';
-import stylin from '@massdriver/ui/stylin';
-import { Link } from 'react-router-dom';
-import {
-  formatAbsoluteTime,
-  formatRelativeTime,
-} from '../../utils/formatRelativeTime';
-import type { ProjectListItem } from './useProjects';
+import { buildAttributesColumn, Code } from '../../components/AttributesColumn';
+import { RouterLinkAdapter } from '../../components/RouterLinkAdapter';
+import { formatAbsoluteTime } from '../../utils/formatRelativeTime';
+import type { ProjectRow } from './useProjects';
 
-const MAX_ATTRIBUTE_CHIPS = 6;
-
-const AttributeChips = ({
-  attributes,
-}: {
-  attributes?: Record<string, unknown> | null;
-}) => {
-  const entries = Object.entries(attributes ?? {}).filter(
-    ([, value]) => value !== null && value !== undefined && value !== '',
-  );
-  if (!entries.length) {
-    return <Muted>--</Muted>;
-  }
-  return (
-    <ChipRow>
-      {entries.slice(0, MAX_ATTRIBUTE_CHIPS).map(([key, value]) => (
-        <Chip key={key} size="small" label={`${key}: ${String(value)}`} />
-      ))}
-      {entries.length > MAX_ATTRIBUTE_CHIPS && (
-        <Muted>+{entries.length - MAX_ATTRIBUTE_CHIPS}</Muted>
-      )}
-    </ChipRow>
-  );
-};
-
-/** Columns for the projects list — name links internally to project details. */
+/**
+ * Projects list columns, matching the web app's `buildProjectColumns`. The Name
+ * column links internally (react-router) to the project details route.
+ */
 export const buildProjectColumns = () => [
-  col.custom(
-    'name',
-    'Name',
-    (_value: unknown, row: ProjectListItem) => (
-      <ProjectLink to={`projects/${row.id}`}>{row.name}</ProjectLink>
-    ),
-    { sortable: true, searchable: true },
-  ),
-  col.text('id', 'Identifier', { sortable: false, searchable: true }),
+  col.link('name', 'Name', (row: ProjectRow) => row.id, {
+    flex: 2,
+    minWidth: 200,
+    LinkComponent: RouterLinkAdapter,
+  }),
+  col.text('id', 'Identifier', { flex: 1, minWidth: 120, sortable: false }),
   col.text('description', 'Description', {
+    flex: 3,
+    minWidth: 150,
+    sortable: false,
+  }),
+  buildAttributesColumn({
+    directText:
+      'Key-value attributes assigned directly to this project. Attributes cascade to environments and instances.',
+    effectiveText: (
+      <>
+        The full attribute map the authorization system evaluates policies
+        against for this project — the project's own user attributes plus
+        auto-injected <Code>md-*</Code> system attributes.
+      </>
+    ),
+    flex: 1,
+  }),
+  col.text('updatedAt', 'Updated', {
+    flex: 1,
+    minWidth: 150,
     sortable: false,
     searchable: false,
+    tooltip: (_value: unknown, row: ProjectRow) =>
+      formatAbsoluteTime(row.updatedAtRaw),
   }),
-  col.custom(
-    'effectiveAttributes',
-    'Attributes',
-    (_value: unknown, row: ProjectListItem) => (
-      <AttributeChips
-        attributes={row.effectiveAttributes ?? row.attributes}
-      />
-    ),
-    { sortable: false, searchable: false },
-  ),
-  col.custom(
-    'updatedAt',
-    'Updated',
-    (value: string) => (
-      <span title={formatAbsoluteTime(value)}>{formatRelativeTime(value)}</span>
-    ),
-    { sortable: true },
-  ),
 ];
-
-const ProjectLink = stylin(Link)(({ theme }: { theme: any }) => ({
-  color: theme.palette.primary.main,
-  fontWeight: theme.typography.fontWeightMedium,
-  textDecoration: 'none',
-  '&:hover': { textDecoration: 'underline' },
-}));
-
-const ChipRow = stylin(Box)(({ theme }: { theme: any }) => ({
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: theme.spacing(0.5),
-  alignItems: 'center',
-}));
-
-const Muted = stylin('span')(({ theme }: { theme: any }) => ({
-  color: theme.palette.text.secondary,
-}));

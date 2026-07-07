@@ -1,5 +1,5 @@
 import Box from '@massdriver/ui/Box';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { ProjectsListPage } from './features/projects/ProjectsListPage';
 
 // Placeholder until the corresponding slice lands.
@@ -9,11 +9,12 @@ const ComingSoon = ({ label }: { label: string }) => (
 
 /**
  * Internal drill-down routing for the embedded Massdriver views, mounted under
- * the plugin's `/massdriver` page.
+ * the plugin's `/massdriver` page. The index redirects to `/massdriver/projects`.
  */
 export const MassdriverRouter = () => (
   <Routes>
-    <Route index element={<ProjectsListPage />} />
+    <Route index element={<Navigate to="projects" replace />} />
+    <Route path="projects" element={<ProjectsListPage />} />
     <Route
       path="projects/:projectId/*"
       element={<ComingSoon label="Project details" />}

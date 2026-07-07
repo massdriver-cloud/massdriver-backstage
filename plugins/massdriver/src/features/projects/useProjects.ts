@@ -1,17 +1,35 @@
 import { useApi } from '@backstage/frontend-plugin-api';
 import useAsync, { AsyncState } from 'react-use/esm/useAsync';
 import { massdriverApiRef } from '../../api';
+import { formatRelativeTime } from '../../utils/formatRelativeTime';
 
-/** A project row as rendered in the list. */
+/** A project as returned by the API. */
 export interface ProjectListItem {
   id: string;
   name: string;
   description?: string | null;
-  attributes?: Record<string, unknown> | null;
-  effectiveAttributes?: Record<string, unknown> | null;
+  attributes?: unknown;
+  effectiveAttributes?: unknown;
   createdAt?: string | null;
   updatedAt?: string | null;
 }
+
+/** A project row as rendered in the DataList (mirrors the app's transform). */
+export interface ProjectRow extends ProjectListItem {
+  /** Preformatted relative time shown in the Updated column. */
+  updatedAt: string;
+  /** Raw ISO timestamp, used for the Updated tooltip. */
+  updatedAtRaw?: string | null;
+}
+
+/** Transform a raw project into a display row (mirrors `toProjectRow`). */
+export const toProjectRow = (project: ProjectListItem): ProjectRow => ({
+  ...project,
+  name: project.name || '',
+  description: project.description || '',
+  updatedAtRaw: project.updatedAt,
+  updatedAt: formatRelativeTime(project.updatedAt),
+});
 
 interface ProjectsPage {
   projects?: {

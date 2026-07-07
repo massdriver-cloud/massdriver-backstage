@@ -8,7 +8,7 @@ const DIVISIONS: Array<{ amount: number; unit: Intl.RelativeTimeFormatUnit }> = 
   { amount: Number.POSITIVE_INFINITY, unit: 'years' },
 ];
 
-const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
+const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'always' });
 
 /** Format an ISO timestamp as a relative time, e.g. "3 days ago". */
 export const formatRelativeTime = (iso: string | null | undefined): string => {
