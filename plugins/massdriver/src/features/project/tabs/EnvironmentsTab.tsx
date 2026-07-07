@@ -199,15 +199,15 @@ const NameCell = stylin(Box)(({ theme }: { theme: any }) => ({
   minWidth: 0,
 }));
 
-const NameLink = stylin(Box)(({ theme }: { theme: any }) => ({
-  color: theme.palette.primary.main,
+const NameLink = stylin(Box)({
+  color: 'inherit',
   textDecoration: 'none',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   minWidth: 0,
   '&:hover': { textDecoration: 'underline' },
-}));
+});
 
 const HeaderRow = stylin(Box)(({ theme }: { theme: any }) => ({
   display: 'inline-flex',
