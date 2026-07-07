@@ -1,12 +1,9 @@
 import {
   Content,
   ContentHeader,
-  Header,
   Link,
-  Page,
   Progress,
   ResponseErrorPanel,
-  SupportButton,
   Table,
   TableColumn,
 } from '@backstage/core-components';
@@ -19,7 +16,10 @@ import useAsync from 'react-use/esm/useAsync';
 import { massdriverApiRef } from '../../api';
 import { PROJECTS, ProjectsPageResult } from '../../queries';
 
-const columns = (appUrl: string, orgId: string): TableColumn<MassdriverProject>[] => [
+const columns = (
+  appUrl: string,
+  orgId: string,
+): TableColumn<MassdriverProject>[] => [
   {
     title: 'Project',
     field: 'name',
@@ -32,10 +32,8 @@ const columns = (appUrl: string, orgId: string): TableColumn<MassdriverProject>[
 ];
 
 /**
- * Full-page Massdriver view listing the organization's projects with
- * deep-links into the web app.
- *
- * @public
+ * Projects list — content only (the Massdriver shell provides the header).
+ * Slice 1 rebuilds this with `@massdriver/ui` primitives.
  */
 export const MassdriverPage = () => {
   const api = useApi(massdriverApiRef);
@@ -62,25 +60,18 @@ export const MassdriverPage = () => {
   }, [api]);
 
   return (
-    <Page themeId="tool">
-      <Header title="Massdriver" subtitle="Projects" />
-      <Content>
-        <ContentHeader title="Projects">
-          <SupportButton>
-            Massdriver projects synced from your organization.
-          </SupportButton>
-        </ContentHeader>
-        {loading && <Progress />}
-        {error && <ResponseErrorPanel error={error} />}
-        {!loading && !error && (
-          <Table<MassdriverProject>
-            title="Projects"
-            options={{ search: true, paging: (projects?.length ?? 0) > 20 }}
-            columns={columns(api.appUrl, api.organizationId)}
-            data={projects ?? []}
-          />
-        )}
-      </Content>
-    </Page>
+    <Content>
+      <ContentHeader title="Projects" />
+      {loading && <Progress />}
+      {error && <ResponseErrorPanel error={error} />}
+      {!loading && !error && (
+        <Table<MassdriverProject>
+          title="Projects"
+          options={{ search: true, paging: (projects?.length ?? 0) > 20 }}
+          columns={columns(api.appUrl, api.organizationId)}
+          data={projects ?? []}
+        />
+      )}
+    </Content>
   );
 };

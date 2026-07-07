@@ -31,8 +31,17 @@ const page = PageBlueprint.make({
     routeRef: rootRouteRef,
     title: 'Massdriver',
     icon: <CloudQueueIcon />,
+    // The Massdriver shell renders its own header; fill the content area.
+    noHeader: true,
     loader: () =>
-      import('./components/MassdriverPage').then(m => <m.MassdriverPage />),
+      Promise.all([
+        import('./shell/MassdriverShell'),
+        import('./MassdriverRouter'),
+      ]).then(([shell, router]) => (
+        <shell.MassdriverShell>
+          <router.MassdriverRouter />
+        </shell.MassdriverShell>
+      )),
   },
 });
 
