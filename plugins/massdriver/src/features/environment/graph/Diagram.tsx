@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Background,
@@ -12,10 +12,10 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import Box from '@massdriver/ui/Box';
-import AlignHorizontalLeftIcon from '@massdriver/ui/icons/AlignHorizontalLeftIcon';
+import DownloadIcon from '@massdriver/ui/icons/DownloadIcon';
 import stylin from '@massdriver/ui/stylin';
 import DiagramNode from './DiagramNode';
-import useDiagramLayout from './useDiagramLayout';
+import useDiagramSnapshot from './useDiagramSnapshot';
 import type { DiagramNodeType } from './diagramFactory';
 
 const NODE_TYPES = { DiagramNode };
@@ -30,14 +30,17 @@ const FIT_VIEW_OPTIONS = {
 const Diagram = ({
   nodes: initialNodes,
   edges: initialEdges,
+  snapshotName = 'environment',
 }: {
   nodes: DiagramNodeType[];
   edges: Edge[];
+  snapshotName?: string;
 }) => {
   const nodeTypes = useMemo(() => NODE_TYPES, []);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [, setSearchParams] = useSearchParams();
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   // Reseed when the fetched blueprint changes.
   useEffect(() => {
@@ -47,7 +50,10 @@ const Diagram = ({
     setEdges(initialEdges);
   }, [initialEdges, setEdges]);
 
-  const { onLayoutClick, isLayingOut } = useDiagramLayout({ setNodes });
+  const { onSnapshotClick, isSnapshotting } = useDiagramSnapshot({
+    wrapperRef,
+    fileNameBase: snapshotName,
+  });
 
   const handleNodeClick = (_event: unknown, node: { data?: { id?: string } }) => {
     const scopedComponentId = node?.data?.id;
@@ -60,7 +66,7 @@ const Diagram = ({
   };
 
   return (
-    <DiagramWrapper>
+    <DiagramWrapper ref={wrapperRef}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -80,14 +86,14 @@ const Diagram = ({
       >
         <Background color="#aaa" gap={16} />
         <StyledMiniMap pannable zoomable />
-        <StyledControls>
+        <StyledControls showInteractive={false}>
           <ControlButton
-            onClick={onLayoutClick}
-            disabled={isLayingOut}
-            title="Auto-layout"
-            aria-label="Auto-layout diagram"
+            onClick={onSnapshotClick}
+            disabled={isSnapshotting}
+            title="Download snapshot"
+            aria-label="Download diagram snapshot"
           >
-            <AlignHorizontalLeftIcon />
+            <DownloadIcon />
           </ControlButton>
         </StyledControls>
       </ReactFlow>

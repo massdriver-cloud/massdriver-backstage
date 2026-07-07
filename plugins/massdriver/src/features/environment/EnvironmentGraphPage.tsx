@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { useApi } from '@backstage/frontend-plugin-api';
-import { environmentUrl } from '@massdriver-cloud/backstage-plugin-massdriver-common';
 import Alert from '@massdriver/ui/Alert';
 import Box from '@massdriver/ui/Box';
 import LoadingIndicator from '@massdriver/ui/LoadingIndicator';
@@ -10,8 +9,7 @@ import { ReactFlowProvider } from '@xyflow/react';
 import useAsync from 'react-use/esm/useAsync';
 import { useParams } from 'react-router-dom';
 import { massdriverApiRef } from '../../api';
-import { OpenInMassdriverButton } from '../../components/OpenInMassdriverButton';
-import { PageLayout } from '../../components/PageLayout';
+import { GraphHeader } from './GraphHeader';
 import Diagram from './graph/Diagram';
 import { buildDiagram } from './graph/diagramFactory';
 import {
@@ -35,7 +33,10 @@ export const EnvironmentGraphPage = () => {
         environmentId,
       }) as Promise<EnvironmentBlueprintResult>,
     ]);
-    return { project: projectData.project, environment: environmentData.environment };
+    return {
+      project: projectData.project,
+      environment: environmentData.environment,
+    };
   }, [api, projectId, environmentId]);
 
   const { nodes, edges } = useMemo(
@@ -50,24 +51,10 @@ export const EnvironmentGraphPage = () => {
   );
 
   const environmentName = value?.environment?.name ?? 'Environment';
-  const appUrl =
-    projectId && environmentId
-      ? environmentUrl(api.appUrl, api.organizationId, environmentId)
-      : null;
 
   return (
-    <PageLayout
-      title={environmentName}
-      description="Environment graph"
-      headerActions={
-        appUrl ? (
-          <OpenInMassdriverButton url={appUrl} variant="outlined">
-            Open in Massdriver
-          </OpenInMassdriverButton>
-        ) : undefined
-      }
-      flush
-    >
+    <Root>
+      <GraphHeader projectId={projectId} environmentId={environmentId} />
       <GraphArea>
         {loading ? (
           <Centered>
@@ -85,15 +72,26 @@ export const EnvironmentGraphPage = () => {
           </Centered>
         ) : (
           <ReactFlowProvider>
-            <Diagram nodes={nodes} edges={edges} />
+            <Diagram
+              nodes={nodes}
+              edges={edges}
+              snapshotName={environmentId || environmentName}
+            />
           </ReactFlowProvider>
         )}
       </GraphArea>
-    </PageLayout>
+    </Root>
   );
 };
 
 export default EnvironmentGraphPage;
+
+const Root = stylin(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
+  minHeight: 0,
+});
 
 const GraphArea = stylin(Box)({
   flex: 1,
