@@ -38,12 +38,15 @@ export const usePaginatedRelayQuery = <T>(
     defaultSort = null,
     pageSize = 20,
     filterFromSearch,
+    baseFilter,
   }: {
     responseKey: string;
     sortFieldMap?: Record<string, string>;
     defaultSort?: DataListSort | null;
     pageSize?: number;
     filterFromSearch?: (search: string) => Record<string, unknown>;
+    /** Filter always applied (e.g. scoping by project), merged with search. */
+    baseFilter?: Record<string, unknown>;
   },
 ): PaginatedResult<T> => {
   const api = useApi(massdriverApiRef);
@@ -59,11 +62,15 @@ export const usePaginatedRelayQuery = <T>(
     sortFieldMap,
   });
 
-  const filter = state.search
+  const searchFilter = state.search
     ? filterFromSearch
       ? filterFromSearch(state.search)
       : { search: state.search }
     : undefined;
+  const filter =
+    baseFilter || searchFilter
+      ? { ...(baseFilter ?? {}), ...(searchFilter ?? {}) }
+      : undefined;
 
   const {
     value: page,
@@ -85,6 +92,7 @@ export const usePaginatedRelayQuery = <T>(
     state.search,
     sort?.field,
     sort?.order,
+    JSON.stringify(baseFilter ?? null),
   ]);
 
   const { hasMore } = processPage(page);

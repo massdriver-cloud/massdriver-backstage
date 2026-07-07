@@ -10,13 +10,9 @@ import { OpenInMassdriverButton } from '../../components/OpenInMassdriverButton'
 import { PageLayout } from '../../components/PageLayout';
 import { RouterLinkAdapter } from '../../components/RouterLinkAdapter';
 import { internalRoutes } from '../../internalRoutes';
+import { ComponentsTab } from './tabs/ComponentsTab';
+import { EnvironmentsTab } from './tabs/EnvironmentsTab';
 import { OverviewTab } from './tabs/OverviewTab';
-
-// Placeholders — replaced by the real tabs in the next chunk of Slice 2.
-const ComponentsTab = () => <Placeholder>Components — coming soon</Placeholder>;
-const EnvironmentsTab = () => (
-  <Placeholder>Environments — coming soon</Placeholder>
-);
 
 const TABS = [
   { id: 'overview', label: 'Overview' },
@@ -94,9 +90,4 @@ export const ProjectDetailsPage = () => {
 const HeaderActions = stylin(Box)(({ theme }: { theme: any }) => ({
   display: 'flex',
   gap: theme.spacing(1.5),
-}));
-
-const Placeholder = stylin(Box)(({ theme }: { theme: any }) => ({
-  padding: theme.spacing(4),
-  color: theme.palette.text.secondary,
 }));
