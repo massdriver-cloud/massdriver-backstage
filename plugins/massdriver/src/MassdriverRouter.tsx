@@ -1,12 +1,7 @@
-import Box from '@massdriver/ui/Box';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { EnvironmentGraphPage } from './features/environment/EnvironmentGraphPage';
 import { ProjectDetailsPage } from './features/project/ProjectDetailsPage';
 import { ProjectsListPage } from './features/projects/ProjectsListPage';
-
-// Placeholder until the corresponding slice lands.
-const ComingSoon = ({ label }: { label: string }) => (
-  <Box sx={{ p: 3 }}>{label} — coming soon</Box>
-);
 
 /**
  * Internal drill-down routing for the embedded Massdriver views, mounted under
@@ -22,7 +17,7 @@ export const MassdriverRouter = () => (
     />
     <Route
       path="projects/:projectId/environments/:environmentId"
-      element={<ComingSoon label="Environment graph" />}
+      element={<EnvironmentGraphPage />}
     />
     <Route path="projects/:projectId/:tab" element={<ProjectDetailsPage />} />
   </Routes>

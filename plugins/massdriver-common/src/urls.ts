@@ -49,6 +49,19 @@ export const parseInstanceId = (
 };
 
 /**
+ * Component ids are project-scoped: `{projectId}-{scopedComponentId}`. Mirrors
+ * `apps/web/shared/utils/ids.js` `parseComponentId`.
+ *
+ * @public
+ */
+export const parseComponentId = (
+  componentId: string,
+): { projectId: string; scopedComponentId: string } => {
+  const [projectId, scopedComponentId] = componentId.split('-');
+  return { projectId, scopedComponentId };
+};
+
+/**
  * Full URL of the v2 GraphQL endpoint for a given API origin.
  *
  * @public
