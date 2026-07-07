@@ -1,6 +1,7 @@
-import { useApi } from '@backstage/frontend-plugin-api';
-import useAsync, { AsyncState } from 'react-use/esm/useAsync';
-import { massdriverApiRef } from '../../api';
+import {
+  PaginatedResult,
+  usePaginatedRelayQuery,
+} from '../../hooks/usePaginatedRelayQuery';
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
 
 /** A project as returned by the API. */
@@ -16,9 +17,7 @@ export interface ProjectListItem {
 
 /** A project row as rendered in the DataList (mirrors the app's transform). */
 export interface ProjectRow extends ProjectListItem {
-  /** Preformatted relative time shown in the Updated column. */
   updatedAt: string;
-  /** Raw ISO timestamp, used for the Updated tooltip. */
   updatedAtRaw?: string | null;
 }
 
@@ -31,17 +30,21 @@ export const toProjectRow = (project: ProjectListItem): ProjectRow => ({
   updatedAt: formatRelativeTime(project.updatedAt),
 });
 
-interface ProjectsPage {
-  projects?: {
-    items?: (ProjectListItem | null)[] | null;
-    cursor?: { next?: string | null };
-  };
-}
-
-// Mirrors the web app's `getProjects` field selection.
+// Mirrors the web app's `getProjects` field selection, with server-side
+// sort + cursor pagination.
 const PROJECTS_QUERY = `
-  query MassdriverProjectsList($organizationId: ID!, $cursor: Cursor) {
-    projects(organizationId: $organizationId, cursor: $cursor) {
+  query MassdriverProjectsList(
+    $organizationId: ID!
+    $sort: ProjectsSort
+    $cursor: Cursor
+    $filter: ProjectsFilter
+  ) {
+    projects(
+      organizationId: $organizationId
+      sort: $sort
+      cursor: $cursor
+      filter: $filter
+    ) {
       items {
         id
         name
@@ -53,29 +56,17 @@ const PROJECTS_QUERY = `
       }
       cursor {
         next
+        previous
       }
     }
   }
 `;
 
-/** Fetch all projects in the org (cursor-paginated) via the relay. */
-export const useProjects = (): AsyncState<ProjectListItem[]> => {
-  const api = useApi(massdriverApiRef);
-
-  return useAsync(async (): Promise<ProjectListItem[]> => {
-    const rows: ProjectListItem[] = [];
-    let next: string | null = null;
-    do {
-      const page = (await api.query(PROJECTS_QUERY, {
-        cursor: { limit: 100, next },
-      })) as ProjectsPage;
-      for (const item of page.projects?.items ?? []) {
-        if (item) {
-          rows.push(item);
-        }
-      }
-      next = page.projects?.cursor?.next ?? null;
-    } while (next);
-    return rows;
-  }, [api]);
-};
+/** Server-side, cursor-paginated projects list (matches the web app). */
+export const useProjectsPaginated = (): PaginatedResult<ProjectListItem> =>
+  usePaginatedRelayQuery<ProjectListItem>(PROJECTS_QUERY, {
+    responseKey: 'projects',
+    sortFieldMap: { name: 'NAME', createdAt: 'CREATED_AT' },
+    defaultSort: { field: 'name', direction: 'asc' },
+    pageSize: 20,
+  });

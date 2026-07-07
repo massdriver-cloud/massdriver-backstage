@@ -6,14 +6,15 @@ import { massdriverApiRef } from '../../api';
 import { OpenInMassdriverButton } from '../../components/OpenInMassdriverButton';
 import { PageLayout } from '../../components/PageLayout';
 import { buildProjectColumns } from './projectColumns';
-import { toProjectRow, useProjects } from './useProjects';
+import { toProjectRow, useProjectsPaginated } from './useProjects';
 
 /** Read-only projects list, rebuilt with `@massdriver/ui` to match the app. */
 export const ProjectsListPage = () => {
   const api = useApi(massdriverApiRef);
-  const { value: projects, loading, error } = useProjects();
+  const { items, loading, error, hasMore, dataListParams } =
+    useProjectsPaginated();
   const columns = buildProjectColumns();
-  const rows = (projects ?? []).map(toProjectRow);
+  const rows = items.map(toProjectRow);
 
   return (
     <PageLayout
@@ -34,8 +35,11 @@ export const ProjectsListPage = () => {
           rows={rows}
           columns={columns}
           loading={loading}
+          serverSide
+          hasMore={hasMore}
           variant="outlined"
           emptyMessage="You haven't created any projects yet, or don't have access to them."
+          {...dataListParams}
         />
       )}
     </PageLayout>
