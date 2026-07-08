@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import Box from '@massdriver/ui/Box';
 import Button from '@massdriver/ui/Button';
 import CodeBlock from '@massdriver/ui/CodeBlock';
+import TextField from '@massdriver/ui/TextField';
 import ToggleButton from '@massdriver/ui/ToggleButton';
 import ToggleButtonGroup from '@massdriver/ui/ToggleButtonGroup';
 import Tooltip from '@massdriver/ui/Tooltip';
@@ -130,6 +131,19 @@ export const ConfigTab = ({ instanceId }: { instanceId: string | null }) => {
                 </Form>
               </DataSourceProvider>
 
+              <MessageRow>
+                <TextField
+                  label="Deployment message"
+                  helperText="Optional. Shown in the deployment history."
+                  fullWidth
+                  multiline
+                  minRows={1}
+                  maxRows={4}
+                  value=""
+                  disabled
+                />
+              </MessageRow>
+
               <Footer>
                 <Tooltip title={PROPOSE_TOOLTIP} placement="top">
                   <ButtonWrap>
@@ -203,6 +217,11 @@ const JsonCodeBlock = stylin(CodeBlock)(({ theme }: { theme: any }) => ({
 const JsonViewCaption = stylin(Typography)(({ theme }: { theme: any }) => ({
   color: theme.palette.text.secondary,
 }));
+
+const MessageRow = stylin(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+});
 
 const Footer = stylin(Box)(({ theme }: { theme: any }) => ({
   display: 'flex',
