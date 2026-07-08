@@ -83,6 +83,14 @@ export const createMassdriverClient = (
         errors?: Array<{ message: string }>;
       };
 
+      // When the query still returned data, hand it back even if there are
+      // field-level errors (e.g. a NOT_FOUND on a nullable field like
+      // `environment(id:)`). This lets callers render a 404 from a null field
+      // instead of surfacing a 500. Only a total failure (no data) throws.
+      if (body.data !== undefined && body.data !== null) {
+        return body.data;
+      }
+
       if (body.errors?.length) {
         throw new MassdriverApiError(
           body.errors.map(error => error.message).join('; '),
