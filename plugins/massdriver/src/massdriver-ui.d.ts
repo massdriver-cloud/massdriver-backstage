@@ -3,3 +3,7 @@
 // any). If the library later ships .d.ts, remove these.
 declare module '@massdriver/ui';
 declare module '@massdriver/ui/*';
+
+// @massdriver/forms likewise ships compiled JS without bundled declarations.
+declare module '@massdriver/forms';
+declare module '@massdriver/forms/*';

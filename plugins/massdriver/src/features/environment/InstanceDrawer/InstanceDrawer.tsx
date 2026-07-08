@@ -16,6 +16,7 @@ import { useResizableWidth } from './useResizableWidth';
 import { PANEL_QUERY } from './queries';
 import { InstanceDrawerHeader } from './InstanceDrawerHeader';
 import { InstanceTabs } from './InstanceTabs';
+import ConfigTab from './tabs/ConfigTab';
 import OverviewTab from './tabs/OverviewTab';
 import ResourcesTab from './tabs/ResourcesTab';
 import DependenciesTab from './tabs/DependenciesTab';
@@ -27,10 +28,11 @@ import type { PanelInstance, SecretField } from './types';
 
 const DEFAULT_TAB = 'overview';
 
-// App tab order minus the omitted Config tab. Secrets is spliced in only when
-// the instance declares secret fields (see below).
+// App tab order. Secrets is spliced in (after History) only when the instance
+// declares secret fields (see below).
 const BASE_TABS = [
   { id: 'overview', label: 'Overview' },
+  { id: 'config', label: 'Config' },
   { id: 'history', label: 'History' },
   { id: 'monitor', label: 'Monitor' },
   { id: 'guide', label: 'Guide' },
@@ -79,10 +81,9 @@ export const InstanceDrawer = ({
 
   const tabs = secretFields.length
     ? [
-        BASE_TABS[0],
-        BASE_TABS[1],
+        ...BASE_TABS.slice(0, 3),
         { id: 'secrets', label: 'Secrets' },
-        ...BASE_TABS.slice(2),
+        ...BASE_TABS.slice(3),
       ]
     : BASE_TABS;
 
@@ -106,6 +107,8 @@ export const InstanceDrawer = ({
 
   const renderTab = () => {
     switch (resolvedTab) {
+      case 'config':
+        return <ConfigTab instanceId={fullInstanceId} />;
       case 'resources':
         return <ResourcesTab instanceId={fullInstanceId} />;
       case 'dependencies':

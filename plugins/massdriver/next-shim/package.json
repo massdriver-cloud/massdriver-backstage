@@ -1,0 +1,7 @@
+{
+  "name": "next",
+  "version": "0.0.0-stub",
+  "private": true,
+  "description": "Local stub so @massdriver/forms (which leaks a next/image import) can bundle outside Next.js. Remove once the forms package drops its next/image dependency.",
+  "main": "index.js"
+}
