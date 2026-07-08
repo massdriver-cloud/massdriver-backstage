@@ -7,12 +7,12 @@ import {
 } from '@massdriver-cloud/backstage-plugin-massdriver-common';
 import Box from '@massdriver/ui/Box';
 import Alert from '@massdriver/ui/Alert';
-import Drawer from '@massdriver/ui/Drawer';
 import LoadingIndicator from '@massdriver/ui/LoadingIndicator';
 import stylin from '@massdriver/ui/stylin';
 import { massdriverApiRef } from '../../../api';
 import { NotFound } from '../../../components/NotFound';
 import { useInstanceApiQuery } from './useInstanceApiQuery';
+import { useResizableWidth } from './useResizableWidth';
 import { PANEL_QUERY } from './queries';
 import { InstanceDrawerHeader } from './InstanceDrawerHeader';
 import { InstanceTabs } from './InstanceTabs';
@@ -57,6 +57,7 @@ export const InstanceDrawer = ({
 }) => {
   const api = useApi(massdriverApiRef);
   const [searchParams, setSearchParams] = useSearchParams();
+  const { width, panelRef, onResizeStart } = useResizableWidth();
 
   const isOpen = Boolean(scopedComponentId);
   const activeTab = searchParams.get('tab') || DEFAULT_TAB;
@@ -126,69 +127,76 @@ export const InstanceDrawer = ({
   if (!isOpen) return null;
 
   return (
-    <StyledDrawer
-      variant="permanent"
-      anchor="right"
-      resizable
-      minWidth={575}
-      defaultWidth={720}
-    >
-      <PanelContainer>
-        <InstanceDrawerHeader
-          instance={instance}
-          appUrl={appUrl}
-          onClose={handleClose}
+    <Panel ref={panelRef} style={{ width }}>
+      <ResizeHandle onMouseDown={onResizeStart} data-testid="resize-handle" />
+      <InstanceDrawerHeader
+        instance={instance}
+        appUrl={appUrl}
+        onClose={handleClose}
+      />
+      {loading ? (
+        <Centered>
+          <LoadingIndicator />
+        </Centered>
+      ) : error ? (
+        <Padded>
+          <Alert severity="error">{String(error.message ?? error)}</Alert>
+        </Padded>
+      ) : !instance ? (
+        <NotFound
+          title="Instance not found"
+          message="This instance doesn't exist or you don't have access to it."
         />
-        {loading ? (
-          <Centered>
-            <LoadingIndicator />
-          </Centered>
-        ) : error ? (
-          <Padded>
-            <Alert severity="error">{String(error.message ?? error)}</Alert>
-          </Padded>
-        ) : !instance ? (
-          <NotFound
-            title="Instance not found"
-            message="This instance doesn't exist or you don't have access to it."
+      ) : (
+        <>
+          <InstanceTabs
+            tabs={tabs}
+            activeTab={resolvedTab}
+            onTabChange={handleTabChange}
           />
-        ) : (
-          <>
-            <InstanceTabs
-              tabs={tabs}
-              activeTab={resolvedTab}
-              onTabChange={handleTabChange}
-            />
-            <ContentArea role="tabpanel">{renderTab()}</ContentArea>
-          </>
-        )}
-      </PanelContainer>
-    </StyledDrawer>
+          <ContentArea role="tabpanel">{renderTab()}</ContentArea>
+        </>
+      )}
+    </Panel>
   );
 };
 
 export default InstanceDrawer;
 
-// Uses the real @massdriver/ui/Drawer (MUI v5) via the `permanent` variant.
-// `persistent`/`temporary` wrap the paper in a Slide transition (and a
-// Modal/portal), which does not settle visible inside Backstage's runtime,
-// leaving the paper parked off-screen. `permanent` renders the paper with no
-// transition. The drawer is mounted only while open (the `isOpen` guard above),
-// and its paper is positioned absolutely over the graph (GraphArea is
-// `position: relative`) rather than docked into the layout.
-const StyledDrawer = stylin(Drawer)({
-  '& .MuiDrawer-paper': {
-    position: 'absolute',
-    zIndex: 10,
-  },
-});
-
-const PanelContainer = stylin(Box)({
+// Read-only panel pinned to the right edge of the environment graph. Uses a
+// plain absolutely-positioned Box rather than @massdriver/ui/Drawer: MUI v5's
+// Drawer relies on its Slide transition (and a Modal/portal for the temporary
+// variant), which does not paint reliably inside Backstage's hybrid runtime
+// (its own MUI v4 layer + the scoped `mdui` Emotion cache). Fixed width for now;
+// a drag-to-resize handle can be reintroduced later. GraphArea is `position:
+// relative`, so this anchors to it.
+const Panel = stylin(Box)(({ theme }: { theme: any }) => ({
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  bottom: 0,
+  maxWidth: '100%',
+  zIndex: 10,
   display: 'flex',
   flexDirection: 'column',
-  height: '100%',
   overflow: 'hidden',
-});
+  backgroundColor: theme.palette.background.paper,
+  borderLeft: `1px solid ${theme.palette.divider}`,
+  boxShadow: theme.shadows[8],
+}));
+
+const ResizeHandle = stylin(Box)(({ theme }: { theme: any }) => ({
+  position: 'absolute',
+  top: 0,
+  bottom: 0,
+  left: 0,
+  width: theme.spacing(0.75),
+  cursor: 'col-resize',
+  zIndex: 1,
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
 
 const ContentArea = stylin(Box)(({ theme }: { theme: any }) => ({
   flex: 1,
