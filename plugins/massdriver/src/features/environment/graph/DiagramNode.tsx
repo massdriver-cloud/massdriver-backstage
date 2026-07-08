@@ -20,9 +20,14 @@ import { NODE_WIDTH, NODE_HEIGHT } from './DiagramNode.constants';
 import type { DiagramNodeData } from './diagramFactory';
 
 /** React Flow node: an instance card with live per-node metadata. */
-const DiagramNode = ({ data }: { id: string; data: DiagramNodeData }) => {
+const DiagramNode = ({
+  id: nodeId,
+  data,
+}: {
+  id: string;
+  data: DiagramNodeData;
+}) => {
   const {
-    id,
     name,
     icon,
     version,
@@ -113,14 +118,14 @@ const DiagramNode = ({ data }: { id: string; data: DiagramNodeData }) => {
         type="target"
         placement="left"
         handles={dependencyHandles}
-        nodeId={id}
+        nodeId={nodeId}
         isOpen={isOpen}
       />
       <ExpandableHandleWrapper
         type="source"
         placement="right"
         handles={resourceHandles}
-        nodeId={id}
+        nodeId={nodeId}
         isOpen={isOpen}
       />
     </NodeContainer>

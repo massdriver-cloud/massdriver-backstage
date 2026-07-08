@@ -74,6 +74,27 @@ export const GraphHeader = ({
     projectId,
   )}/environments?createEnvironment=true`;
 
+  // Switching project navigates to that project's first environment graph, or
+  // its overview if it has no environments (mirrors the web app).
+  const handleProjectChange = async (selectedProjectId: string) => {
+    if (selectedProjectId === projectId) return;
+    try {
+      const data = (await api.query(HEADER_ENVIRONMENTS_QUERY, {
+        filter: { projectId: { eq: selectedProjectId } },
+      })) as HeaderEnvironmentsResult;
+      const envs = (data.environments?.items ?? []).filter(
+        Boolean,
+      ) as HeaderEnvironment[];
+      navigate(
+        envs.length > 0
+          ? internalRoutes.environment(selectedProjectId, envs[0].id)
+          : internalRoutes.projectTab(selectedProjectId, 'overview'),
+      );
+    } catch {
+      navigate(internalRoutes.projectTab(selectedProjectId, 'overview'));
+    }
+  };
+
   return (
     <HeaderRoot>
       <LeftZone>
@@ -103,7 +124,7 @@ export const GraphHeader = ({
                 selected={item.id === projectId}
                 onClick={() => {
                   close();
-                  navigate(internalRoutes.project(item.id));
+                  handleProjectChange(item.id);
                 }}
               >
                 {item.name}
