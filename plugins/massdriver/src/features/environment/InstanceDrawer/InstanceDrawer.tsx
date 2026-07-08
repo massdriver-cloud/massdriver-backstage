@@ -7,16 +7,15 @@ import {
 } from '@massdriver-cloud/backstage-plugin-massdriver-common';
 import Box from '@massdriver/ui/Box';
 import Alert from '@massdriver/ui/Alert';
-import Drawer from '@massdriver/ui/Drawer';
-import Tabs from '@massdriver/ui/Tabs';
-import Tab from '@massdriver/ui/Tab';
 import LoadingIndicator from '@massdriver/ui/LoadingIndicator';
 import stylin from '@massdriver/ui/stylin';
 import { massdriverApiRef } from '../../../api';
 import { NotFound } from '../../../components/NotFound';
 import { useInstanceApiQuery } from './useInstanceApiQuery';
+import { useResizableWidth } from './useResizableWidth';
 import { PANEL_QUERY } from './queries';
 import { InstanceDrawerHeader } from './InstanceDrawerHeader';
+import { InstanceTabs } from './InstanceTabs';
 import OverviewTab from './tabs/OverviewTab';
 import ResourcesTab from './tabs/ResourcesTab';
 import DependenciesTab from './tabs/DependenciesTab';
@@ -58,6 +57,7 @@ export const InstanceDrawer = ({
 }) => {
   const api = useApi(massdriverApiRef);
   const [searchParams, setSearchParams] = useSearchParams();
+  const { width, panelRef, onResizeStart } = useResizableWidth();
 
   const isOpen = Boolean(scopedComponentId);
   const activeTab = searchParams.get('tab') || DEFAULT_TAB;
@@ -91,7 +91,7 @@ export const InstanceDrawer = ({
 
   const handleClose = () => onClose();
 
-  const handleTabChange = (_event: unknown, tabId: string) => {
+  const handleTabChange = (tabId: string) => {
     setSearchParams(previous => {
       const next = new URLSearchParams(previous);
       next.set('tab', tabId);
@@ -124,77 +124,78 @@ export const InstanceDrawer = ({
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <StyledDrawer
-      open={isOpen}
-      onClose={handleClose}
-      anchor="right"
-      variant="persistent"
-      resizable
-      minWidth={575}
-      defaultWidth={720}
-    >
-      {isOpen ? (
-        <PanelContainer>
-          <InstanceDrawerHeader
-            instance={instance}
-            appUrl={appUrl}
-            onClose={handleClose}
+    <Panel ref={panelRef} style={{ width }}>
+      <ResizeHandle onMouseDown={onResizeStart} data-testid="resize-handle" />
+      <InstanceDrawerHeader
+        instance={instance}
+        appUrl={appUrl}
+        onClose={handleClose}
+      />
+      {loading ? (
+        <Centered>
+          <LoadingIndicator />
+        </Centered>
+      ) : error ? (
+        <Padded>
+          <Alert severity="error">{String(error.message ?? error)}</Alert>
+        </Padded>
+      ) : !instance ? (
+        <NotFound
+          title="Instance not found"
+          message="This instance doesn't exist or you don't have access to it."
+        />
+      ) : (
+        <>
+          <InstanceTabs
+            tabs={tabs}
+            activeTab={resolvedTab}
+            onTabChange={handleTabChange}
           />
-          {loading ? (
-            <Centered>
-              <LoadingIndicator />
-            </Centered>
-          ) : error ? (
-            <Padded>
-              <Alert severity="error">{String(error.message ?? error)}</Alert>
-            </Padded>
-          ) : !instance ? (
-            <NotFound
-              title="Instance not found"
-              message="This instance doesn't exist or you don't have access to it."
-            />
-          ) : (
-            <>
-              <TabStrip
-                value={resolvedTab}
-                onChange={handleTabChange}
-                variant="scrollable"
-                scrollButtons="auto"
-              >
-                {tabs.map(tab => (
-                  <Tab key={tab.id} value={tab.id} label={tab.label} />
-                ))}
-              </TabStrip>
-              <ContentArea role="tabpanel">{renderTab()}</ContentArea>
-            </>
-          )}
-        </PanelContainer>
-      ) : null}
-    </StyledDrawer>
+          <ContentArea role="tabpanel">{renderTab()}</ContentArea>
+        </>
+      )}
+    </Panel>
   );
 };
 
 export default InstanceDrawer;
 
-const StyledDrawer = stylin(Drawer)({
-  '& .MuiDrawer-paper': {
-    position: 'absolute',
-    zIndex: 10,
-  },
-});
-
-const PanelContainer = stylin(Box)({
+// Read-only panel pinned to the right edge of the environment graph. Uses a
+// plain absolutely-positioned Box rather than @massdriver/ui/Drawer: MUI v5's
+// Drawer relies on its Slide transition (and a Modal/portal for the temporary
+// variant), which does not paint reliably inside Backstage's hybrid runtime
+// (its own MUI v4 layer + the scoped `mdui` Emotion cache). Fixed width for now;
+// a drag-to-resize handle can be reintroduced later. GraphArea is `position:
+// relative`, so this anchors to it.
+const Panel = stylin(Box)(({ theme }: { theme: any }) => ({
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  bottom: 0,
+  maxWidth: '100%',
+  zIndex: 10,
   display: 'flex',
   flexDirection: 'column',
-  height: '100%',
   overflow: 'hidden',
-});
-
-const TabStrip = stylin(Tabs)(({ theme }: { theme: any }) => ({
-  borderBottom: `1px solid ${theme.palette.divider}`,
   backgroundColor: theme.palette.background.paper,
-  minHeight: 40,
+  borderLeft: `1px solid ${theme.palette.divider}`,
+  boxShadow: theme.shadows[8],
+}));
+
+const ResizeHandle = stylin(Box)(({ theme }: { theme: any }) => ({
+  position: 'absolute',
+  top: 0,
+  bottom: 0,
+  left: 0,
+  width: theme.spacing(0.75),
+  cursor: 'col-resize',
+  zIndex: 1,
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
 }));
 
 const ContentArea = stylin(Box)(({ theme }: { theme: any }) => ({

@@ -31,11 +31,13 @@ const Diagram = ({
   edges: initialEdges,
   snapshotName = 'environment',
   onNodeClick,
+  onPaneClick,
 }: {
   nodes: DiagramNodeType[];
   edges: Edge[];
   snapshotName?: string;
   onNodeClick?: (scopedComponentId: string) => void;
+  onPaneClick?: () => void;
 }) => {
   const nodeTypes = useMemo(() => NODE_TYPES, []);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -69,6 +71,7 @@ const Diagram = ({
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={handleNodeClick}
+        onPaneClick={onPaneClick ? () => onPaneClick() : undefined}
         nodesDraggable={false}
         nodesConnectable={false}
         elementsSelectable={false}

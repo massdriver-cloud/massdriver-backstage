@@ -101,6 +101,7 @@ export const EnvironmentGraphPage = () => {
               edges={edges}
               snapshotName={environmentId || environmentName}
               onNodeClick={openInstance}
+              onPaneClick={scopedComponentId ? closeInstance : undefined}
             />
           </ReactFlowProvider>
         )}
