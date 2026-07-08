@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { NotFound } from './components/NotFound';
 import { EnvironmentGraphPage } from './features/environment/EnvironmentGraphPage';
 import { ProjectDetailsPage } from './features/project/ProjectDetailsPage';
 import { ProjectsListPage } from './features/projects/ProjectsListPage';
@@ -16,9 +17,10 @@ export const MassdriverRouter = () => (
       element={<Navigate to="overview" replace />}
     />
     <Route
-      path="projects/:projectId/environments/:environmentId"
+      path="projects/:projectId/environments/:scopedEnvironmentId"
       element={<EnvironmentGraphPage />}
     />
     <Route path="projects/:projectId/:tab" element={<ProjectDetailsPage />} />
+    <Route path="*" element={<NotFound />} />
   </Routes>
 );

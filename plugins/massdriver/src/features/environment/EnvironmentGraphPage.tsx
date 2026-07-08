@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useApi } from '@backstage/frontend-plugin-api';
+import { composeEnvironmentId } from '@massdriver-cloud/backstage-plugin-massdriver-common';
 import Alert from '@massdriver/ui/Alert';
 import Box from '@massdriver/ui/Box';
 import LoadingIndicator from '@massdriver/ui/LoadingIndicator';
@@ -9,6 +10,7 @@ import { ReactFlowProvider } from '@xyflow/react';
 import useAsync from 'react-use/esm/useAsync';
 import { useParams } from 'react-router-dom';
 import { massdriverApiRef } from '../../api';
+import { NotFound } from '../../components/NotFound';
 import { GraphHeader } from './GraphHeader';
 import Diagram from './graph/Diagram';
 import { buildDiagram } from './graph/diagramFactory';
@@ -22,7 +24,8 @@ import {
 /** Read-only environment graph: instances as nodes, connections/links as edges. */
 export const EnvironmentGraphPage = () => {
   const api = useApi(massdriverApiRef);
-  const { projectId = '', environmentId = '' } = useParams();
+  const { projectId = '', scopedEnvironmentId = '' } = useParams();
+  const environmentId = composeEnvironmentId(projectId, scopedEnvironmentId);
 
   const { value, loading, error } = useAsync(async () => {
     const [projectData, environmentData] = await Promise.all([
@@ -51,6 +54,15 @@ export const EnvironmentGraphPage = () => {
   );
 
   const environmentName = value?.environment?.name ?? 'Environment';
+
+  if (!loading && !error && (!value?.project || !value?.environment)) {
+    return (
+      <NotFound
+        title="Environment not found"
+        message="This environment doesn't exist or you don't have access to it."
+      />
+    );
+  }
 
   return (
     <Root>

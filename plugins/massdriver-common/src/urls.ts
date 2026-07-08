@@ -35,6 +35,16 @@ export const parseEnvironmentId = (
   return { projectId, scopedEnvironmentId };
 };
 
+/**
+ * Compose a full environment id from its parts: `{projectId}-{scopedEnvironmentId}`.
+ *
+ * @public
+ */
+export const composeEnvironmentId = (
+  projectId: string,
+  scopedEnvironmentId: string,
+): string => `${projectId}-${scopedEnvironmentId}`;
+
 /** @public */
 export const parseInstanceId = (
   instanceId: string,

@@ -6,6 +6,7 @@ import stylin from '@massdriver/ui/stylin';
 import useAsync from 'react-use/esm/useAsync';
 import { useParams } from 'react-router-dom';
 import { massdriverApiRef } from '../../api';
+import { NotFound } from '../../components/NotFound';
 import { OpenInMassdriverButton } from '../../components/OpenInMassdriverButton';
 import { PageLayout } from '../../components/PageLayout';
 import { RouterLinkAdapter } from '../../components/RouterLinkAdapter';
@@ -42,12 +43,25 @@ export const ProjectDetailsPage = () => {
   const { projectId = '', tab } = useParams();
   const activeTab = TABS.some(entry => entry.id === tab) ? tab! : 'overview';
 
-  const { value: project } = useAsync(async () => {
+  const {
+    value: project,
+    loading,
+    error,
+  } = useAsync(async () => {
     const data = (await api.query(HEADER_QUERY, { id: projectId })) as {
       project: { id: string; name?: string; description?: string } | null;
     };
     return data.project;
   }, [api, projectId]);
+
+  if (!loading && !error && !project) {
+    return (
+      <NotFound
+        title="Project not found"
+        message="This project doesn't exist or you don't have access to it."
+      />
+    );
+  }
 
   const tabs = TABS.map(entry => ({
     ...entry,
