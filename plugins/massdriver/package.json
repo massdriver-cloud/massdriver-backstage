@@ -34,7 +34,7 @@
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@massdriver-cloud/backstage-plugin-massdriver-common": "workspace:^",
-    "@massdriver/forms": "^2.0.0",
+    "@massdriver/forms": "^2.0.1",
     "@massdriver/ui": "^1.0.0",
     "@material-ui/icons": "^4.9.1",
     "@mui/icons-material": "^5.14.18",
@@ -47,7 +47,6 @@
     "@xyflow/react": "^12.0.0",
     "graphql": "^16.8.1",
     "html-to-image": "^1.11.13",
-    "next": "link:./next-shim",
     "react-use": "^17.2.4"
   },
   "peerDependencies": {

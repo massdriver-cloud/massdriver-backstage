@@ -6223,7 +6223,7 @@ __metadata:
     "@emotion/react": "npm:^11.11.0"
     "@emotion/styled": "npm:^11.11.0"
     "@massdriver-cloud/backstage-plugin-massdriver-common": "workspace:^"
-    "@massdriver/forms": "npm:^2.0.0"
+    "@massdriver/forms": "npm:^2.0.1"
     "@massdriver/ui": "npm:^1.0.0"
     "@material-ui/icons": "npm:^4.9.1"
     "@mui/icons-material": "npm:^5.14.18"
@@ -6240,7 +6240,6 @@ __metadata:
     graphql: "npm:^16.8.1"
     html-to-image: "npm:^1.11.13"
     msw: "npm:^1.0.0"
-    next: "link:./next-shim"
     react: "npm:^16.13.1 || ^17.0.0 || ^18.0.0"
     react-use: "npm:^17.2.4"
   peerDependencies:
@@ -6248,9 +6247,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@massdriver/forms@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@massdriver/forms@npm:2.0.0"
+"@massdriver/forms@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@massdriver/forms@npm:2.0.1"
   dependencies:
     "@massdriver/ui": "npm:^1.0.0"
     "@rjsf/validator-ajv8": "npm:^5.8.2"
@@ -6269,7 +6268,7 @@ __metadata:
     graphql: ^15.0.0 || ^16.0.0
     react: ^18.0.0
     react-dom: ^18.0.0
-  checksum: 10c0/e73d917257bb982a225e6815c559e89a92e5753c8c1f6acf296201bc51161e29ed18ed50c64192b7849cd40f172ff769904f215e6d4b1428bb25586bd7d4b41e
+  checksum: 10c0/b38dfc61015e4e0b708b02ac17719dc0a152be1dfe93973642a5a6f13c8926ad58e846137c3c7abc5140cfa5c461ab2264e94484b59079192ecbc0a66c717092
   languageName: node
   linkType: hard
 
@@ -24227,12 +24226,6 @@ __metadata:
   checksum: 10c0/c78e31869b0578fb0a9874a0c0fdf0e1f8b3492392d1043355fb11d9ea42ef94e0216c6aee7d8e15db39d1a8caf331f9b144ae3ee43fd951b73a66837711fb09
   languageName: node
   linkType: hard
-
-"next@link:./next-shim::locator=%40massdriver-cloud%2Fbackstage-plugin-massdriver%40workspace%3Aplugins%2Fmassdriver":
-  version: 0.0.0-use.local
-  resolution: "next@link:./next-shim::locator=%40massdriver-cloud%2Fbackstage-plugin-massdriver%40workspace%3Aplugins%2Fmassdriver"
-  languageName: node
-  linkType: soft
 
 "nimma@npm:0.2.3":
   version: 0.2.3
