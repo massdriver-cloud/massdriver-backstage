@@ -12,6 +12,7 @@ import { useParams } from 'react-router-dom';
 import { massdriverApiRef } from '../../api';
 import { NotFound } from '../../components/NotFound';
 import { GraphHeader } from './GraphHeader';
+import { InstanceDrawer } from './InstanceDrawer';
 import Diagram from './graph/Diagram';
 import { buildDiagram } from './graph/diagramFactory';
 import {
@@ -91,6 +92,7 @@ export const EnvironmentGraphPage = () => {
             />
           </ReactFlowProvider>
         )}
+        <InstanceDrawer projectId={projectId} environmentId={environmentId} />
       </GraphArea>
     </Root>
   );

@@ -72,6 +72,19 @@ export const parseComponentId = (
 };
 
 /**
+ * Compose a full instance id from its parts:
+ * `{projectId}-{scopedEnvironmentId}-{scopedComponentId}`. Mirrors
+ * `apps/web/shared/utils/ids.js` `composeInstanceId`.
+ *
+ * @public
+ */
+export const composeInstanceId = (
+  projectId: string,
+  scopedEnvironmentId: string,
+  scopedComponentId: string,
+): string => `${projectId}-${scopedEnvironmentId}-${scopedComponentId}`;
+
+/**
  * Full URL of the v2 GraphQL endpoint for a given API origin.
  *
  * @public
