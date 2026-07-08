@@ -186,15 +186,17 @@ const Header = stylin(Box)(({ theme }: { theme: any }) => ({
 }));
 
 const ViewToggle = stylin(ToggleButtonGroup)(({ theme }: { theme: any }) => ({
-  width: theme.spacing(16),
   height: theme.spacing(3.5),
   '& .MuiToggleButton-root': {
-    flex: 1,
     height: '100%',
+    minWidth: theme.spacing(7),
     fontWeight: 400,
     fontSize: theme.typography.pxToRem(13),
+    textTransform: 'none',
     paddingTop: 0,
     paddingBottom: 0,
+    paddingLeft: theme.spacing(1.5),
+    paddingRight: theme.spacing(1.5),
   },
 }));
 
