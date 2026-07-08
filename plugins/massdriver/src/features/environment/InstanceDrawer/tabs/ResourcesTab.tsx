@@ -106,10 +106,7 @@ const instanceHref = (id?: string | null): string | null => {
   if (!id) return null;
   const { projectId, scopedEnvironmentId, scopedComponentId } = parseInstanceId(id);
   if (!projectId || !scopedEnvironmentId || !scopedComponentId) return null;
-  return `${internalRoutes.environment(
-    projectId,
-    composeEnvironmentId(projectId, scopedEnvironmentId),
-  )}?instance=${scopedComponentId}`;
+  return internalRoutes.instance(projectId, scopedEnvironmentId, scopedComponentId);
 };
 
 const environmentHref = (id?: string | null): string | null => {

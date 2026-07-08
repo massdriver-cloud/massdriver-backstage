@@ -8,9 +8,10 @@ import Typography from '@massdriver/ui/Typography';
 import stylin from '@massdriver/ui/stylin';
 import { ReactFlowProvider } from '@xyflow/react';
 import useAsync from 'react-use/esm/useAsync';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { massdriverApiRef } from '../../api';
 import { NotFound } from '../../components/NotFound';
+import { internalRoutes } from '../../internalRoutes';
 import { GraphHeader } from './GraphHeader';
 import { InstanceDrawer } from './InstanceDrawer';
 import Diagram from './graph/Diagram';
@@ -25,8 +26,18 @@ import {
 /** Read-only environment graph: instances as nodes, connections/links as edges. */
 export const EnvironmentGraphPage = () => {
   const api = useApi(massdriverApiRef);
-  const { projectId = '', scopedEnvironmentId = '' } = useParams();
+  const navigate = useNavigate();
+  const {
+    projectId = '',
+    scopedEnvironmentId = '',
+    scopedComponentId,
+  } = useParams();
   const environmentId = composeEnvironmentId(projectId, scopedEnvironmentId);
+
+  const openInstance = (id: string) =>
+    navigate(internalRoutes.instance(projectId, scopedEnvironmentId, id));
+  const closeInstance = () =>
+    navigate(internalRoutes.environment(projectId, environmentId));
 
   const { value, loading, error } = useAsync(async () => {
     const [projectData, environmentData] = await Promise.all([
@@ -89,10 +100,16 @@ export const EnvironmentGraphPage = () => {
               nodes={nodes}
               edges={edges}
               snapshotName={environmentId || environmentName}
+              onNodeClick={openInstance}
             />
           </ReactFlowProvider>
         )}
-        <InstanceDrawer projectId={projectId} environmentId={environmentId} />
+        <InstanceDrawer
+          projectId={projectId}
+          environmentId={environmentId}
+          scopedComponentId={scopedComponentId}
+          onClose={closeInstance}
+        />
       </GraphArea>
     </Root>
   );

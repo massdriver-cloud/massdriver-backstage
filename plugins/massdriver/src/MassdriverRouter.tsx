@@ -20,6 +20,10 @@ export const MassdriverRouter = () => (
       path="projects/:projectId/environments/:scopedEnvironmentId"
       element={<EnvironmentGraphPage />}
     />
+    <Route
+      path="projects/:projectId/environments/:scopedEnvironmentId/instances/:scopedComponentId"
+      element={<EnvironmentGraphPage />}
+    />
     <Route path="projects/:projectId/:tab" element={<ProjectDetailsPage />} />
     <Route path="*" element={<NotFound />} />
   </Routes>

@@ -40,21 +40,25 @@ const BASE_TABS = [
 ];
 
 /**
- * Read-only instance drawer rendered over the environment graph. Opens when
- * `?instance=<scopedComponentId>` is present; closing clears the `instance`
- * and `tab` search params.
+ * Read-only instance drawer rendered over the environment graph. Opens when the
+ * `scopedComponentId` route param is present (the `.../instances/:scopedComponentId`
+ * sub-route, mirroring the web app); closing navigates back to the environment
+ * route. The active tab is carried in the `?tab=` query param.
  */
 export const InstanceDrawer = ({
   projectId,
   environmentId,
+  scopedComponentId,
+  onClose,
 }: {
   projectId: string;
   environmentId: string;
+  scopedComponentId?: string;
+  onClose: () => void;
 }) => {
   const api = useApi(massdriverApiRef);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const scopedComponentId = searchParams.get('instance');
   const isOpen = Boolean(scopedComponentId);
   const activeTab = searchParams.get('tab') || DEFAULT_TAB;
 
@@ -85,14 +89,7 @@ export const InstanceDrawer = ({
   const tabExists = tabs.some(tab => tab.id === activeTab);
   const resolvedTab = tabExists ? activeTab : DEFAULT_TAB;
 
-  const handleClose = () => {
-    setSearchParams(previous => {
-      const next = new URLSearchParams(previous);
-      next.delete('instance');
-      next.delete('tab');
-      return next;
-    });
-  };
+  const handleClose = () => onClose();
 
   const handleTabChange = (_event: unknown, tabId: string) => {
     setSearchParams(previous => {

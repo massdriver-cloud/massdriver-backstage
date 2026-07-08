@@ -16,4 +16,11 @@ export const internalRoutes = {
     const { scopedEnvironmentId } = parseEnvironmentId(environmentId);
     return `${BASE}/projects/${projectId}/environments/${scopedEnvironmentId}`;
   },
+  /** Instance drawer sub-route; mirrors the app's `.../instances/:scopedInstanceId`. */
+  instance: (
+    projectId: string,
+    scopedEnvironmentId: string,
+    scopedComponentId: string,
+  ) =>
+    `${BASE}/projects/${projectId}/environments/${scopedEnvironmentId}/instances/${scopedComponentId}`,
 };

@@ -84,11 +84,14 @@ export const ComponentsTab = ({ projectId }: { projectId: string }) => {
     if (!instance.environment?.id || !instance.id) {
       return null;
     }
-    const { scopedComponentId } = parseInstanceId(instance.id);
-    return `${internalRoutes.environment(
+    const { scopedEnvironmentId, scopedComponentId } = parseInstanceId(
+      instance.id,
+    );
+    return internalRoutes.instance(
       projectId,
-      instance.environment.id,
-    )}?instance=${scopedComponentId}`;
+      scopedEnvironmentId,
+      scopedComponentId,
+    );
   };
 
   const columns = [

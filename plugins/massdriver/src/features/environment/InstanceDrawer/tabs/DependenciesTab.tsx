@@ -1,8 +1,5 @@
 import { ReactNode, useMemo } from 'react';
-import {
-  composeEnvironmentId,
-  parseInstanceId,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { parseInstanceId } from '@massdriver-cloud/backstage-plugin-massdriver-common';
 import Box from '@massdriver/ui/Box';
 import Typography from '@massdriver/ui/Typography';
 import Chip from '@massdriver/ui/Chip';
@@ -87,10 +84,7 @@ const originHref = (id?: string | null): string | null => {
   if (!id) return null;
   const { projectId, scopedEnvironmentId, scopedComponentId } = parseInstanceId(id);
   if (!projectId || !scopedEnvironmentId || !scopedComponentId) return null;
-  return `${internalRoutes.environment(
-    projectId,
-    composeEnvironmentId(projectId, scopedEnvironmentId),
-  )}?instance=${scopedComponentId}`;
+  return internalRoutes.instance(projectId, scopedEnvironmentId, scopedComponentId);
 };
 
 const TypeRow = ({ resourceType }: { resourceType?: ResourceType | null }) => (

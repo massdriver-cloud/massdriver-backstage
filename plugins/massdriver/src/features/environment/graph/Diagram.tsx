@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import {
   Background,
   Controls,
@@ -31,15 +30,16 @@ const Diagram = ({
   nodes: initialNodes,
   edges: initialEdges,
   snapshotName = 'environment',
+  onNodeClick,
 }: {
   nodes: DiagramNodeType[];
   edges: Edge[];
   snapshotName?: string;
+  onNodeClick?: (scopedComponentId: string) => void;
 }) => {
   const nodeTypes = useMemo(() => NODE_TYPES, []);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [, setSearchParams] = useSearchParams();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   // Reseed when the fetched blueprint changes.
@@ -57,12 +57,7 @@ const Diagram = ({
 
   const handleNodeClick = (_event: unknown, node: { data?: { id?: string } }) => {
     const scopedComponentId = node?.data?.id;
-    if (!scopedComponentId) return;
-    setSearchParams(previous => {
-      const next = new URLSearchParams(previous);
-      next.set('instance', scopedComponentId);
-      return next;
-    });
+    if (scopedComponentId) onNodeClick?.(scopedComponentId);
   };
 
   return (
