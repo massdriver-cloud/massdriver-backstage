@@ -32,22 +32,35 @@ const Diagram = ({
   snapshotName = 'environment',
   onNodeClick,
   onPaneClick,
+  selectedComponentId,
 }: {
   nodes: DiagramNodeType[];
   edges: Edge[];
   snapshotName?: string;
   onNodeClick?: (scopedComponentId: string) => void;
   onPaneClick?: () => void;
+  selectedComponentId?: string;
 }) => {
   const nodeTypes = useMemo(() => NODE_TYPES, []);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // Reseed when the fetched blueprint changes.
+  // Reseed when the fetched blueprint changes, marking the open instance's node
+  // selected (the node styles its own border off `data.isSelected`).
   useEffect(() => {
-    setNodes(initialNodes);
-  }, [initialNodes, setNodes]);
+    setNodes(
+      initialNodes.map(node => ({
+        ...node,
+        data: {
+          ...node.data,
+          isSelected: Boolean(
+            selectedComponentId && node.data?.id === selectedComponentId,
+          ),
+        },
+      })),
+    );
+  }, [initialNodes, selectedComponentId, setNodes]);
   useEffect(() => {
     setEdges(initialEdges);
   }, [initialEdges, setEdges]);

@@ -102,6 +102,7 @@ export const EnvironmentGraphPage = () => {
               snapshotName={environmentId || environmentName}
               onNodeClick={openInstance}
               onPaneClick={scopedComponentId ? closeInstance : undefined}
+              selectedComponentId={scopedComponentId}
             />
           </ReactFlowProvider>
         )}
