@@ -187,6 +187,9 @@ const Header = stylin(Box)(({ theme }: { theme: any }) => ({
 
 const ViewToggle = stylin(ToggleButtonGroup)(({ theme }: { theme: any }) => ({
   height: theme.spacing(3.5),
+  // Backstage's MUI v4 shares the .MuiToggleButton-* class names and clobbers
+  // v5's border-radius, so force it: square buttons, round only the group's
+  // outer corners.
   '& .MuiToggleButton-root': {
     height: '100%',
     minWidth: theme.spacing(7),
@@ -197,6 +200,15 @@ const ViewToggle = stylin(ToggleButtonGroup)(({ theme }: { theme: any }) => ({
     paddingBottom: 0,
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),
+    borderRadius: '0 !important',
+  },
+  '& .MuiToggleButton-root:first-of-type': {
+    borderTopLeftRadius: `${theme.shape.borderRadius}px !important`,
+    borderBottomLeftRadius: `${theme.shape.borderRadius}px !important`,
+  },
+  '& .MuiToggleButton-root:last-of-type': {
+    borderTopRightRadius: `${theme.shape.borderRadius}px !important`,
+    borderBottomRightRadius: `${theme.shape.borderRadius}px !important`,
   },
 }));
 
