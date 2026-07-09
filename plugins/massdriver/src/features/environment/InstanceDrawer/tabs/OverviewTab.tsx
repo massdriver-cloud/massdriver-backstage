@@ -11,7 +11,15 @@ import SearchIcon from '@massdriver/ui/icons/SearchIcon';
 import ChevronLeftIcon from '@massdriver/ui/icons/ChevronLeftIcon';
 import ChevronRightIcon from '@massdriver/ui/icons/ChevronRightIcon';
 import ExpandCircleDownOutlinedIcon from '@massdriver/ui/icons/ExpandCircleDownOutlinedIcon';
+import OpenInNewIcon from '@massdriver/ui/icons/OpenInNewIcon';
+import AlertBanner from '@massdriver/ui/AlertBanner';
 import stylin from '@massdriver/ui/stylin';
+import { useApi } from '@backstage/frontend-plugin-api';
+import {
+  instanceTabUrl,
+  repoVersionOverviewUrl,
+} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { massdriverApiRef } from '../../../../api';
 import { TabState } from '../TabState';
 import AlarmCard from '../AlarmCard';
 import { OVERVIEW_QUERY } from '../queries';
@@ -41,10 +49,28 @@ interface OverviewInstance {
 
 /** Read-only Overview tab: firing alerts, identifiers, version, attributes, properties. */
 export const OverviewTab = ({ instanceId }: { instanceId: string | null }) => {
+  const api = useApi(massdriverApiRef);
   const { value, loading, error } = useInstanceApiQuery<{
     instance: OverviewInstance | null;
   }>(OVERVIEW_QUERY, instanceId);
   const instance = value?.instance;
+
+  // Editing the version is a mutation — link out to the instance's overview in
+  // Massdriver (where the change-version dialog lives). The bundle links to its
+  // version overview in the repository.
+  const changeVersionUrl =
+    instanceId && api.appUrl
+      ? instanceTabUrl(api.appUrl, api.organizationId, instanceId, 'overview')
+      : '';
+  const repoUrl =
+    instance?.bundle?.name && instance?.resolvedVersion && api.appUrl
+      ? repoVersionOverviewUrl(
+          api.appUrl,
+          api.organizationId,
+          instance.bundle.name,
+          instance.resolvedVersion,
+        )
+      : '';
 
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -109,7 +135,21 @@ export const OverviewTab = ({ instanceId }: { instanceId: string | null }) => {
           </Section>
 
           <Section>
-            <Header>Version</Header>
+            <SectionHeaderRow>
+              <Header>Version</Header>
+              {changeVersionUrl && instance.status !== 'EXTERNAL' ? (
+                <Tooltip arrow title="Change version in Massdriver" placement="top">
+                  <HeaderLink
+                    href={changeVersionUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Change version in Massdriver"
+                  >
+                    <LinkIcon />
+                  </HeaderLink>
+                </Tooltip>
+              ) : null}
+            </SectionHeaderRow>
             <Card>
               {instance.status === 'EXTERNAL' ? (
                 <ExternalNote>
@@ -120,7 +160,25 @@ export const OverviewTab = ({ instanceId }: { instanceId: string | null }) => {
                   {instance.bundle?.name ? (
                     <RowLine>
                       <RowLabel>Bundle</RowLabel>
-                      <RowValue>{instance.bundle.name}</RowValue>
+                      <RowValueGroup>
+                        <RowValue>{instance.bundle.name}</RowValue>
+                        {repoUrl ? (
+                          <Tooltip
+                            arrow
+                            title="View bundle in repository"
+                            placement="top"
+                          >
+                            <RepoLink
+                              href={repoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="View bundle in repository"
+                            >
+                              <LinkIcon />
+                            </RepoLink>
+                          </Tooltip>
+                        ) : null}
+                      </RowValueGroup>
                     </RowLine>
                   ) : null}
                   <RowLine>
@@ -225,6 +283,12 @@ const PropertiesSection = ({
   return (
     <Section>
       <Header>Resource properties</Header>
+      {status === 'EXTERNAL' ? (
+        <AlertBanner
+          severity="info"
+          description="These are properties of the remote reference resources."
+        />
+      ) : null}
       {isInitialized ? (
         <EmptyNote>
           You must provision this instance to see its created properties.
@@ -360,6 +424,30 @@ const Header = stylin(Typography)(({ theme }: { theme: any }) => ({
   fontWeight: theme.typography.fontWeightBold,
   color: theme.palette.text.primary,
 }));
+
+const SectionHeaderRow = stylin(Box)(({ theme }: { theme: any }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+}));
+
+const HeaderLink = stylin('a')(({ theme }: { theme: any }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  color: theme.palette.text.secondary,
+  '&:hover': { color: theme.palette.primary.main },
+}));
+
+const RepoLink = stylin('a')(({ theme }: { theme: any }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  color: theme.palette.text.secondary,
+  '&:hover': { color: theme.palette.primary.main },
+}));
+
+const LinkIcon = stylin(OpenInNewIcon)({
+  fontSize: 15,
+});
 
 const AlertList = stylin(Box)(({ theme }: { theme: any }) => ({
   display: 'flex',

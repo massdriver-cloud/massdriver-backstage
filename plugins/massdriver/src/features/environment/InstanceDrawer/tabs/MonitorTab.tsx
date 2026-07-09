@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import Box from '@massdriver/ui/Box';
 import Typography from '@massdriver/ui/Typography';
+import { HelpIconButton } from '@massdriver/ui/IconButton';
 import NotificationsIcon from '@massdriver/ui/icons/NotificationsIcon';
 import stylin from '@massdriver/ui/stylin';
 import { TabState } from '../TabState';
@@ -26,7 +27,14 @@ export const MonitorTab = ({ instanceId }: { instanceId: string | null }) => {
     <TabState loading={loading} error={error}>
       <Root>
         <HeaderRow>
-          <Title>Alarms</Title>
+          <TitleRow>
+            <Title>Alarms</Title>
+            <AlarmsHelp
+              href={ALARMS_DOCS_URL}
+              tooltip="Learn about alarms"
+              size="small"
+            />
+          </TitleRow>
           {buckets.total > 0 ? (
             <CountChip>
               {buckets.firing.length > 0 ? (
@@ -80,11 +88,22 @@ const HeaderRow = stylin(Box)(({ theme }: { theme: any }) => ({
   marginBottom: theme.spacing(3),
 }));
 
+const TitleRow = stylin(Box)(({ theme }: { theme: any }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(0.5),
+}));
+
 const Title = stylin(Typography)(({ theme }: { theme: any }) => ({
   fontSize: theme.typography.pxToRem(15),
   fontWeight: theme.typography.fontWeightBold,
   color: theme.palette.text.primary,
 }));
+
+const AlarmsHelp = stylin(HelpIconButton)({
+  padding: '2px',
+  '& svg': { fontSize: 16 },
+});
 
 const CountChip = stylin(Box)(({ theme }: { theme: any }) => ({
   display: 'inline-flex',

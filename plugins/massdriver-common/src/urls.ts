@@ -140,3 +140,45 @@ export const instanceUrl = (
     parseInstanceId(instanceId);
   return `${trimTrailingSlash(appUrl)}/orgs/${orgId}/projects/${projectId}/environments/${scopedEnvironmentId}/instances/${scopedComponentId}`;
 };
+
+/**
+ * Deep-link to a specific tab of an instance's detail panel in the web app,
+ * e.g. `?tab=overview` (change version) or `?tab=secrets` (set/clear secret).
+ *
+ * @public
+ */
+export const instanceTabUrl = (
+  appUrl: string,
+  orgId: string,
+  instanceId: string,
+  tab: string,
+): string => `${instanceUrl(appUrl, orgId, instanceId)}?tab=${tab}`;
+
+/**
+ * Deep-link that opens one of the instance panel's action dialogs in the web
+ * app (`?action=copy | decommission | delete`), mirroring the app's
+ * `useDialogParam('action')`.
+ *
+ * @public
+ */
+export const instanceActionUrl = (
+  appUrl: string,
+  orgId: string,
+  instanceId: string,
+  action: 'copy' | 'decommission' | 'delete',
+): string => `${instanceUrl(appUrl, orgId, instanceId)}?action=${action}`;
+
+/**
+ * Deep-link to a bundle/OCI-repo version's overview in the web app:
+ * `/orgs/{orgId}/repos/{repoName}/{version}/overview`. Used by the instance
+ * Overview tab's "view in repository" link.
+ *
+ * @public
+ */
+export const repoVersionOverviewUrl = (
+  appUrl: string,
+  orgId: string,
+  repoName: string,
+  version: string,
+): string =>
+  `${trimTrailingSlash(appUrl)}/orgs/${orgId}/repos/${repoName}/${version}/overview`;
