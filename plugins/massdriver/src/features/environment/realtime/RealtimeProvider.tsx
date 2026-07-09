@@ -7,7 +7,10 @@ import {
   type ReactNode,
 } from 'react';
 import { useMassdriverSubscription } from './useMassdriverSubscription';
-import { ENVIRONMENT_EVENTS_SUBSCRIPTION } from './queries';
+import {
+  ENVIRONMENT_EVENTS_SUBSCRIPTION,
+  PROJECT_EVENTS_SUBSCRIPTION,
+} from './queries';
 
 // A monotonically-increasing revision that bumps whenever the environment emits
 // an event. Data hooks (graph snapshot, drawer tabs) include it in their
@@ -25,33 +28,45 @@ export const useRealtimeRevision = (): number =>
 const COALESCE_MS = 250;
 
 /**
- * Mounts the environment-events subscription and exposes a debounced revision to
- * descendants. Wrap the environment graph page so the graph and instance drawer
- * refetch when instances/deployments change in the web app.
+ * Mounts the environment-events and project-events subscriptions and exposes a
+ * debounced revision to descendants. Wrap the environment graph page so the
+ * graph and instance drawer refetch when the environment changes in the web
+ * app. Both scopes are required: instances/deployments/connections/alarms are
+ * environment events, but the blueprint half of the graph — components, their
+ * positions, and links — only emits project events.
  */
 export const RealtimeProvider = ({
+  projectId,
   environmentId,
   children,
 }: {
+  projectId: string;
   environmentId: string;
   children: ReactNode;
 }) => {
   const [revision, setRevision] = useState(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
+  // Shared across both subscriptions so a burst spanning scopes (a deploy
+  // emits project and environment events) still coalesces into one refetch.
+  const bumpRevision = () => {
+    if (timerRef.current) return;
+    timerRef.current = setTimeout(() => {
+      timerRef.current = undefined;
+      setRevision(current => current + 1);
+    }, COALESCE_MS);
+  };
+
   useMassdriverSubscription(
     ENVIRONMENT_EVENTS_SUBSCRIPTION,
     { environmentId },
-    {
-      skip: !environmentId,
-      onData: () => {
-        if (timerRef.current) return;
-        timerRef.current = setTimeout(() => {
-          timerRef.current = undefined;
-          setRevision(current => current + 1);
-        }, COALESCE_MS);
-      },
-    },
+    { skip: !environmentId, onData: bumpRevision },
+  );
+
+  useMassdriverSubscription(
+    PROJECT_EVENTS_SUBSCRIPTION,
+    { projectId },
+    { skip: !projectId, onData: bumpRevision },
   );
 
   useEffect(

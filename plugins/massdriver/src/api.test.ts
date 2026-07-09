@@ -299,4 +299,83 @@ describe('MassdriverClientApi', () => {
       );
     });
   });
+
+  describe('subscribePresence', () => {
+    const buildApi = () => {
+      const fetchApi = createFetchApi();
+      const api = new MassdriverClientApi({
+        fetchApi,
+        configApi: createConfigApi() as unknown as ConfigApi,
+      });
+      return { api, fetchApi };
+    };
+
+    it('posts the environmentId to the presence relay', async () => {
+      const { api, fetchApi } = buildApi();
+      fetchApi.fetch.mockResolvedValue(
+        streamResponse([]) as unknown as Response,
+      );
+
+      await api.subscribePresence('proj-env', { onData: jest.fn() });
+
+      expect(fetchApi.fetch).toHaveBeenCalledWith(
+        'plugin://massdriver/presence',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ environmentId: 'proj-env' }),
+        }),
+      );
+    });
+
+    it('unwraps each data frame to the viewers snapshot', async () => {
+      const { api, fetchApi } = buildApi();
+      fetchApi.fetch.mockResolvedValue(
+        streamResponse([
+          'data: {"viewers":{"acct-1":{"first_name":"Joe","_metasCount":1}}}\n\n',
+          'data: {"viewers":{}}\n\n',
+        ]) as unknown as Response,
+      );
+      const onData = jest.fn();
+
+      await api.subscribePresence('proj-env', { onData });
+
+      expect(onData).toHaveBeenNthCalledWith(1, {
+        'acct-1': { first_name: 'Joe', _metasCount: 1 },
+      });
+      expect(onData).toHaveBeenNthCalledWith(2, {});
+    });
+
+    it('defaults a malformed payload to an empty snapshot', async () => {
+      const { api, fetchApi } = buildApi();
+      fetchApi.fetch.mockResolvedValue(
+        streamResponse([
+          'data: {"unexpected":true}\n\n',
+        ]) as unknown as Response,
+      );
+      const onData = jest.fn();
+
+      await api.subscribePresence('proj-env', { onData });
+
+      expect(onData).toHaveBeenCalledWith({});
+    });
+
+    it('surfaces relay error events with the fatal flag', async () => {
+      const { api, fetchApi } = buildApi();
+      fetchApi.fetch.mockResolvedValue(
+        streamResponse([
+          'event: error\ndata: {"message":"join rejected","fatal":true}\n\n',
+        ]) as unknown as Response,
+      );
+      const onError = jest.fn();
+
+      await api.subscribePresence('proj-env', {
+        onData: jest.fn(),
+        onError,
+      });
+
+      expect(onError).toHaveBeenCalledTimes(1);
+      expect(onError.mock.calls[0][0].message).toBe('join rejected');
+      expect(onError.mock.calls[0][0].fatal).toBe(true);
+    });
+  });
 });

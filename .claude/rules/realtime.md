@@ -23,9 +23,14 @@ browser ── POST plugin://massdriver/subscribe (SSE) ──▶ massdriver-bac
 | SSE route         | `massdriver-backend/src/router.ts` `POST /subscribe` | Auths the Backstage user, injects `organizationId`, streams results as SSE `data:` frames, 25s `: ping` keepalive, tears down the upstream socket on client disconnect. |
 | SSE consumer      | `massdriver/src/api.ts` `subscribe()`                | fetch + ReadableStream SSE parser (`\n\n` frames, `event: error` → onError). Resolves when the stream ends.                                                             |
 | Reconnect hook    | `realtime/useMassdriverSubscription.ts`              | Re-subscribes on stream end with exponential backoff (1s → 10s cap; healthy message resets). Callbacks held in refs; aborts on unmount/skip.                            |
-| Revision provider | `realtime/RealtimeProvider.tsx`                      | Mounts `environmentEvents` for the environment, coalesces event bursts, exposes a `revision` counter via context.                                                       |
+| Revision provider | `realtime/RealtimeProvider.tsx`                      | Mounts `environmentEvents` (instances/deployments/connections/alarms) AND `projectEvents` (components/positions/links — blueprint changes only emit project events), coalescing bursts across both into one `revision` counter via context. |
 | Live query hook   | `realtime/useLiveRelayQuery.ts`                      | THE way to read data under the provider — revision-aware refetch with the no-flash/identity-reset contract below.                                                       |
-| Subscription docs | `realtime/queries.ts`                                | `environmentEvents` (revision trigger) + `deploymentLogs` (live log tail).                                                                                              |
+| Subscription docs | `realtime/queries.ts`                                | `environmentEvents` + `projectEvents` (revision triggers) + `deploymentLogs` (live log tail).                                                                           |
+| Stream loop       | `realtime/useRelayStream.ts`                         | Shared reconnect/backoff/fatal-stop loop under `useMassdriverSubscription` and `PresenceProvider`. One stream per `key`; callbacks held in refs.                        |
+| Presence client   | `massdriver-backend/src/presence.ts`                 | Spectator join of `environment:{orgId}/{environmentId}` (Phoenix channel), folds `presence_state`/`presence_diff` server-side, emits flattened viewer snapshots.        |
+| Presence route    | `massdriver-backend/src/router.ts` `POST /presence`  | Auths the Backstage user, streams `{viewers}` snapshots as SSE. Read-only: never pushes `cursor_move`/`chat_message` upstream.                                          |
+| Presence provider | `realtime/PresenceProvider.tsx`                      | `usePresence()` → web-app viewers (camelCase, focus derived from cursor). Clears on error/environment switch. Degrades to empty when the platform lacks spectator joins. |
+| Presence UI       | `graph/ViewersPanel.tsx`, `graph/RemoteCursors.tsx`, `graph/NodeViewersBadge.tsx` | Avatar stack (top-right), lerp-animated live cursors over the canvas, per-node focus badges. All read-only mirrors of the web app's collaboration UI. |
 
 ## The Revision Contract — `useLiveRelayQuery`
 
@@ -57,7 +62,11 @@ const { value, loading } = useAsync(fetch, [api, id, revision]);
 ## Subscription Documents
 
 - Declare `$organizationId: ID!` but never pass it — the relay injects it (server value must win; never let request variables override it).
-- Scope subscriptions as narrowly as the page: the graph mounts `environmentEvents` for one environment; a logs panel mounts `deploymentLogs` for one deployment. Don't add org-wide subscriptions.
+- Scope subscriptions as narrowly as the page: the graph mounts `environmentEvents` for one environment plus `projectEvents` for its project (blueprint changes — components, positions, links — only emit project events); a logs panel mounts `deploymentLogs` for one deployment. Don't add org-wide subscriptions.
+
+## Presence Is Read-Only (Spectator)
+
+The relay's socket authenticates as the org **service account**, so presence is strictly one-way: Backstage viewers see web-app users' presence and cursors, but are never tracked and never push `cursor_move`/`chat_message`. Pushing would move a single shared service-account cursor in every web-app user's view — never add an upstream push path. The platform's `EnvironmentChannel` supports this via spectator joins (service-account contexts skip `Presence.track`; their pushes get `spectator_read_only`). Against a platform without spectator support, the join is rejected and the plugin degrades to an empty viewer list — presence must never block or error the graph page.
 - Select only what consumers need. `environmentEvents` payloads are currently _only_ a refetch trigger — keep selections minimal but schema-valid (every normalizable selection includes `id`).
 - Validate new documents against the v2 schema (`https://api.massdriver.cloud/graphql/v2/schema.graphql`); the web app's documents under `apps/web/features/**/hooks/subscriptions/` and `apps/web/shared/hooks/useDeploymentLogsSubscription.js` are the reference shapes.
 

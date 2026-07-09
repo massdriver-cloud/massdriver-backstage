@@ -14,6 +14,7 @@ import Box from '@massdriver/ui/Box';
 import DownloadIcon from '@massdriver/ui/icons/DownloadIcon';
 import stylin from '@massdriver/ui/stylin';
 import DiagramNode from './DiagramNode';
+import RemoteCursors from './RemoteCursors';
 import useDiagramSnapshot from './useDiagramSnapshot';
 import type { DiagramNodeType } from './diagramFactory';
 
@@ -111,6 +112,7 @@ const Diagram = ({
           </ControlButton>
         </StyledControls>
       </ReactFlow>
+      <RemoteCursors />
     </DiagramWrapper>
   );
 };

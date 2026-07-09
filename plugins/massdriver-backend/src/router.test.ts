@@ -13,6 +13,8 @@ import type {
   AbsintheSubscriptionOptions,
 } from './absinthe';
 import { openAbsintheSubscription } from './absinthe';
+import type { PresenceChannel, PresenceChannelOptions } from './presence';
+import { openPresenceChannel } from './presence';
 import { createRouter } from './router';
 
 // Relay the upstream at the module boundary — never hit the real API/socket.
@@ -25,12 +27,19 @@ jest.mock('./absinthe', () => ({
   openAbsintheSubscription: jest.fn(),
 }));
 
+jest.mock('./presence', () => ({
+  openPresenceChannel: jest.fn(),
+}));
+
 const createMassdriverClientMock =
   createMassdriverClient as jest.MockedFunction<typeof createMassdriverClient>;
 const openAbsintheSubscriptionMock =
   openAbsintheSubscription as jest.MockedFunction<
     typeof openAbsintheSubscription
   >;
+const openPresenceChannelMock = openPresenceChannel as jest.MockedFunction<
+  typeof openPresenceChannel
+>;
 
 const CONFIG_DATA = {
   massdriver: {
@@ -209,10 +218,9 @@ describe('createRouter POST /subscribe', () => {
   });
 
   afterEach(async () => {
-    // The router only stops the SSE keepalive interval inside `teardown`, which
-    // it wires to a client-disconnect (see the `it.failing` case below for why
-    // that never fires). Drive `onClose` on every opened subscription so each
-    // handler's keepalive interval is cleared and the worker exits cleanly.
+    // Belt and braces: drive `onClose` on every opened subscription so each
+    // handler's keepalive interval is cleared even if a test never triggered
+    // its own teardown path.
     for (const call of openAbsintheSubscriptionMock.mock.calls) {
       call[0].onClose?.();
     }
@@ -294,39 +302,27 @@ describe('createRouter POST /subscribe', () => {
     await sse.ended;
   });
 
-  // KNOWN SOURCE BUG (documented, not fixed per task constraints): the router
-  // wires teardown to `req.on('close')`, but `req` is the *request* readable —
-  // it closes as soon as `express.json()` finishes reading the POST body, not
-  // when the browser disconnects. Worse, that immediate close is missed because
-  // the handler `await`s `httpAuth.credentials` before attaching the listener,
-  // so a real client disconnect is never observed and the upstream Absinthe
-  // socket + keepalive interval leak. The fix is `res.on('close', teardown)`.
-  // `it.failing` keeps the suite green while the bug exists; once the source is
-  // corrected this test passes and Jest flags it so `.failing` can be removed.
-  it.failing(
-    'closes the subscription when the client disconnects',
-    async () => {
-      const { port } = await listen();
-      const sse = postSubscribe(port, {
-        query: 'subscription { deploymentLogs { message } }',
-      });
-      await sse.response;
-      await waitFor(
-        () => openAbsintheSubscriptionMock.mock.calls.length === 1,
-        {
-          label: 'subscription open',
-        },
-      );
+  // Teardown is wired to `res.on('close')` — the response close event is the
+  // reliable client-disconnect signal (the request readable closes as soon as
+  // `express.json()` consumes the POST body, long before the browser leaves).
+  it('closes the subscription when the client disconnects', async () => {
+    const { port } = await listen();
+    const sse = postSubscribe(port, {
+      query: 'subscription { deploymentLogs { message } }',
+    });
+    await sse.response;
+    await waitFor(() => openAbsintheSubscriptionMock.mock.calls.length === 1, {
+      label: 'subscription open',
+    });
 
-      sse.request.destroy();
+    sse.request.destroy();
 
-      await waitFor(() => closeMock.mock.calls.length === 1, {
-        timeoutMs: 500,
-        label: 'subscription close on disconnect',
-      });
-      expect(closeMock).toHaveBeenCalledTimes(1);
-    },
-  );
+    await waitFor(() => closeMock.mock.calls.length === 1, {
+      timeoutMs: 500,
+      label: 'subscription close on disconnect',
+    });
+    expect(closeMock).toHaveBeenCalledTimes(1);
+  });
 
   it('requires an authenticated user credential', async () => {
     const { port, httpAuth } = await listen();
@@ -347,5 +343,192 @@ describe('createRouter POST /subscribe', () => {
     const response = await sse.response;
     expect(response.statusCode).toBe(400);
     expect(openAbsintheSubscriptionMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('createRouter POST /presence', () => {
+  const servers: http.Server[] = [];
+  const requests: http.ClientRequest[] = [];
+  const closeMock = jest.fn();
+
+  const listen = async (): Promise<{
+    port: number;
+    httpAuth: ReturnType<typeof mockServices.httpAuth.mock>;
+  }> => {
+    const { app, httpAuth } = await buildApp();
+    const server = app.listen(0);
+    servers.push(server);
+    await new Promise<void>(resolve =>
+      server.once('listening', () => resolve()),
+    );
+    const { port } = server.address() as AddressInfo;
+    return { port, httpAuth };
+  };
+
+  const postPresence = (port: number, body: unknown): SseRequest => {
+    const payload = JSON.stringify(body);
+    const chunks: string[] = [];
+    const clientRequest = http.request({
+      host: '127.0.0.1',
+      port,
+      path: '/presence',
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'content-length': Buffer.byteLength(payload),
+      },
+    });
+    requests.push(clientRequest);
+    let markEnded: () => void = () => {};
+    const ended = new Promise<void>(resolve => {
+      markEnded = resolve;
+    });
+    const response = new Promise<http.IncomingMessage>((resolve, reject) => {
+      clientRequest.on('response', incoming => {
+        incoming.setEncoding('utf8');
+        incoming.on('data', chunk => chunks.push(chunk));
+        incoming.on('end', markEnded);
+        incoming.on('close', markEnded);
+        resolve(incoming);
+      });
+      clientRequest.on('error', reject);
+    });
+    clientRequest.write(payload);
+    clientRequest.end();
+    return {
+      request: clientRequest,
+      response,
+      ended,
+      chunks,
+      body: () => chunks.join(''),
+    };
+  };
+
+  const lastChannelOptions = (): PresenceChannelOptions =>
+    openPresenceChannelMock.mock.calls[
+      openPresenceChannelMock.mock.calls.length - 1
+    ][0];
+
+  beforeEach(() => {
+    closeMock.mockReset();
+    openPresenceChannelMock.mockReset();
+    openPresenceChannelMock.mockReturnValue({
+      close: closeMock,
+    } as PresenceChannel);
+  });
+
+  afterEach(async () => {
+    for (const call of openPresenceChannelMock.mock.calls) {
+      call[0].onClose?.();
+    }
+    for (const clientRequest of requests) clientRequest.destroy();
+    requests.length = 0;
+    await new Promise(resolve => setTimeout(resolve, 30));
+    await Promise.all(
+      servers.map(
+        server => new Promise<void>(resolve => server.close(() => resolve())),
+      ),
+    );
+    servers.length = 0;
+  });
+
+  it('opens an event-stream and joins the org-scoped environment topic', async () => {
+    const { port } = await listen();
+    const sse = postPresence(port, { environmentId: 'proj-env' });
+
+    const response = await sse.response;
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['content-type']).toContain('text/event-stream');
+
+    await waitFor(() => openPresenceChannelMock.mock.calls.length === 1, {
+      label: 'channel open',
+    });
+    const options = lastChannelOptions();
+    expect(options.topic).toBe('environment:org-1/proj-env');
+    expect(options.socketUrl).toBe('wss://api.example.com/api/socket');
+    expect(options.token).toBe('tok');
+  });
+
+  it('writes each viewers snapshot as an SSE data frame', async () => {
+    const { port } = await listen();
+    const sse = postPresence(port, { environmentId: 'proj-env' });
+    await sse.response;
+    await waitFor(() => openPresenceChannelMock.mock.calls.length === 1, {
+      label: 'channel open',
+    });
+
+    lastChannelOptions().onViewers({
+      'acct-1': { first_name: 'Joe', _metasCount: 1 },
+    });
+
+    await waitFor(() => sse.body().includes('data:'), { label: 'data frame' });
+    expect(sse.body()).toContain(
+      `data: ${JSON.stringify({
+        viewers: { 'acct-1': { first_name: 'Joe', _metasCount: 1 } },
+      })}\n\n`,
+    );
+  });
+
+  it('writes an error event then ends the stream and closes the channel', async () => {
+    const { port } = await listen();
+    const sse = postPresence(port, { environmentId: 'proj-env' });
+    await sse.response;
+    await waitFor(() => openPresenceChannelMock.mock.calls.length === 1, {
+      label: 'channel open',
+    });
+
+    lastChannelOptions().onError(
+      Object.assign(new Error('join rejected'), { fatal: true }),
+    );
+
+    await waitFor(() => sse.body().includes('event: error'), {
+      label: 'error frame',
+    });
+    expect(sse.body()).toContain(
+      `event: error\ndata: ${JSON.stringify({
+        message: 'join rejected',
+        fatal: true,
+      })}\n\n`,
+    );
+    await waitFor(() => closeMock.mock.calls.length === 1, {
+      label: 'channel close',
+    });
+    await sse.ended;
+  });
+
+  it('closes the channel when the client disconnects', async () => {
+    const { port } = await listen();
+    const sse = postPresence(port, { environmentId: 'proj-env' });
+    await sse.response;
+    await waitFor(() => openPresenceChannelMock.mock.calls.length === 1, {
+      label: 'channel open',
+    });
+
+    sse.request.destroy();
+
+    await waitFor(() => closeMock.mock.calls.length === 1, {
+      timeoutMs: 500,
+      label: 'channel close on disconnect',
+    });
+    expect(closeMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('requires an authenticated user credential', async () => {
+    const { port, httpAuth } = await listen();
+    const sse = postPresence(port, { environmentId: 'proj-env' });
+    await sse.response;
+
+    expect(httpAuth.credentials).toHaveBeenCalledWith(expect.anything(), {
+      allow: ['user'],
+    });
+  });
+
+  it('rejects a missing environmentId before opening the stream', async () => {
+    const { port } = await listen();
+    const sse = postPresence(port, {});
+
+    const response = await sse.response;
+    expect(response.statusCode).toBe(400);
+    expect(openPresenceChannelMock).not.toHaveBeenCalled();
   });
 });

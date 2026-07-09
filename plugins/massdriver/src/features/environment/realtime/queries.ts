@@ -39,6 +39,40 @@ export const ENVIRONMENT_EVENTS_SUBSCRIPTION = `
   }
 `;
 
+// Blueprint-side changes — component adds/removes/moves (position), links, and
+// environment metadata — are project-scoped and flow through `projectEvents`,
+// NOT `environmentEvents`. Without this the graph never refetches when someone
+// rearranges or rewires the design in the web app. Same refetch-only contract
+// as above: the payload just bumps the revision.
+export const PROJECT_EVENTS_SUBSCRIPTION = `
+  subscription MassdriverProjectEvents(
+    $organizationId: ID!
+    $projectId: ID!
+  ) {
+    projectEvents(
+      organizationId: $organizationId
+      projectId: $projectId
+    ) {
+      ... on Event {
+        action
+        timestamp
+      }
+      ... on ProjectEvent {
+        project { id }
+      }
+      ... on EnvironmentEvent {
+        environment { id }
+      }
+      ... on ComponentEvent {
+        component { id position { x y } }
+      }
+      ... on LinkEvent {
+        link { id }
+      }
+    }
+  }
+`;
+
 // Streams one batch of appended log lines per worker flush for a single
 // deployment. Unlike the query backfill, it sends only the new lines.
 export const DEPLOYMENT_LOGS_SUBSCRIPTION = `

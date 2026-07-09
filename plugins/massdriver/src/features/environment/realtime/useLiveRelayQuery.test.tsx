@@ -13,6 +13,7 @@ describe('useLiveRelayQuery', () => {
       appUrl: 'https://app.massdriver.cloud',
       organizationId: 'org-1',
       query: jest.fn(),
+      subscribePresence: jest.fn().mockResolvedValue(undefined),
       subscribe: jest.fn().mockImplementation(
         // Keep the subscription stream open until aborted.
         (_query, _variables, _handlers, signal?: AbortSignal) =>
@@ -117,7 +118,7 @@ describe('useLiveRelayQuery', () => {
 
       const wrapper = ({ children }: { children: ReactNode }) => (
         <TestApiProvider apis={[[massdriverApiRef, api]]}>
-          <RealtimeProvider environmentId="proj-env">
+          <RealtimeProvider projectId="proj" environmentId="proj-env">
             {children}
           </RealtimeProvider>
         </TestApiProvider>
