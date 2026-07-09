@@ -6,12 +6,13 @@ import Tooltip from '@massdriver/ui/Tooltip';
 import CopyButton from '@massdriver/ui/CopyButton';
 import Select, { MenuItem } from '@massdriver/ui/Select';
 import stylin from '@massdriver/ui/stylin';
-import { alpha, deploymentStatusColors } from '@massdriver/ui/theme';
+import { alpha } from '@massdriver/ui/theme';
 import CompareArrowsIcon from '@massdriver/ui/icons/CompareArrowsIcon';
 import FilterListIcon from '@massdriver/ui/icons/FilterListIcon';
 import SortIcon from '@massdriver/ui/icons/SortIcon';
 import { useLiveRelayQuery } from '../../realtime/useLiveRelayQuery';
-import InstanceStatusPill from '../../../../components/InstanceStatusPill';
+import InstanceStatusPill from '../../components/InstanceStatusPill';
+import { composeInstanceStatus } from '../../instanceStatuses';
 import VersionBadge from '../../../../components/VersionBadge';
 import CompareDeploymentsDialog from '../../CompareDeploymentsDialog';
 import { TabState } from '../TabState';
@@ -257,14 +258,12 @@ const DeploymentRow = ({
   const rollbackSource = parseRollbackMessage(deployment.message);
   const displayMessage = stripMessageContext(deployment.message);
 
-  const statusColor =
-    (deployment.status && (deploymentStatusColors as any)[deployment.status]) ||
-    null;
-
   return (
     <Row>
       <RowA>
-        <StatusChip statusColor={statusColor}>{statusLabel}</StatusChip>
+        <InstanceStatusPill
+          status={composeInstanceStatus(deployment.action, deployment.status)}
+        />
         {deployment.version ? (
           <VersionBadge version={deployment.version} />
         ) : null}
@@ -433,26 +432,6 @@ const RowA = stylin(Box)(({ theme }: { theme: any }) => ({
 }));
 
 const RowSpacer = stylin(Box)({ flex: 1 });
-
-const StatusChip = stylin(Box, ['statusColor'])(
-  ({ theme, statusColor }: { theme: any; statusColor: string | null }) => ({
-    display: 'inline-flex',
-    alignItems: 'center',
-    fontSize: theme.typography.pxToRem(11),
-    fontWeight: theme.typography.fontWeightMedium,
-    textTransform: 'lowercase',
-    letterSpacing: '0.3px',
-    padding: theme.spacing(0.25, 0.75),
-    borderRadius: 1,
-    color: statusColor ?? theme.palette.text.secondary,
-    backgroundColor: statusColor
-      ? `${statusColor}1f`
-      : theme.palette.action.hover,
-    border: `1px solid ${
-      statusColor ? `${statusColor}33` : theme.palette.divider
-    }`,
-  }),
-);
 
 const IdTooltip = stylin('span')(({ theme }: { theme: any }) => ({
   display: 'flex',

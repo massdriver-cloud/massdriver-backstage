@@ -9,7 +9,7 @@ import ArrowUpwardIcon from '@massdriver/ui/icons/ArrowUpwardIcon';
 import ArrowDownwardIcon from '@massdriver/ui/icons/ArrowDownwardIcon';
 import stylin from '@massdriver/ui/stylin';
 import VersionBadge from '../../../components/VersionBadge';
-import InstanceStatusPill from '../../../components/InstanceStatusPill';
+import InstanceStatusPill from '../components/InstanceStatusPill';
 import { OpenInMassdriverButton } from '../../../components/OpenInMassdriverButton';
 import { formatCurrency } from '../../../utils/formatRelativeTime';
 import { formatRelativeTime } from './helpers';
@@ -43,8 +43,10 @@ export const InstanceDrawerHeader = ({
           {instance?.version ? (
             <VersionBadge version={instance.version} showPinnedWarning />
           ) : null}
-          {instance?.status ? (
-            <InstanceStatusPill status={instance.status} />
+          {instance?.id ? (
+            <InstanceStatusPill
+              instance={{ id: instance.id, status: instance.status }}
+            />
           ) : null}
         </TitleArea>
         <Actions>

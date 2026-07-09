@@ -1,5 +1,9 @@
 // Pure helpers ported from the web app's InstancePanel. Kept read-only and
 // dependency-free so the drawer can render every tab without app internals.
+import {
+  composeInstanceStatus,
+  formatInstanceStatus,
+} from '../instanceStatuses';
 import type {
   Alarm,
   BundleResourceEntry,
@@ -446,46 +450,17 @@ export const stripMessageContext = (message?: string | null): string => {
   return current;
 };
 
-const ACTION_PARTICIPLES: Record<string, { gerund: string; past: string }> = {
-  PLAN: { gerund: 'Planning', past: 'Planned' },
-  PROVISION: { gerund: 'Provisioning', past: 'Provisioned' },
-  DECOMMISSION: { gerund: 'Decommissioning', past: 'Decommissioned' },
-};
-const ACTION_LABELS: Record<string, string> = {
-  PLAN: 'Plan',
-  PROVISION: 'Provision',
-  DECOMMISSION: 'Decommission',
-};
-const STATUS_TITLES: Record<string, string> = {
-  PROPOSED: 'Proposed',
-  APPROVED: 'Approved',
-  PENDING: 'Pending',
-  RUNNING: 'Running',
-  COMPLETED: 'Completed',
-  FAILED: 'Failed',
-  REJECTED: 'Rejected',
-};
-
-// Compound label for a single deployment row (action + deployment status),
-// mirroring the web app's formatInstanceStatus for the compound case.
+// Compound label for a single deployment row (action + deployment status).
+// The taxonomy lives in ../instanceStatuses — this is the text-only shorthand
+// for callers that hold the two primitives instead of a compound string.
 export const formatDeploymentStatus = (
   action?: string | null,
   status?: string | null,
-): string => {
-  if (!action || !status) return '—';
-  const participles = ACTION_PARTICIPLES[action];
-  if (status === 'FAILED' && participles) return `${participles.gerund} Failed`;
-  if (status === 'COMPLETED' && participles) return participles.past;
-  return `${ACTION_LABELS[action] ?? action} ${
-    STATUS_TITLES[status] ?? status
-  }`;
-};
+): string => formatInstanceStatus(composeInstanceStatus(action, status));
 
-// A deployment is "active" — actively executing or queued — while PENDING or
-// RUNNING. Mirrors the web app's `isDeploymentActive`; used to decide whether
-// to keep the deployment-logs subscription open.
-export const isDeploymentActive = (status?: string | null): boolean =>
-  status === 'PENDING' || status === 'RUNNING';
+// Re-exported for the logs panel / history rows, which decide off deployment
+// liveness whether to keep the log subscription open.
+export { isDeploymentActive } from '../instanceStatuses';
 
 // Statuses that never produce a deployment log stream. Everything else has (or
 // will have) logs to view in-app.

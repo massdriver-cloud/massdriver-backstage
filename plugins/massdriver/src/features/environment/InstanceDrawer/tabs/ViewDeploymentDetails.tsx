@@ -19,7 +19,8 @@ import stylin from '@massdriver/ui/stylin';
 import CloseIcon from '@massdriver/ui/icons/CloseIcon';
 import HistoryIcon from '@massdriver/ui/icons/HistoryIcon';
 import { massdriverApiRef } from '../../../../api';
-import InstanceStatusPill from '../../../../components/InstanceStatusPill';
+import InstanceStatusPill from '../../components/InstanceStatusPill';
+import { composeInstanceStatus } from '../../instanceStatuses';
 import VersionBadge from '../../../../components/VersionBadge';
 import ComparisonValueCell from '../../CompareEnvironmentsDialog/ComparisonValueCell';
 import { DEPLOYMENT_QUERY } from '../queries';
@@ -169,7 +170,12 @@ export const ViewDeploymentDetails = ({
             <SummaryCard>
               <SummaryHeader>
                 <SummaryHeaderLeft>
-                  <InstanceStatusPill status={deployment.status} />
+                  <InstanceStatusPill
+                    status={composeInstanceStatus(
+                      deployment.action,
+                      deployment.status,
+                    )}
+                  />
                   {deployment.version ? (
                     <VersionBadge version={deployment.version} />
                   ) : null}

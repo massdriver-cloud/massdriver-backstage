@@ -7,7 +7,7 @@ import Typography from '@massdriver/ui/Typography';
 import IconTile from '@massdriver/ui/IconTile';
 import stylin from '@massdriver/ui/stylin';
 import { useLiveRelayQuery } from '../realtime/useLiveRelayQuery';
-import InstanceStatusPill from '../../../components/InstanceStatusPill';
+import InstanceStatusPill from '../components/InstanceStatusPill';
 import VersionBadge from '../../../components/VersionBadge';
 import ExpandableHandleWrapper from './handles/ExpandableHandleWrapper';
 import NodeVersionBadges from './NodeVersionBadges';
@@ -75,7 +75,12 @@ const DiagramNode = ({
           {metaError ? (
             <MetaErrorPill label="error" size="small" />
           ) : (
-            status && <InstanceStatusPill status={status} size="small" />
+            fullInstanceId && (
+              <InstanceStatusPill
+                instance={{ id: fullInstanceId, status }}
+                size="small"
+              />
+            )
           )}
         </Row>
         <Row>

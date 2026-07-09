@@ -13,7 +13,7 @@ import Tooltip from '@massdriver/ui/Tooltip';
 import HelpOutlineIcon from '@massdriver/ui/icons/HelpOutlineIcon';
 import stylin from '@massdriver/ui/stylin';
 import { massdriverApiRef } from '../../../../api';
-import InstanceStatusPill from '../../../../components/InstanceStatusPill';
+import InstanceStatusPill from '../../components/InstanceStatusPill';
 import { DisabledAction } from '../../../../components/DisabledAction';
 import { OpenInMassdriverButton } from '../../../../components/OpenInMassdriverButton';
 import { RouterLinkAdapter } from '../../../../components/RouterLinkAdapter';
@@ -184,7 +184,7 @@ const DependencyCard = ({
               </div>
             </HelpTip>
           </TitleRow>
-          {origin?.status ? <StyledStatusPill status={origin.status} /> : null}
+          {origin ? <StyledStatusPill instance={origin} /> : null}
         </HeaderRow>
         <DetailColumn>
           <TypeRow resourceType={row.resourceType} />
