@@ -169,6 +169,22 @@ export const instanceActionUrl = (
 ): string => `${instanceUrl(appUrl, orgId, instanceId)}?action=${action}`;
 
 /**
+ * Deep-link to a cloud resource's detail page in the web app:
+ * `/orgs/{orgId}/resources/{resourceId}/general`. Used by the instance
+ * Dependencies/Resources tabs' "fulfilled by" / resource-name links.
+ *
+ * @public
+ */
+export const resourceUrl = (
+  appUrl: string,
+  orgId: string,
+  resourceId: string,
+): string =>
+  `${trimTrailingSlash(appUrl)}/orgs/${orgId}/resources/${encodeURIComponent(
+    resourceId,
+  )}/general`;
+
+/**
  * Deep-link to a bundle/OCI-repo version's overview in the web app:
  * `/orgs/{orgId}/repos/{repoName}/{version}/overview`. Used by the instance
  * Overview tab's "view in repository" link.

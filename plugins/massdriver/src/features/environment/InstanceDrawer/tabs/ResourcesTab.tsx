@@ -4,6 +4,7 @@ import {
   composeEnvironmentId,
   parseEnvironmentId,
   parseInstanceId,
+  resourceUrl,
 } from '@massdriver-cloud/backstage-plugin-massdriver-common';
 import Box from '@massdriver/ui/Box';
 import Typography from '@massdriver/ui/Typography';
@@ -12,9 +13,11 @@ import Collapse from '@massdriver/ui/Collapse';
 import CodeBlock from '@massdriver/ui/CodeBlock';
 import CopyButton from '@massdriver/ui/CopyButton';
 import Chip from '@massdriver/ui/Chip';
+import IconButton from '@massdriver/ui/IconButton';
 import HelpOutlineIcon from '@massdriver/ui/icons/HelpOutlineIcon';
 import ExpandMoreIcon from '@massdriver/ui/icons/ExpandMoreIcon';
 import ExpandLessIcon from '@massdriver/ui/icons/ExpandLessIcon';
+import DownloadIcon from '@massdriver/ui/icons/DownloadIcon';
 import stylin from '@massdriver/ui/stylin';
 import useAsync from 'react-use/esm/useAsync';
 import { massdriverApiRef } from '../../../../api';
@@ -147,6 +150,10 @@ const CreatedResourceCard = ({ row }: { row: ResourceRow }) => {
 
   const payloadString = formatPayload(resource?.payload);
   const resourceName = resource?.name || '—';
+  const resHref =
+    resource?.id && api.appUrl
+      ? resourceUrl(api.appUrl, api.organizationId, resource.id)
+      : '';
 
   return (
     <Card>
@@ -183,6 +190,20 @@ const CreatedResourceCard = ({ row }: { row: ResourceRow }) => {
           {resource?.id ? (
             <CopyButton text={resource.id} tooltip="Copy resource ID" size="small" />
           ) : null}
+          <Tooltip
+            title="This view is read-only. Open in Massdriver to download resource data."
+            placement="top"
+          >
+            <DownloadWrap>
+              <IconButton
+                size="small"
+                disabled
+                aria-label="Download resource data"
+              >
+                <DownloadIcon fontSize="small" />
+              </IconButton>
+            </DownloadWrap>
+          </Tooltip>
         </HeaderActions>
       </HeaderRow>
       <DetailColumn>
@@ -194,7 +215,18 @@ const CreatedResourceCard = ({ row }: { row: ResourceRow }) => {
         </DetailRow>
         <DetailRow>
           <Label>Resource:</Label>
-          <Detail title={resourceName}>{resourceName}</Detail>
+          {resHref ? (
+            <ResourceLink
+              href={resHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={resourceName}
+            >
+              {resourceName}
+            </ResourceLink>
+          ) : (
+            <Detail title={resourceName}>{resourceName}</Detail>
+          )}
         </DetailRow>
         {connectionItems.length > 0 ? (
           <DetailRow>
@@ -414,6 +446,21 @@ const HeaderActions = stylin(Box)(({ theme }: { theme: any }) => ({
   alignItems: 'center',
   gap: theme.spacing(0.25),
   flexShrink: 0,
+}));
+
+const DownloadWrap = stylin('span')({
+  display: 'inline-flex',
+});
+
+const ResourceLink = stylin('a')(({ theme }: { theme: any }) => ({
+  fontSize: theme.typography.pxToRem(11),
+  color: theme.palette.primary.main,
+  textDecoration: 'underline',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  minWidth: 0,
+  '&:hover': { color: theme.palette.primary.dark },
 }));
 
 const HelpIcon = stylin(HelpOutlineIcon)(({ theme }: { theme: any }) => ({

@@ -1,12 +1,21 @@
 import { ReactNode, useMemo } from 'react';
-import { parseInstanceId } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import {
+  composeEnvironmentId,
+  environmentUrl,
+  parseInstanceId,
+  resourceUrl,
+} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { useApi } from '@backstage/frontend-plugin-api';
 import Box from '@massdriver/ui/Box';
 import Typography from '@massdriver/ui/Typography';
 import Chip from '@massdriver/ui/Chip';
 import Tooltip from '@massdriver/ui/Tooltip';
 import HelpOutlineIcon from '@massdriver/ui/icons/HelpOutlineIcon';
 import stylin from '@massdriver/ui/stylin';
+import { massdriverApiRef } from '../../../../api';
 import InstanceStatusPill from '../../../../components/InstanceStatusPill';
+import { DisabledAction } from '../../../../components/DisabledAction';
+import { OpenInMassdriverButton } from '../../../../components/OpenInMassdriverButton';
 import { RouterLinkAdapter } from '../../../../components/RouterLinkAdapter';
 import { internalRoutes } from '../../../../internalRoutes';
 import { TabState } from '../TabState';
@@ -54,7 +63,7 @@ export const DependenciesTab = ({ instanceId }: { instanceId: string | null }) =
               ) : (
                 <CardList>
                   {sections.fulfilled.map(row => (
-                    <DependencyCard key={row.field} row={row} />
+                    <DependencyCard key={row.field} row={row} instanceId={instanceId} />
                   ))}
                 </CardList>
               )}
@@ -66,7 +75,7 @@ export const DependenciesTab = ({ instanceId }: { instanceId: string | null }) =
               ) : (
                 <CardList>
                   {sections.unfulfilled.map(row => (
-                    <DependencyCard key={row.field} row={row} />
+                    <DependencyCard key={row.field} row={row} instanceId={instanceId} />
                   ))}
                 </CardList>
               )}
@@ -100,7 +109,28 @@ const HelpTip = ({ children }: { children: ReactNode }) => (
   </Tooltip>
 );
 
-const DependencyCard = ({ row }: { row: DependencyRow }) => {
+const DependencyCard = ({
+  row,
+  instanceId,
+}: {
+  row: DependencyRow;
+  instanceId: string | null;
+}) => {
+  const api = useApi(massdriverApiRef);
+  const parts = instanceId ? parseInstanceId(instanceId) : null;
+  const envDefaultsUrl =
+    parts?.projectId && parts?.scopedEnvironmentId && api.appUrl
+      ? environmentUrl(
+          api.appUrl,
+          api.organizationId,
+          composeEnvironmentId(parts.projectId, parts.scopedEnvironmentId),
+        )
+      : '';
+  const resourceHref = (resourceId?: string | null): string =>
+    resourceId && api.appUrl
+      ? resourceUrl(api.appUrl, api.organizationId, resourceId)
+      : '';
+
   if (row.state === DEPENDENCY_STATE.CONNECTION) {
     const origin = row.source?.fromInstance ?? null;
     const fromComponentName =
@@ -141,12 +171,23 @@ const DependencyCard = ({ row }: { row: DependencyRow }) => {
             )}
           </DetailRow>
         </DetailColumn>
+        <CardActions>
+          <DisabledAction
+            label="Remove connection"
+            variant="text"
+            size="small"
+            color="error"
+            tooltip="This view is read-only. Open in Massdriver to remove this connection."
+          />
+        </CardActions>
       </Card>
     );
   }
 
   if (row.state === DEPENDENCY_STATE.ENV_DEFAULT) {
-    const resourceName = row.source?.resource?.name ?? '—';
+    const resource = row.source?.resource ?? null;
+    const resourceName = resource?.name ?? '—';
+    const resHref = resourceHref(resource?.id);
     return (
       <Card>
         {row.required ? <RequiredChip label="Req" color="success" size="small" /> : null}
@@ -169,15 +210,45 @@ const DependencyCard = ({ row }: { row: DependencyRow }) => {
           <TypeRow resourceType={row.resourceType} />
           <DetailRow>
             <Label>Fulfilled by:</Label>
-            <Detail title={resourceName}>{resourceName}</Detail>
+            {resHref ? (
+              <FulfilledExtLink
+                href={resHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={resourceName}
+              >
+                {resourceName}
+              </FulfilledExtLink>
+            ) : (
+              <Detail title={resourceName}>{resourceName}</Detail>
+            )}
           </DetailRow>
         </DetailColumn>
+        <CardActions>
+          {envDefaultsUrl ? (
+            <OpenInMassdriverButton
+              url={envDefaultsUrl}
+              variant="text"
+              size="small"
+            >
+              Manage environment defaults
+            </OpenInMassdriverButton>
+          ) : null}
+          <DisabledAction
+            label="Override with remote reference"
+            variant="text"
+            size="small"
+            tooltip="This view is read-only. Open in Massdriver to set a remote reference."
+          />
+        </CardActions>
       </Card>
     );
   }
 
   if (row.state === DEPENDENCY_STATE.REMOTE_REFERENCE) {
-    const resourceName = row.source?.resource?.name ?? '—';
+    const resource = row.source?.resource ?? null;
+    const resourceName = resource?.name ?? '—';
+    const resHref = resourceHref(resource?.id);
     return (
       <Card>
         {row.required ? <RequiredChip label="Req" color="success" size="small" /> : null}
@@ -200,9 +271,29 @@ const DependencyCard = ({ row }: { row: DependencyRow }) => {
           <TypeRow resourceType={row.resourceType} />
           <DetailRow>
             <Label>Fulfilled by:</Label>
-            <Detail title={resourceName}>{resourceName}</Detail>
+            {resHref ? (
+              <FulfilledExtLink
+                href={resHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={resourceName}
+              >
+                {resourceName}
+              </FulfilledExtLink>
+            ) : (
+              <Detail title={resourceName}>{resourceName}</Detail>
+            )}
           </DetailRow>
         </DetailColumn>
+        <CardActions>
+          <DisabledAction
+            label="Remove remote reference"
+            variant="text"
+            size="small"
+            color="error"
+            tooltip="This view is read-only. Open in Massdriver to remove the remote reference."
+          />
+        </CardActions>
       </Card>
     );
   }
@@ -227,6 +318,14 @@ const DependencyCard = ({ row }: { row: DependencyRow }) => {
       <DetailColumn>
         <TypeRow resourceType={row.resourceType} />
       </DetailColumn>
+      <CardActions>
+        <DisabledAction
+          label="Set remote reference"
+          variant="text"
+          size="small"
+          tooltip="This view is read-only. Open in Massdriver to set a remote reference."
+        />
+      </CardActions>
     </Card>
   );
 };
@@ -358,6 +457,27 @@ const FulfilledLink = stylin(RouterLinkAdapter)(({ theme }: { theme: any }) => (
   minWidth: 0,
   display: 'block',
   '&:hover': { color: theme.palette.primary.dark },
+}));
+
+const FulfilledExtLink = stylin('a')(({ theme }: { theme: any }) => ({
+  fontSize: theme.typography.pxToRem(11),
+  color: theme.palette.primary.main,
+  textDecoration: 'underline',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  minWidth: 0,
+  display: 'block',
+  '&:hover': { color: theme.palette.primary.dark },
+}));
+
+const CardActions = stylin(Box)(({ theme }: { theme: any }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  alignItems: 'center',
+  gap: theme.spacing(0.5),
+  marginTop: theme.spacing(0.5),
+  marginLeft: theme.spacing(1.5),
 }));
 
 const FulfilledNote = stylin(Typography)(({ theme }: { theme: any }) => ({
