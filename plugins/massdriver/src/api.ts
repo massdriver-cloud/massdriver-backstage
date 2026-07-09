@@ -22,31 +22,6 @@ export type MassdriverSubscriptionError = Error & {
 };
 
 /**
- * Flattened presence snapshot streamed by the backend presence relay: one
- * entry per account currently viewing the environment in the web app, carrying
- * the platform's presence meta (snake_case, as built by EnvironmentChannel).
- *
- * @public
- */
-export type MassdriverPresenceViewers = Record<
-  string,
-  {
-    id?: string;
-    first_name?: string;
-    email?: string;
-    avatar?: { url?: string } | null;
-    cursor?: {
-      x: number | null;
-      y: number | null;
-      package_identifier?: string | null;
-      updated_at?: number;
-    } | null;
-    joined_at?: number;
-    _metasCount?: number;
-  }
->;
-
-/**
  * Frontend API for talking to Massdriver via the backend relay.
  *
  * All queries are proxied through `plugin://massdriver/graphql`, where the
@@ -75,20 +50,6 @@ export interface MassdriverApi {
     query: string,
     variables: Record<string, unknown> | undefined,
     handlers: { onData: (data: T) => void; onError?: (error: Error) => void },
-    signal?: AbortSignal,
-  ): Promise<void>;
-  /**
-   * Stream the environment's live presence (who's viewing, cursor positions)
-   * via the backend spectator relay. Invokes `handlers.onData` with the full
-   * flattened viewers snapshot on every change. Read-only — the Backstage
-   * viewer is never broadcast to web-app users.
-   */
-  subscribePresence(
-    environmentId: string,
-    handlers: {
-      onData: (viewers: MassdriverPresenceViewers) => void;
-      onError?: (error: Error) => void;
-    },
     signal?: AbortSignal,
   ): Promise<void>;
 }
@@ -149,45 +110,12 @@ export class MassdriverClientApi implements MassdriverApi {
     handlers: { onData: (data: T) => void; onError?: (error: Error) => void },
     signal?: AbortSignal,
   ): Promise<void> {
-    return this.streamSse(
-      'plugin://massdriver/subscribe',
-      { query, variables },
-      handlers,
-      signal,
-    );
-  }
-
-  async subscribePresence(
-    environmentId: string,
-    handlers: {
-      onData: (viewers: MassdriverPresenceViewers) => void;
-      onError?: (error: Error) => void;
-    },
-    signal?: AbortSignal,
-  ): Promise<void> {
-    return this.streamSse<{ viewers: MassdriverPresenceViewers }>(
-      'plugin://massdriver/presence',
-      { environmentId },
-      {
-        onData: payload => handlers.onData(payload?.viewers ?? {}),
-        onError: handlers.onError,
-      },
-      signal,
-    );
-  }
-
-  private async streamSse<T = unknown>(
-    url: string,
-    body: Record<string, unknown>,
-    handlers: { onData: (data: T) => void; onError?: (error: Error) => void },
-    signal?: AbortSignal,
-  ): Promise<void> {
     let response: Response;
     try {
-      response = await this.fetchApi.fetch(url, {
+      response = await this.fetchApi.fetch('plugin://massdriver/subscribe', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ query, variables }),
         signal,
       });
     } catch (error) {

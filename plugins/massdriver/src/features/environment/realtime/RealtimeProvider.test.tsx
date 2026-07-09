@@ -19,7 +19,6 @@ describe('RealtimeProvider', () => {
       appUrl: 'https://app.massdriver.cloud',
       organizationId: 'org-1',
       query: jest.fn(),
-      subscribePresence: jest.fn().mockResolvedValue(undefined),
       subscribe: jest
         .fn()
         .mockImplementation(

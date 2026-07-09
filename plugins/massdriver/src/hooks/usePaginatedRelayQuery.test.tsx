@@ -19,7 +19,6 @@ describe('usePaginatedRelayQuery', () => {
       organizationId: 'org-1',
       query: jest.fn(),
       subscribe: jest.fn().mockResolvedValue(undefined),
-      subscribePresence: jest.fn().mockResolvedValue(undefined),
     };
     return api;
   };

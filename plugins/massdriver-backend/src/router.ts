@@ -14,7 +14,6 @@ import {
 import express from 'express';
 import Router from 'express-promise-router';
 import { openAbsintheSubscription } from './absinthe';
-import { openPresenceChannel } from './presence';
 
 // Keep the downstream SSE connection (and any intermediary proxies) alive
 // between events. The upstream Absinthe socket has its own heartbeat.
@@ -153,70 +152,6 @@ export async function createRouter({
     // response 'close' event is the reliable disconnect signal — the request
     // readable closes as soon as the JSON body is consumed, long before the
     // client goes away.
-    res.on('close', teardown);
-  });
-
-  // SSE relay for the environment presence channel (who's viewing the graph,
-  // live cursors). The backend joins `environment:{orgId}/{environmentId}` as
-  // a read-only spectator with the service-account token and streams the
-  // flattened viewers snapshot on every presence change. Nothing is ever
-  // pushed upstream — Backstage viewers are invisible to web-app users.
-  router.post('/presence', async (req, res) => {
-    await httpAuth.credentials(req, { allow: ['user'] });
-
-    const { environmentId } = (req.body ?? {}) as { environmentId?: unknown };
-
-    if (typeof environmentId !== 'string' || !environmentId.trim()) {
-      throw new InputError(
-        'Request body must include a non-empty `environmentId` string',
-      );
-    }
-
-    const { organizationId, apiToken, baseUrl } = getConfig();
-
-    res.writeHead(200, {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache, no-transform',
-      Connection: 'keep-alive',
-      // Disable proxy buffering (nginx) so events flush immediately.
-      'X-Accel-Buffering': 'no',
-    });
-    res.flushHeaders?.();
-
-    const write = (event: string | null, data: unknown) => {
-      if (res.writableEnded) return;
-      if (event) res.write(`event: ${event}\n`);
-      res.write(`data: ${JSON.stringify(data)}\n\n`);
-    };
-
-    const keepalive = setInterval(() => {
-      if (!res.writableEnded) res.write(': ping\n\n');
-    }, SSE_KEEPALIVE_MS);
-
-    const channel = openPresenceChannel({
-      socketUrl: socketUrl(baseUrl),
-      token: apiToken,
-      topic: `environment:${organizationId}/${environmentId}`,
-      logger,
-      onViewers: viewers => write(null, { viewers }),
-      onError: error => {
-        // `fatal` marks join rejections (unauthorized / unknown environment /
-        // pre-spectator server) that retrying cannot fix.
-        write('error', { message: error.message, fatal: Boolean(error.fatal) });
-        teardown();
-      },
-      onClose: () => teardown(),
-    });
-
-    let torndown = false;
-    function teardown() {
-      if (torndown) return;
-      torndown = true;
-      clearInterval(keepalive);
-      channel.close();
-      if (!res.writableEnded) res.end();
-    }
-
     res.on('close', teardown);
   });
 

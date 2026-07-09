@@ -26,11 +26,6 @@ browser ── POST plugin://massdriver/subscribe (SSE) ──▶ massdriver-bac
 | Revision provider | `realtime/RealtimeProvider.tsx`                      | Mounts `environmentEvents` (instances/deployments/connections/alarms) AND `projectEvents` (components/positions/links — blueprint changes only emit project events), coalescing bursts across both into one `revision` counter via context. |
 | Live query hook   | `realtime/useLiveRelayQuery.ts`                      | THE way to read data under the provider — revision-aware refetch with the no-flash/identity-reset contract below.                                                       |
 | Subscription docs | `realtime/queries.ts`                                | `environmentEvents` + `projectEvents` (revision triggers) + `deploymentLogs` (live log tail).                                                                           |
-| Stream loop       | `realtime/useRelayStream.ts`                         | Shared reconnect/backoff/fatal-stop loop under `useMassdriverSubscription` and `PresenceProvider`. One stream per `key`; callbacks held in refs.                        |
-| Presence client   | `massdriver-backend/src/presence.ts`                 | Spectator join of `environment:{orgId}/{environmentId}` (Phoenix channel), folds `presence_state`/`presence_diff` server-side, emits flattened viewer snapshots.        |
-| Presence route    | `massdriver-backend/src/router.ts` `POST /presence`  | Auths the Backstage user, streams `{viewers}` snapshots as SSE. Read-only: never pushes `cursor_move`/`chat_message` upstream.                                          |
-| Presence provider | `realtime/PresenceProvider.tsx`                      | `usePresence()` → web-app viewers (camelCase, focus derived from cursor). Clears on error/environment switch. Degrades to empty when the platform lacks spectator joins. |
-| Presence UI       | `graph/ViewersPanel.tsx`, `graph/RemoteCursors.tsx`, `graph/NodeViewersBadge.tsx` | Avatar stack (top-right), lerp-animated live cursors over the canvas, per-node focus badges. All read-only mirrors of the web app's collaboration UI. |
 
 ## The Revision Contract — `useLiveRelayQuery`
 
@@ -64,9 +59,13 @@ const { value, loading } = useAsync(fetch, [api, id, revision]);
 - Declare `$organizationId: ID!` but never pass it — the relay injects it (server value must win; never let request variables override it).
 - Scope subscriptions as narrowly as the page: the graph mounts `environmentEvents` for one environment plus `projectEvents` for its project (blueprint changes — components, positions, links — only emit project events); a logs panel mounts `deploymentLogs` for one deployment. Don't add org-wide subscriptions.
 
-## Presence Is Read-Only (Spectator)
+## SSE Route Teardown
 
-The relay's socket authenticates as the org **service account**, so presence is strictly one-way: Backstage viewers see web-app users' presence and cursors, but are never tracked and never push `cursor_move`/`chat_message`. Pushing would move a single shared service-account cursor in every web-app user's view — never add an upstream push path. The platform's `EnvironmentChannel` supports this via spectator joins (service-account contexts skip `Presence.track`; their pushes get `spectator_read_only`). Against a platform without spectator support, the join is rejected and the plugin degrades to an empty viewer list — presence must never block or error the graph page.
+Wire SSE teardown to `res.on('close', teardown)`, never `req.on('close', …)` — the request readable closes as soon as `express.json()` consumes the POST body, so a `req` listener never observes the browser disconnecting and the upstream socket + keepalive interval leak.
+
+## Presence (removed, recoverable)
+
+A read-only presence mirror (who's viewing, live cursors via the Phoenix `environment:{orgId}/{environmentId}` channel) was built and then removed because it depends on undeployed platform spectator-join support (platform branch `backstage-spectator-presence`). The full implementation — backend spectator channel client + `POST /presence` SSE route, `PresenceProvider`/`ViewersPanel`/`RemoteCursors`/`NodeViewersBadge` — lives in commit `846a473`. If presence is revived, restore from there and keep it strictly read-only: the relay socket is the shared org service account, so pushing `cursor_move` upstream would move one shared cursor in every web-app user's view.
 - Select only what consumers need. `environmentEvents` payloads are currently _only_ a refetch trigger — keep selections minimal but schema-valid (every normalizable selection includes `id`).
 - Validate new documents against the v2 schema (`https://api.massdriver.cloud/graphql/v2/schema.graphql`); the web app's documents under `apps/web/features/**/hooks/subscriptions/` and `apps/web/shared/hooks/useDeploymentLogsSubscription.js` are the reference shapes.
 

@@ -12,10 +12,8 @@ import { internalRoutes } from '../../internalRoutes';
 import { GraphHeader } from './GraphHeader';
 import { InstanceDrawer } from './InstanceDrawer';
 import { RealtimeProvider } from './realtime/RealtimeProvider';
-import { PresenceProvider } from './realtime/PresenceProvider';
 import { useLiveRelayQuery } from './realtime/useLiveRelayQuery';
 import Diagram from './graph/Diagram';
-import ViewersPanel from './graph/ViewersPanel';
 import { buildDiagram } from './graph/diagramFactory';
 import {
   ENVIRONMENT_BLUEPRINT_QUERY,
@@ -25,19 +23,16 @@ import {
 } from './graph/queries';
 
 /**
- * Read-only environment graph. Wraps the content in `RealtimeProvider` (data
- * refetch on deploys, status changes, blueprint edits) and `PresenceProvider`
- * (live web-app viewers and cursors, mirrored read-only through the backend
- * spectator relay).
+ * Read-only environment graph. Wraps the content in `RealtimeProvider` so the
+ * graph and instance drawer refetch when the environment emits live events
+ * (deploys, status changes, blueprint edits) originating in the web app.
  */
 export const EnvironmentGraphPage = () => {
   const { projectId = '', scopedEnvironmentId = '' } = useParams();
   const environmentId = composeEnvironmentId(projectId, scopedEnvironmentId);
   return (
     <RealtimeProvider projectId={projectId} environmentId={environmentId}>
-      <PresenceProvider environmentId={environmentId}>
-        <EnvironmentGraphContent />
-      </PresenceProvider>
+      <EnvironmentGraphContent />
     </RealtimeProvider>
   );
 };
@@ -92,20 +87,6 @@ const EnvironmentGraphContent = () => {
     [value],
   );
 
-  // "Viewing <name>" labels for the viewers panel — presence focus carries the
-  // full component id (mirrors the web app's useFocusLabel).
-  const resolveLabel = useMemo(() => {
-    const labels = new Map<string, string>();
-    value?.project?.components?.forEach(component => {
-      if (component?.id && component?.name)
-        labels.set(component.id, component.name);
-    });
-    value?.environment?.instances?.forEach(instance => {
-      if (instance?.id) labels.set(instance.id, instance.id);
-    });
-    return (nodeId: string) => labels.get(nodeId) ?? null;
-  }, [value]);
-
   const environmentName = value?.environment?.name ?? 'Environment';
 
   if (!loading && !error && (!value?.project || !value?.environment)) {
@@ -147,7 +128,6 @@ const EnvironmentGraphContent = () => {
             />
           </ReactFlowProvider>
         )}
-        <ViewersPanel resolveLabel={resolveLabel} />
         <InstanceDrawer
           projectId={projectId}
           environmentId={environmentId}

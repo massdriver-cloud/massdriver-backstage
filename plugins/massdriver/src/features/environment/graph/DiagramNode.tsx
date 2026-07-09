@@ -11,7 +11,6 @@ import InstanceStatusPill from '../../../components/InstanceStatusPill';
 import VersionBadge from '../../../components/VersionBadge';
 import ExpandableHandleWrapper from './handles/ExpandableHandleWrapper';
 import NodeVersionBadges from './NodeVersionBadges';
-import NodeViewersBadge from './NodeViewersBadge';
 import NodeMeta from './NodeMeta';
 import hasUndeployedPlan from './hasUndeployedPlan';
 import { NODE_META_QUERY, type NodeMetaResult } from './queries';
@@ -66,7 +65,6 @@ const DiagramNode = ({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <NodeViewersBadge nodeId={nodeId} />
       <NodeSection>
         <Row>
           <NameRow>
