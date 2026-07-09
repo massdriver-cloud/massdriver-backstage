@@ -13,6 +13,7 @@ import stylin from '@massdriver/ui/stylin';
 import { deploymentStatusColors, logSurfaceColors } from '@massdriver/ui/theme';
 import { useLiveRelayQuery } from '../../realtime/useLiveRelayQuery';
 import { useMassdriverSubscription } from '../../realtime/useMassdriverSubscription';
+import { useResizableWidth } from '../useResizableWidth';
 import { DEPLOYMENT_LOGS_SUBSCRIPTION } from '../../realtime/queries';
 import { DEPLOYMENT_LOGS_QUERY } from '../queries';
 import {
@@ -22,9 +23,9 @@ import {
 } from '../helpers';
 import type { DeploymentLogLine, DeploymentLogs } from '../types';
 
-// Lets any drawer tab open the read-only logs overlay. Hosted by the drawer so
-// the panel overlays the whole drawer (header + tabs), matching the web app's
-// page-level DeploymentLogsDrawer. No-op default when rendered outside a drawer.
+// Lets graph nodes and drawer tabs open the read-only logs drawer. Hosted at
+// the environment-graph page level, matching the web app's page-level
+// DeploymentLogsDrawer. No-op default when rendered outside the graph page.
 const OpenLogsContext = createContext<(deploymentId: string) => void>(() => {});
 
 /** Open the read-only deployment logs overlay for a deployment id. */
@@ -44,12 +45,13 @@ const downloadLogs = (text: string, deploymentId: string) => {
 };
 
 /**
- * Read-only deployment logs overlay. Ported from the web app's
+ * Read-only deployment logs drawer. Ported from the web app's
  * `DeploymentLogsDrawer`: fetch the transcript once (`network-only`), then — if
  * the deployment is still active — stream new batches via the `deploymentLogs`
- * subscription and append them. Rendered as a dark, absolutely-positioned panel
- * that overlays the drawer (Backstage's hybrid runtime doesn't paint MUI
- * Drawer/Modal reliably, so we use a plain Box, as the drawer itself does).
+ * subscription and append them. Rendered as a dark, right-anchored, resizable
+ * panel over the graph area — same 720px default / 575px minimum as the web
+ * app's drawer (Backstage's hybrid runtime doesn't paint MUI Drawer/Modal
+ * reliably, so we use a plain Box, as the instance drawer does).
  */
 export const DeploymentLogsPanel = ({
   deploymentId,
@@ -58,6 +60,7 @@ export const DeploymentLogsPanel = ({
   deploymentId: string;
   onClose: () => void;
 }) => {
+  const { width, panelRef, onResizeStart } = useResizableWidth();
   // Live query: a deployment finishing while the panel is open bumps the
   // environment revision → refetch → `active` flips false, which both fixes
   // the status pill and tears down the log subscription (otherwise the
@@ -106,7 +109,11 @@ export const DeploymentLogsPanel = ({
     : null;
 
   return (
-    <Root>
+    <Root ref={panelRef} style={{ width }}>
+      <ResizeHandle
+        onMouseDown={onResizeStart}
+        data-testid="logs-resize-handle"
+      />
       <Header>
         <ActionLine variant="subtitle1" title={actionLabel}>
           {actionLabel || 'Deployment logs'}
@@ -150,15 +157,33 @@ export const DeploymentLogsPanel = ({
 
 export default DeploymentLogsPanel;
 
-const Root = stylin(Box)({
+const Root = stylin(Box)(({ theme }: { theme: any }) => ({
   position: 'absolute',
-  inset: 0,
+  top: 0,
+  right: 0,
+  bottom: 0,
+  maxWidth: '100%',
   zIndex: 20,
   display: 'flex',
   flexDirection: 'column',
   overflow: 'hidden',
   backgroundColor: logSurfaceColors.bg,
-});
+  borderLeft: `1px solid ${logSurfaceColors.border}`,
+  boxShadow: theme.shadows[8],
+}));
+
+const ResizeHandle = stylin(Box)(({ theme }: { theme: any }) => ({
+  position: 'absolute',
+  top: 0,
+  bottom: 0,
+  left: 0,
+  width: theme.spacing(0.75),
+  cursor: 'col-resize',
+  zIndex: 1,
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
 
 const Header = stylin(Box)(({ theme }: { theme: any }) => ({
   display: 'flex',
