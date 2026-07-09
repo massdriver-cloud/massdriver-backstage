@@ -121,3 +121,29 @@ export interface Deployment {
   elapsedTime?: number | null;
   deployedBy?: string | null;
 }
+
+// Minimal instance shape sourcing the History tab's "Initialized" footer row.
+export interface HistoryInstance {
+  id: string;
+  createdAt?: string | null;
+  environment?: { id: string; name?: string | null } | null;
+}
+
+// Full single-deployment snapshot for the read-only detail panel.
+export interface DeploymentDetail {
+  id: string;
+  status?: string | null;
+  action?: string | null;
+  version?: string | null;
+  message?: string | null;
+  params?: unknown;
+  effectiveAttributes?: unknown;
+  createdAt?: string | null;
+  lastTransitionedAt?: string | null;
+  elapsedTime?: number | null;
+  deployedBy?: string | null;
+  instance?: {
+    id: string;
+    component?: { id: string; name?: string | null } | null;
+  } | null;
+}

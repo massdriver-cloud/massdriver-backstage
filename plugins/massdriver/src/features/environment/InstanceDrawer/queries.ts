@@ -205,12 +205,21 @@ export const ALARMS_QUERY = `
   }
 `;
 
+// `deployments` is capped at a single page of 50 (cursor.limit) — the web app's
+// infinite scroll is dropped as an acceptable read-only simplification, so an
+// instance with more than 50 deployments shows only its 50 most-recent. The
+// second root field (`instance`) sources the "Initialized" footer row.
 export const HISTORY_QUERY = `
-  query MassdriverInstanceHistory($organizationId: ID!, $filter: DeploymentsFilter) {
+  query MassdriverInstanceHistory(
+    $organizationId: ID!
+    $instanceId: ID!
+    $filter: DeploymentsFilter
+    $sort: DeploymentsSort
+  ) {
     deployments(
       organizationId: $organizationId
       filter: $filter
-      sort: { field: UPDATED_AT, order: DESC }
+      sort: $sort
       cursor: { limit: 50 }
     ) {
       cursor { next }
@@ -225,6 +234,35 @@ export const HISTORY_QUERY = `
         lastTransitionedAt
         elapsedTime
         deployedBy
+      }
+    }
+    instance(organizationId: $organizationId, id: $instanceId) {
+      id
+      createdAt
+      environment { id name }
+    }
+  }
+`
+
+// Full snapshot of a single deployment for the read-only detail panel. `id` is a
+// `UUID!` here (the `deployment(id:)` field), unlike the list filter's `ID!`.
+export const DEPLOYMENT_QUERY = `
+  query MassdriverDeployment($organizationId: ID!, $id: UUID!) {
+    deployment(organizationId: $organizationId, id: $id) {
+      id
+      status
+      action
+      version
+      message
+      params
+      effectiveAttributes
+      createdAt
+      lastTransitionedAt
+      elapsedTime
+      deployedBy
+      instance {
+        id
+        component { id name }
       }
     }
   }

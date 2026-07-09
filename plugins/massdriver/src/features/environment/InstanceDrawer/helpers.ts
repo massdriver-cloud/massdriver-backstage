@@ -355,16 +355,25 @@ const PLAN_SOURCE_REGEX = /^Planning deployment ([0-9a-fA-F-]{36})(?:\n([\s\S]*)
 const ROLLBACK_SOURCE_REGEX =
   /^Rollback to deployment ([0-9a-fA-F-]{36}) \(v([^)]*)\)(?:\n([\s\S]*))?$/;
 
-const parsePlanMessage = (message?: string | null) => {
+// Plan proposals encode their source deployment in the message ("Planning
+// deployment <uuid>\n<source-message>"). Keep `sourceId` so the History tab can
+// link the plan back to the deployment it previews (mirrors the web app's
+// historyHelpers.js).
+export const parsePlanMessage = (message?: string | null) => {
   if (!message) return null;
   const match = PLAN_SOURCE_REGEX.exec(message);
-  return match ? { sourceMessage: match[2] ?? '' } : null;
+  return match ? { sourceId: match[1], sourceMessage: match[2] ?? '' } : null;
 };
 
-const parseRollbackMessage = (message?: string | null) => {
+// Rollback proposals encode their source deployment + version in the message
+// ("Rollback to deployment <uuid> (v<version>)\n<source-message>"). Keep
+// `sourceId`/`version` so the row can link back to the restored deployment.
+export const parseRollbackMessage = (message?: string | null) => {
   if (!message) return null;
   const match = ROLLBACK_SOURCE_REGEX.exec(message);
-  return match ? { sourceMessage: match[3] ?? '' } : null;
+  return match
+    ? { sourceId: match[1], version: match[2], sourceMessage: match[3] ?? '' }
+    : null;
 };
 
 export const isRollback = (message?: string | null): boolean =>
