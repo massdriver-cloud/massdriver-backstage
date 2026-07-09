@@ -55,7 +55,7 @@ const OVERVIEW_QUERY = `
       createdAt
       updatedAt
       ${COST}
-      environments {
+      environments(cursor: { limit: 100 }) {
         items { id name description updatedAt ${COST} }
       }
     }
@@ -249,16 +249,24 @@ const EnvironmentRow = ({
               <IdBadge>{scopedEnvironmentId}</IdBadge>
             </NameRow>
             {environment.description ? (
-              <Description variant="body2">{environment.description}</Description>
+              <Description variant="body2">
+                {environment.description}
+              </Description>
             ) : (
-              <DescriptionMuted variant="body2">No description</DescriptionMuted>
+              <DescriptionMuted variant="body2">
+                No description
+              </DescriptionMuted>
             )}
           </PrimaryColumn>
           <Stats>
             <Stat>
               <StatLabel variant="caption">Last 24 hours</StatLabel>
               <StatPrimary variant="body1">
-                {formatCurrency(environment.cost?.lastDay?.amount, currency, '—')}
+                {formatCurrency(
+                  environment.cost?.lastDay?.amount,
+                  currency,
+                  '—',
+                )}
               </StatPrimary>
               <StatSecondary variant="caption">
                 7-day avg{' '}

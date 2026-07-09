@@ -12,7 +12,10 @@ import type { DeploymentComparisonRow } from './flattenDeploymentComparison';
 import { truncateDeploymentId } from '../InstanceDrawer/helpers';
 import type { Deployment } from '../InstanceDrawer/types';
 
-const labelFor = (deployment?: Deployment | null, position?: number): string => {
+const labelFor = (
+  deployment?: Deployment | null,
+  position?: number,
+): string => {
   if (!deployment) return '';
   const id = truncateDeploymentId(deployment.id);
   return position != null ? `#${position} · ${id}` : id;
@@ -25,7 +28,6 @@ export const ResultsStep = ({
   target,
   sourcePosition,
   targetPosition,
-  loading,
   onChangeSelection,
 }: {
   rows: DeploymentComparisonRow[];
@@ -33,7 +35,6 @@ export const ResultsStep = ({
   target: Deployment | null;
   sourcePosition?: number;
   targetPosition?: number;
-  loading: boolean;
   onChangeSelection: () => void;
 }) => {
   const [hideEqual, setHideEqual] = useState(true);
@@ -118,7 +119,6 @@ export const ResultsStep = ({
           defaultPageSize={20}
           variant="outlined"
           size="small"
-          loading={loading}
           emptyMessage='No fields match the current filters. Try clearing the search or toggling "Hide identical".'
         />
       )}

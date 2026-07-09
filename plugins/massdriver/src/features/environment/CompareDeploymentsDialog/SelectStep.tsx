@@ -14,8 +14,14 @@ import {
 } from '../InstanceDrawer/helpers';
 import type { Deployment } from '../InstanceDrawer/types';
 
-const optionLabel = (deployment: Deployment, position?: number): string => {
-  const short = truncateDeploymentId(deployment.id);
+// `deployment` can be null when a held selection is no longer in the list
+// (e.g. the deployment aged out of the capped fetch) — fall back to the raw id.
+const optionLabel = (
+  deployment: Deployment | null,
+  fallbackId: string,
+  position?: number,
+): string => {
+  const short = truncateDeploymentId(deployment?.id ?? fallbackId);
   return position != null ? `#${position} · ${short}` : short;
 };
 
@@ -96,10 +102,12 @@ export const SelectStep = ({
               fullWidth
               displayEmpty
               value={source?.id ?? ''}
-              onChange={(event: any) => onSourceChange(find(event.target.value))}
+              onChange={(event: any) =>
+                onSourceChange(find(event.target.value))
+              }
               renderValue={(value: string) =>
                 value
-                  ? optionLabel(find(value) as Deployment, positionMap.get(value))
+                  ? optionLabel(find(value), value, positionMap.get(value))
                   : 'Pick a deployment…'
               }
             >
@@ -107,7 +115,10 @@ export const SelectStep = ({
             </Select>
           </PickerSlot>
 
-          <Tooltip title={canSwap ? 'Swap deployments' : 'Pick both first'} arrow>
+          <Tooltip
+            title={canSwap ? 'Swap deployments' : 'Pick both first'}
+            arrow
+          >
             <span>
               <SwapButton
                 size="medium"
@@ -125,10 +136,12 @@ export const SelectStep = ({
               fullWidth
               displayEmpty
               value={target?.id ?? ''}
-              onChange={(event: any) => onTargetChange(find(event.target.value))}
+              onChange={(event: any) =>
+                onTargetChange(find(event.target.value))
+              }
               renderValue={(value: string) =>
                 value
-                  ? optionLabel(find(value) as Deployment, positionMap.get(value))
+                  ? optionLabel(find(value), value, positionMap.get(value))
                   : 'Pick a deployment…'
               }
             >

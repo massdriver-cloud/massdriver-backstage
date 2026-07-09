@@ -122,6 +122,24 @@ export interface Deployment {
   deployedBy?: string | null;
 }
 
+export interface DeploymentLogLine {
+  timestamp?: string | null;
+  message?: string | null;
+}
+
+// Deployment shape for the read-only logs viewer (backfill query + live tail).
+export interface DeploymentLogs {
+  id: string;
+  status?: string | null;
+  action?: string | null;
+  version?: string | null;
+  instance?: {
+    id: string;
+    component?: { id: string; name?: string | null } | null;
+  } | null;
+  logs?: (DeploymentLogLine | null)[] | null;
+}
+
 // Minimal instance shape sourcing the History tab's "Initialized" footer row.
 export interface HistoryInstance {
   id: string;

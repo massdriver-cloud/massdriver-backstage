@@ -19,6 +19,26 @@ export const GRAPHQL_PATH = '/api/v2/graphql';
 const trimTrailingSlash = (url: string): string => url.replace(/\/+$/, '');
 
 /**
+ * Phoenix/Absinthe socket endpoint for a given API origin, mirroring the web
+ * app's `socketLink` (which connects to `${WS_URL}/api/socket`). The API origin
+ * uses `https`/`http`; the socket swaps it to `wss`/`ws`. Backend-only — the
+ * service-account token is appended as a query param server-side (the browser
+ * never opens this socket; it consumes the backend SSE relay instead).
+ *
+ * @public
+ */
+export const SOCKET_PATH = '/api/socket';
+
+/** @public */
+export const socketUrl = (baseUrl: string = DEFAULT_API_URL): string => {
+  const swapped = trimTrailingSlash(baseUrl).replace(
+    /^http(s?):\/\//,
+    'ws$1://',
+  );
+  return `${swapped}${SOCKET_PATH}`;
+};
+
+/**
  * Massdriver composite IDs join hyphen-free segments with `-`:
  * - environment id: `{projectId}-{scopedEnvironmentId}`
  * - instance id:    `{projectId}-{scopedEnvironmentId}-{scopedComponentId}`
@@ -109,8 +129,7 @@ export const projectUrl = (
   appUrl: string,
   orgId: string,
   projectId: string,
-): string =>
-  `${trimTrailingSlash(appUrl)}/orgs/${orgId}/projects/${projectId}`;
+): string => `${trimTrailingSlash(appUrl)}/orgs/${orgId}/projects/${projectId}`;
 
 /**
  * Deep-link into the Massdriver web app for an environment (its graph view).
@@ -123,7 +142,11 @@ export const environmentUrl = (
   environmentId: string,
 ): string => {
   const { projectId, scopedEnvironmentId } = parseEnvironmentId(environmentId);
-  return `${projectUrl(appUrl, orgId, projectId)}/environments/${scopedEnvironmentId}`;
+  return `${projectUrl(
+    appUrl,
+    orgId,
+    projectId,
+  )}/environments/${scopedEnvironmentId}`;
 };
 
 /**
@@ -138,7 +161,9 @@ export const instanceUrl = (
 ): string => {
   const { projectId, scopedEnvironmentId, scopedComponentId } =
     parseInstanceId(instanceId);
-  return `${trimTrailingSlash(appUrl)}/orgs/${orgId}/projects/${projectId}/environments/${scopedEnvironmentId}/instances/${scopedComponentId}`;
+  return `${trimTrailingSlash(
+    appUrl,
+  )}/orgs/${orgId}/projects/${projectId}/environments/${scopedEnvironmentId}/instances/${scopedComponentId}`;
 };
 
 /**
@@ -197,4 +222,6 @@ export const repoVersionOverviewUrl = (
   repoName: string,
   version: string,
 ): string =>
-  `${trimTrailingSlash(appUrl)}/orgs/${orgId}/repos/${repoName}/${version}/overview`;
+  `${trimTrailingSlash(
+    appUrl,
+  )}/orgs/${orgId}/repos/${repoName}/${version}/overview`;

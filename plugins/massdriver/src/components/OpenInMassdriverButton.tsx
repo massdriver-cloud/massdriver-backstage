@@ -1,5 +1,5 @@
 import Button from '@massdriver/ui/Button';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import OpenInNewIcon from '@massdriver/ui/icons/OpenInNewIcon';
 import { ReactNode } from 'react';
 
 /**

@@ -123,7 +123,6 @@ export const CompareDeploymentsDialog = ({
               target={target}
               sourcePosition={positionMap.get(source!.id)}
               targetPosition={positionMap.get(target!.id)}
-              loading={compareAsync.loading}
               onChangeSelection={() => setStep('select')}
             />
           )

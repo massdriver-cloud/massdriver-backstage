@@ -19,10 +19,10 @@ import ExpandMoreIcon from '@massdriver/ui/icons/ExpandMoreIcon';
 import ExpandLessIcon from '@massdriver/ui/icons/ExpandLessIcon';
 import DownloadIcon from '@massdriver/ui/icons/DownloadIcon';
 import stylin from '@massdriver/ui/stylin';
-import useAsync from 'react-use/esm/useAsync';
 import { massdriverApiRef } from '../../../../api';
 import { RouterLinkAdapter } from '../../../../components/RouterLinkAdapter';
 import { internalRoutes } from '../../../../internalRoutes';
+import { useLiveRelayQuery } from '../../realtime/useLiveRelayQuery';
 import { TabState } from '../TabState';
 import { RESOURCES_QUERY, RESOURCE_CONSUMERS_QUERY } from '../queries';
 import { useInstanceApiQuery } from '../useInstanceApiQuery';
@@ -44,7 +44,10 @@ export const ResourcesTab = ({ instanceId }: { instanceId: string | null }) => {
   const { value, loading, error } = useInstanceApiQuery<{
     instance: {
       id: string;
-      bundle?: { id: string; resources?: (BundleResourceEntry | null)[] | null } | null;
+      bundle?: {
+        id: string;
+        resources?: (BundleResourceEntry | null)[] | null;
+      } | null;
       resources?: (InstanceResourceEntry | null)[] | null;
     } | null;
   }>(RESOURCES_QUERY, instanceId);
@@ -107,16 +110,24 @@ interface EnvironmentDefault {
 
 const instanceHref = (id?: string | null): string | null => {
   if (!id) return null;
-  const { projectId, scopedEnvironmentId, scopedComponentId } = parseInstanceId(id);
+  const { projectId, scopedEnvironmentId, scopedComponentId } =
+    parseInstanceId(id);
   if (!projectId || !scopedEnvironmentId || !scopedComponentId) return null;
-  return internalRoutes.instance(projectId, scopedEnvironmentId, scopedComponentId);
+  return internalRoutes.instance(
+    projectId,
+    scopedEnvironmentId,
+    scopedComponentId,
+  );
 };
 
 const environmentHref = (id?: string | null): string | null => {
   if (!id) return null;
   const { projectId, scopedEnvironmentId } = parseEnvironmentId(id);
   if (!projectId || !scopedEnvironmentId) return null;
-  return internalRoutes.environment(projectId, composeEnvironmentId(projectId, scopedEnvironmentId));
+  return internalRoutes.environment(
+    projectId,
+    composeEnvironmentId(projectId, scopedEnvironmentId),
+  );
 };
 
 const CreatedResourceCard = ({ row }: { row: ResourceRow }) => {
@@ -124,29 +135,28 @@ const CreatedResourceCard = ({ row }: { row: ResourceRow }) => {
   const [payloadOpen, setPayloadOpen] = useState(false);
   const resource = row.resource as ProducedResource | null;
 
-  const { value: consumers } = useAsync(async () => {
-    if (!resource?.id) return null;
-    const data = (await api.query(RESOURCE_CONSUMERS_QUERY, {
-      id: resource.id,
-    })) as {
-      resource: {
-        connections?: { items?: (Connection | null)[] | null };
-        environmentDefaults?: { items?: (EnvironmentDefault | null)[] | null };
-        remoteReferences?: { items?: (RemoteReference | null)[] | null };
-        grants?: { items?: (Grant | null)[] | null };
-      } | null;
-    };
-    return data.resource;
-  }, [api, resource?.id]);
+  // Live query: consumers (connections/remote refs/env defaults/grants) track
+  // realtime events instead of going stale after the first render.
+  const { value: consumersResult, error: consumersError } = useLiveRelayQuery<{
+    resource: {
+      connections?: { items?: (Connection | null)[] | null };
+      environmentDefaults?: { items?: (EnvironmentDefault | null)[] | null };
+      remoteReferences?: { items?: (RemoteReference | null)[] | null };
+      grants?: { items?: (Grant | null)[] | null };
+    } | null;
+  }>(RESOURCE_CONSUMERS_QUERY, resource?.id ? { id: resource.id } : null);
+  const consumers = consumersResult?.resource ?? null;
 
   const grants = (consumers?.grants?.items ?? []).filter(Boolean) as Grant[];
-  const connectionItems = (consumers?.connections?.items ?? []).filter(Boolean) as Connection[];
-  const remoteReferenceItems = (consumers?.remoteReferences?.items ?? []).filter(
+  const connectionItems = (consumers?.connections?.items ?? []).filter(
     Boolean,
-  ) as RemoteReference[];
-  const environmentDefaultItems = (consumers?.environmentDefaults?.items ?? []).filter(
-    Boolean,
-  ) as EnvironmentDefault[];
+  ) as Connection[];
+  const remoteReferenceItems = (
+    consumers?.remoteReferences?.items ?? []
+  ).filter(Boolean) as RemoteReference[];
+  const environmentDefaultItems = (
+    consumers?.environmentDefaults?.items ?? []
+  ).filter(Boolean) as EnvironmentDefault[];
 
   const payloadString = formatPayload(resource?.payload);
   const resourceName = resource?.name || '—';
@@ -188,7 +198,11 @@ const CreatedResourceCard = ({ row }: { row: ResourceRow }) => {
         <HeaderActions>
           <ResourceGrantsChip grants={grants} />
           {resource?.id ? (
-            <CopyButton text={resource.id} tooltip="Copy resource ID" size="small" />
+            <CopyButton
+              text={resource.id}
+              tooltip="Copy resource ID"
+              size="small"
+            />
           ) : null}
           <Tooltip
             title="This view is read-only. Open in Massdriver to download resource data."
@@ -266,12 +280,22 @@ const CreatedResourceCard = ({ row }: { row: ResourceRow }) => {
                   const envName = envDefault.environment?.name ?? 'environment';
                   return {
                     key: envDefault.id,
-                    label: projectName ? `${projectName} / ${envName}` : envName,
+                    label: projectName
+                      ? `${projectName} / ${envName}`
+                      : envName,
                     href: environmentHref(envDefault.environment?.id),
                   };
                 })}
               />
             </ListValue>
+          </DetailRow>
+        ) : null}
+        {consumersError ? (
+          <DetailRow>
+            <Label>Consumers:</Label>
+            <Detail title={consumersError.message}>
+              Couldn't load consumers
+            </Detail>
           </DetailRow>
         ) : null}
       </DetailColumn>
@@ -402,19 +426,18 @@ const EmptyNote = stylin(Typography)(({ theme }: { theme: any }) => ({
   fontStyle: 'italic',
 }));
 
-const Card = stylin(
-  Box,
-  ['pending'],
-)(({ theme, pending }: { theme: any; pending?: boolean }) => ({
-  position: 'relative',
-  border: `1px ${pending ? 'dashed' : 'solid'} ${theme.palette.divider}`,
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: '4px',
-  padding: theme.spacing(1, 1.75),
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing(0.5),
-}));
+const Card = stylin(Box, ['pending'])(
+  ({ theme, pending }: { theme: any; pending?: boolean }) => ({
+    position: 'relative',
+    border: `1px ${pending ? 'dashed' : 'solid'} ${theme.palette.divider}`,
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: '4px',
+    padding: theme.spacing(1, 1.75),
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.5),
+  }),
+);
 
 const HeaderRow = stylin(Box)(({ theme }: { theme: any }) => ({
   display: 'flex',
@@ -515,13 +538,15 @@ const Comma = stylin('span')(({ theme }: { theme: any }) => ({
   marginRight: '2px',
 }));
 
-const ConsumerAnchor = stylin(RouterLinkAdapter)(({ theme }: { theme: any }) => ({
-  fontSize: theme.typography.pxToRem(11),
-  color: theme.palette.primary.main,
-  textDecoration: 'underline',
-  whiteSpace: 'nowrap',
-  '&:hover': { color: theme.palette.primary.dark },
-}));
+const ConsumerAnchor = stylin(RouterLinkAdapter)(
+  ({ theme }: { theme: any }) => ({
+    fontSize: theme.typography.pxToRem(11),
+    color: theme.palette.primary.main,
+    textDecoration: 'underline',
+    whiteSpace: 'nowrap',
+    '&:hover': { color: theme.palette.primary.dark },
+  }),
+);
 
 const ConsumerText = stylin(Typography)(({ theme }: { theme: any }) => ({
   fontSize: theme.typography.pxToRem(11),

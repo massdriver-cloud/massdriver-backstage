@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useApi } from '@backstage/frontend-plugin-api';
 import { composeEnvironmentId } from '@massdriver-cloud/backstage-plugin-massdriver-common';
 import Alert from '@massdriver/ui/Alert';
 import Box from '@massdriver/ui/Box';
@@ -7,13 +6,13 @@ import LoadingIndicator from '@massdriver/ui/LoadingIndicator';
 import Typography from '@massdriver/ui/Typography';
 import stylin from '@massdriver/ui/stylin';
 import { ReactFlowProvider } from '@xyflow/react';
-import useAsync from 'react-use/esm/useAsync';
 import { useNavigate, useParams } from 'react-router-dom';
-import { massdriverApiRef } from '../../api';
 import { NotFound } from '../../components/NotFound';
 import { internalRoutes } from '../../internalRoutes';
 import { GraphHeader } from './GraphHeader';
 import { InstanceDrawer } from './InstanceDrawer';
+import { RealtimeProvider } from './realtime/RealtimeProvider';
+import { useLiveRelayQuery } from './realtime/useLiveRelayQuery';
 import Diagram from './graph/Diagram';
 import { buildDiagram } from './graph/diagramFactory';
 import {
@@ -23,9 +22,23 @@ import {
   type ProjectBlueprintResult,
 } from './graph/queries';
 
-/** Read-only environment graph: instances as nodes, connections/links as edges. */
+/**
+ * Read-only environment graph. Wraps the content in `RealtimeProvider` so the
+ * graph and instance drawer refetch when the environment emits live events
+ * (deploys, status changes) originating in the web app.
+ */
 export const EnvironmentGraphPage = () => {
-  const api = useApi(massdriverApiRef);
+  const { projectId = '', scopedEnvironmentId = '' } = useParams();
+  const environmentId = composeEnvironmentId(projectId, scopedEnvironmentId);
+  return (
+    <RealtimeProvider environmentId={environmentId}>
+      <EnvironmentGraphContent />
+    </RealtimeProvider>
+  );
+};
+
+/** Instances as nodes, connections/links as edges. */
+const EnvironmentGraphContent = () => {
   const navigate = useNavigate();
   const {
     projectId = '',
@@ -39,20 +52,29 @@ export const EnvironmentGraphPage = () => {
   const closeInstance = () =>
     navigate(internalRoutes.environment(projectId, environmentId));
 
-  const { value, loading, error } = useAsync(async () => {
-    const [projectData, environmentData] = await Promise.all([
-      api.query(PROJECT_BLUEPRINT_QUERY, {
-        projectId,
-      }) as Promise<ProjectBlueprintResult>,
-      api.query(ENVIRONMENT_BLUEPRINT_QUERY, {
-        environmentId,
-      }) as Promise<EnvironmentBlueprintResult>,
-    ]);
-    return {
-      project: projectData.project,
-      environment: environmentData.environment,
-    };
-  }, [api, projectId, environmentId]);
+  // Two live queries (blueprint + environment). Revision refetches keep the
+  // rendered diagram mounted — see useLiveRelayQuery for the no-flash contract.
+  const projectQuery = useLiveRelayQuery<ProjectBlueprintResult>(
+    PROJECT_BLUEPRINT_QUERY,
+    projectId ? { projectId } : null,
+  );
+  const environmentQuery = useLiveRelayQuery<EnvironmentBlueprintResult>(
+    ENVIRONMENT_BLUEPRINT_QUERY,
+    projectId && scopedEnvironmentId ? { environmentId } : null,
+  );
+
+  const loading = projectQuery.loading || environmentQuery.loading;
+  const error = projectQuery.error ?? environmentQuery.error;
+  const value = useMemo(
+    () =>
+      projectQuery.value && environmentQuery.value
+        ? {
+            project: projectQuery.value.project,
+            environment: environmentQuery.value.environment,
+          }
+        : undefined,
+    [projectQuery.value, environmentQuery.value],
+  );
 
   const { nodes, edges } = useMemo(
     () =>

@@ -5,12 +5,17 @@ import DisabledAction from '../../../../components/DisabledAction';
 
 // Read-only mirrors of the web app's deployment mutations. Every mutating
 // affordance is rendered as a greyed `DisabledAction` (tooltip points the user
-// to Massdriver); viewing logs is a genuine link-out (new tab), not disabled.
+// to Massdriver); viewing logs is a genuine in-app action (opens the read-only
+// logs overlay), not disabled and not a link-out.
 
 type Size = 'small' | 'medium' | 'large';
 
 /** Disabled Plan / Reject / Approve cluster shown on PROPOSED deployments. */
-export const DisabledApprovalCluster = ({ size = 'small' }: { size?: Size }) => (
+export const DisabledApprovalCluster = ({
+  size = 'small',
+}: {
+  size?: Size;
+}) => (
   <Cluster>
     <DisabledAction
       label="Plan"
@@ -46,24 +51,17 @@ export const DisabledRollbackButton = ({ size = 'small' }: { size?: Size }) => (
   />
 );
 
-/** Link-out to the instance's History tab in Massdriver (opens in a new tab). */
-export const LogsLinkButton = ({
-  href,
+/** Opens the read-only deployment logs overlay in-app. */
+export const LogsButton = ({
+  onClick,
   size = 'small',
   variant = 'text',
 }: {
-  href: string;
+  onClick: () => void;
   size?: Size;
   variant?: 'text' | 'outlined' | 'contained';
 }) => (
-  <Button
-    variant={variant}
-    size={size}
-    component="a"
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-  >
+  <Button variant={variant} size={size} onClick={onClick}>
     View logs
   </Button>
 );

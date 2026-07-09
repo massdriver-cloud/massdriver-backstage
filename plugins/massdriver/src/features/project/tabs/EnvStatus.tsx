@@ -3,7 +3,7 @@ import Tooltip from '@massdriver/ui/Tooltip';
 import Typography from '@massdriver/ui/Typography';
 import stylin from '@massdriver/ui/stylin';
 import { instanceStatusColors } from '@massdriver/ui/theme';
-import { Link as RouterLink } from 'react-router-dom';
+import { RouterLinkAdapter } from '../../../components/RouterLinkAdapter';
 
 export interface EnvInstance {
   id: string;
@@ -115,7 +115,7 @@ const EnvStatusChip = ({
         </TooltipBody>
       }
     >
-      {href ? <ChipLink to={href}>{content}</ChipLink> : content}
+      {href ? <ChipLink href={href}>{content}</ChipLink> : content}
     </Tooltip>
   );
 };
@@ -133,7 +133,7 @@ const EmptyText = stylin(Typography)(({ theme }: { theme: any }) => ({
   paddingBottom: theme.spacing(0.5),
 }));
 
-const ChipLink = stylin(RouterLink)({ textDecoration: 'none' });
+const ChipLink = stylin(RouterLinkAdapter)({ textDecoration: 'none' });
 
 const Chip = stylin(Box, ['interactive'])(
   ({ theme, interactive }: { theme: any; interactive: boolean }) => ({

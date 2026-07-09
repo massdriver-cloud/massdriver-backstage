@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useApi } from '@backstage/frontend-plugin-api';
 import { useSearchParams } from 'react-router-dom';
 import {
@@ -24,6 +25,9 @@ import MonitorTab from './tabs/MonitorTab';
 import HistoryTab from './tabs/HistoryTab';
 import GuideTab from './tabs/GuideTab';
 import SecretsTab from './tabs/SecretsTab';
+import DeploymentLogsPanel, {
+  OpenLogsProvider,
+} from './tabs/DeploymentLogsPanel';
 import type { PanelInstance, SecretField } from './types';
 
 const DEFAULT_TAB = 'overview';
@@ -60,6 +64,7 @@ export const InstanceDrawer = ({
   const api = useApi(massdriverApiRef);
   const [searchParams, setSearchParams] = useSearchParams();
   const { width, panelRef, onResizeStart } = useResizableWidth();
+  const [logsDeploymentId, setLogsDeploymentId] = useState<string | null>(null);
 
   const isOpen = Boolean(scopedComponentId);
   const activeTab = searchParams.get('tab') || DEFAULT_TAB;
@@ -90,6 +95,11 @@ export const InstanceDrawer = ({
   const tabExists = tabs.some(tab => tab.id === activeTab);
   const resolvedTab = tabExists ? activeTab : DEFAULT_TAB;
 
+  // Switching instances (or closing) dismisses any open logs overlay.
+  useEffect(() => {
+    setLogsDeploymentId(null);
+  }, [scopedComponentId]);
+
   const handleClose = () => onClose();
 
   const handleTabChange = (tabId: string) => {
@@ -102,7 +112,11 @@ export const InstanceDrawer = ({
 
   const appUrl =
     fullInstanceId && api.appUrl
-      ? `${instanceUrl(api.appUrl, api.organizationId, fullInstanceId)}?tab=${resolvedTab}`
+      ? `${instanceUrl(
+          api.appUrl,
+          api.organizationId,
+          fullInstanceId,
+        )}?tab=${resolvedTab}`
       : '';
 
   const renderTab = () => {
@@ -130,37 +144,45 @@ export const InstanceDrawer = ({
   if (!isOpen) return null;
 
   return (
-    <Panel ref={panelRef} style={{ width }}>
-      <ResizeHandle onMouseDown={onResizeStart} data-testid="resize-handle" />
-      <InstanceDrawerHeader
-        instance={instance}
-        appUrl={appUrl}
-        onClose={handleClose}
-      />
-      {loading ? (
-        <Centered>
-          <LoadingIndicator />
-        </Centered>
-      ) : error ? (
-        <Padded>
-          <Alert severity="error">{String(error.message ?? error)}</Alert>
-        </Padded>
-      ) : !instance ? (
-        <NotFound
-          title="Instance not found"
-          message="This instance doesn't exist or you don't have access to it."
+    <OpenLogsProvider value={setLogsDeploymentId}>
+      <Panel ref={panelRef} style={{ width }}>
+        <ResizeHandle onMouseDown={onResizeStart} data-testid="resize-handle" />
+        <InstanceDrawerHeader
+          instance={instance}
+          appUrl={appUrl}
+          onClose={handleClose}
         />
-      ) : (
-        <>
-          <InstanceTabs
-            tabs={tabs}
-            activeTab={resolvedTab}
-            onTabChange={handleTabChange}
+        {loading ? (
+          <Centered>
+            <LoadingIndicator />
+          </Centered>
+        ) : error ? (
+          <Padded>
+            <Alert severity="error">{String(error.message ?? error)}</Alert>
+          </Padded>
+        ) : !instance ? (
+          <NotFound
+            title="Instance not found"
+            message="This instance doesn't exist or you don't have access to it."
           />
-          <ContentArea role="tabpanel">{renderTab()}</ContentArea>
-        </>
-      )}
-    </Panel>
+        ) : (
+          <>
+            <InstanceTabs
+              tabs={tabs}
+              activeTab={resolvedTab}
+              onTabChange={handleTabChange}
+            />
+            <ContentArea role="tabpanel">{renderTab()}</ContentArea>
+          </>
+        )}
+        {logsDeploymentId ? (
+          <DeploymentLogsPanel
+            deploymentId={logsDeploymentId}
+            onClose={() => setLogsDeploymentId(null)}
+          />
+        ) : null}
+      </Panel>
+    </OpenLogsProvider>
   );
 };
 

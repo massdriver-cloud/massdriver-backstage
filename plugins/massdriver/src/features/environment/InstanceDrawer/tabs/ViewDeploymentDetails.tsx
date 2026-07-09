@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useApi } from '@backstage/frontend-plugin-api';
 import useAsync from 'react-use/esm/useAsync';
-import { instanceTabUrl } from '@massdriver-cloud/backstage-plugin-massdriver-common';
 import {
   Dialog,
   DialogActions,
@@ -29,6 +28,7 @@ import {
   formatAttributeValue,
   formatDeploymentStatus,
   formatElapsed,
+  deploymentHasLogs,
   formatRelativeTime,
   parseMap,
   parsePlanMessage,
@@ -38,15 +38,12 @@ import {
 } from '../helpers';
 import type { DeploymentDetail } from '../types';
 import flattenParams from './flattenParams';
+import { useOpenLogs } from './DeploymentLogsPanel';
 import {
   DisabledApprovalCluster,
   DisabledRollbackButton,
-  LogsLinkButton,
+  LogsButton,
 } from './DeploymentReadOnlyActions';
-
-// Statuses that never produce a deployment log stream — everything else has a
-// log to view in Massdriver (link-out).
-const STATUSES_WITHOUT_LOGS = ['PROPOSED', 'APPROVED', 'REJECTED'];
 
 const renderValueCell = (_value: unknown, row: { value: unknown }) => (
   <ComparisonValueCell
@@ -75,7 +72,8 @@ const buildHeading = (
   componentName?: string | null,
   statusLabel?: string,
 ): string => {
-  const verb = statusLabel && statusLabel !== '—' ? statusLabel.toLowerCase() : null;
+  const verb =
+    statusLabel && statusLabel !== '—' ? statusLabel.toLowerCase() : null;
   if (!componentName && !verb) return 'Deployment';
   if (!verb) return `${componentName} deployment`;
   return componentName ? `${componentName} · ${verb}` : verb;
@@ -84,20 +82,21 @@ const buildHeading = (
 /**
  * Read-only deployment detail panel. Fetches the full deployment snapshot and
  * renders a summary def-list, attributes, and a flattened params DataList. All
- * mutating actions are disabled (tooltip → Massdriver); logs link out.
+ * mutating actions are disabled (tooltip → Massdriver); "View logs" opens the
+ * in-app read-only logs overlay (closing this dialog first, since the logs
+ * overlay lives inside the drawer beneath this dialog's portal).
  */
 export const ViewDeploymentDetails = ({
   deploymentId,
-  instanceId,
   onClose,
   onShowSource,
 }: {
   deploymentId: string | null;
-  instanceId: string | null;
   onClose: () => void;
   onShowSource: (sourceId: string) => void;
 }) => {
   const api = useApi(massdriverApiRef);
+  const openLogs = useOpenLogs();
   const open = Boolean(deploymentId);
 
   const { value, loading, error } = useAsync(async () => {
@@ -135,13 +134,13 @@ export const ViewDeploymentDetails = ({
   const isProposed = deployment?.status === 'PROPOSED';
   const isRollbackEligible =
     deployment?.action === 'PROVISION' && deployment?.status === 'COMPLETED';
-  const hasLogs =
-    Boolean(deployment) &&
-    !STATUSES_WITHOUT_LOGS.includes(deployment?.status ?? '');
-  const logsUrl =
-    instanceId && api.appUrl
-      ? instanceTabUrl(api.appUrl, api.organizationId, instanceId, 'history')
-      : '';
+  const hasLogs = deploymentHasLogs(deployment?.status);
+
+  const handleViewLogs = () => {
+    if (!deployment) return;
+    onClose();
+    openLogs(deployment.id);
+  };
 
   const attributes = parseMap(deployment?.effectiveAttributes);
   const attributeEntries = attributes ? Object.entries(attributes) : [];
@@ -180,9 +179,7 @@ export const ViewDeploymentDetails = ({
                 ) : (
                   <HeaderActions>
                     {isRollbackEligible ? <DisabledRollbackButton /> : null}
-                    {hasLogs && logsUrl ? (
-                      <LogsLinkButton href={logsUrl} />
-                    ) : null}
+                    {hasLogs ? <LogsButton onClick={handleViewLogs} /> : null}
                   </HeaderActions>
                 )}
               </SummaryHeader>
@@ -280,7 +277,9 @@ export const ViewDeploymentDetails = ({
             </Section>
 
             <Section>
-              <SectionHeading variant="subtitle1">Snapshot params</SectionHeading>
+              <SectionHeading variant="subtitle1">
+                Snapshot params
+              </SectionHeading>
               <DataList
                 rows={paramRows}
                 columns={COLUMNS}

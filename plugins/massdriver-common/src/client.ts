@@ -27,10 +27,7 @@ export interface MassdriverClient {
 
 /** @public */
 export class MassdriverApiError extends Error {
-  constructor(
-    message: string,
-    readonly status?: number,
-  ) {
+  constructor(message: string, readonly status?: number) {
     super(message);
     this.name = 'MassdriverApiError';
   }
@@ -67,7 +64,8 @@ export const createMassdriverClient = (
         },
         body: JSON.stringify({
           query,
-          variables: { organizationId, ...variables },
+          // Injected org id must win over caller-supplied variables.
+          variables: { ...variables, organizationId },
         }),
       });
 

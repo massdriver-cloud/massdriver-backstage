@@ -1,9 +1,9 @@
 import { useApi } from '@backstage/frontend-plugin-api';
 import { useNavigate } from 'react-router-dom';
 import {
+  parseEnvironmentId,
   projectUrl,
 } from '@massdriver-cloud/backstage-plugin-massdriver-common';
-import useAsync from 'react-use/esm/useAsync';
 import Box from '@massdriver/ui/Box';
 import Typography from '@massdriver/ui/Typography';
 import IconButton from '@massdriver/ui/IconButton';
@@ -17,6 +17,7 @@ import { massdriverApiRef } from '../../../api';
 import { ForkPill } from '../../../components/ForkPill';
 import { RouterLinkAdapter } from '../../../components/RouterLinkAdapter';
 import { internalRoutes } from '../../../internalRoutes';
+import { useLiveRelayQuery } from '../realtime/useLiveRelayQuery';
 import Switcher from './Switcher';
 import EnvironmentDefaults from './EnvironmentDefaults';
 import HeaderActions from './HeaderActions';
@@ -44,30 +45,37 @@ export const GraphHeader = ({
   const api = useApi(massdriverApiRef);
   const navigate = useNavigate();
 
-  const { value } = useAsync(async () => {
-    const [projectsData, environmentsData] = await Promise.all([
-      api.query(HEADER_PROJECTS_QUERY) as Promise<HeaderProjectsResult>,
-      api.query(HEADER_ENVIRONMENTS_QUERY, {
-        filter: { projectId: { eq: projectId } },
-      }) as Promise<HeaderEnvironmentsResult>,
-    ]);
-    return {
-      projects: (projectsData.projects?.items ?? []).filter(
-        Boolean,
-      ) as HeaderProject[],
-      environments: (environmentsData.environments?.items ?? []).filter(
-        Boolean,
-      ) as HeaderEnvironment[],
-    };
-  }, [api, projectId]);
+  // Live queries: a project/environment created or renamed in the web app
+  // shows up in the switchers on the next realtime event.
+  const projectsQuery = useLiveRelayQuery<HeaderProjectsResult>(
+    HEADER_PROJECTS_QUERY,
+    {},
+  );
+  const environmentsQuery = useLiveRelayQuery<HeaderEnvironmentsResult>(
+    HEADER_ENVIRONMENTS_QUERY,
+    { filter: { projectId: { eq: projectId } } },
+  );
+  const headerPending =
+    projectsQuery.loading ||
+    environmentsQuery.loading ||
+    Boolean(projectsQuery.error ?? environmentsQuery.error);
 
-  const projects = value?.projects ?? [];
-  const environments = value?.environments ?? [];
+  const projects = (projectsQuery.value?.projects?.items ?? []).filter(
+    Boolean,
+  ) as HeaderProject[];
+  const environments = (
+    environmentsQuery.value?.environments?.items ?? []
+  ).filter(Boolean) as HeaderEnvironment[];
   const project = projects.find(item => item.id === projectId) ?? null;
   const environment =
     environments.find(item => item.id === environmentId) ?? null;
 
-  const projectName = project?.name ?? '—';
+  // While loading (or if the header queries fail) fall back to the route ids —
+  // never pretend an existing project/environment is missing.
+  const projectName = project?.name ?? (headerPending ? projectId : '—');
+  const environmentFallback = headerPending
+    ? parseEnvironmentId(environmentId).scopedEnvironmentId
+    : '—';
   const createEnvironmentUrl = `${projectUrl(
     api.appUrl,
     api.organizationId,
@@ -140,7 +148,7 @@ export const GraphHeader = ({
           trigger={
             <>
               <TriggerLabel variant="body2">
-                {environment ? environment.name : '—'}
+                {environment ? environment.name : environmentFallback}
               </TriggerLabel>
               {environment ? (
                 <ForkPill

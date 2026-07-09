@@ -1,6 +1,4 @@
 import { useRef, useState } from 'react';
-import { useApi } from '@backstage/frontend-plugin-api';
-import useAsync from 'react-use/esm/useAsync';
 import Box from '@massdriver/ui/Box';
 import Typography from '@massdriver/ui/Typography';
 import Tooltip from '@massdriver/ui/Tooltip';
@@ -10,7 +8,7 @@ import Menu, { MenuItem } from '@massdriver/ui/Menu';
 import stylin from '@massdriver/ui/stylin';
 import ExtensionIcon from '@massdriver/ui/icons/ExtensionIcon';
 import ArrowDropDownIcon from '@massdriver/ui/icons/ArrowDropDownIcon';
-import { massdriverApiRef } from '../../../api';
+import { useLiveRelayQuery } from '../realtime/useLiveRelayQuery';
 import {
   ENVIRONMENT_DEFAULTS_QUERY,
   type EnvironmentDefaultItem,
@@ -52,21 +50,35 @@ export const EnvironmentDefaults = ({
 }: {
   environmentId: string;
 }) => {
-  const api = useApi(massdriverApiRef);
   const rootRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { value } = useAsync(async () => {
-    if (!environmentId) return [] as EnvironmentDefaultItem[];
-    const data = (await api.query(ENVIRONMENT_DEFAULTS_QUERY, {
-      environmentId,
-    })) as EnvironmentDefaultsResult;
-    return (data.environment?.defaults?.items ?? []).filter(
-      Boolean,
-    ) as EnvironmentDefaultItem[];
-  }, [api, environmentId]);
+  // Live query: defaults set/removed in the web app show up on the next
+  // realtime event. Identity resets on environment switch, so a previous
+  // environment's defaults never flash while the next one loads.
+  const { value, loading, error } =
+    useLiveRelayQuery<EnvironmentDefaultsResult>(
+      ENVIRONMENT_DEFAULTS_QUERY,
+      environmentId ? { environmentId } : null,
+    );
 
-  const defaults = value ?? [];
+  const defaults = (value?.environment?.defaults?.items ?? []).filter(
+    Boolean,
+  ) as EnvironmentDefaultItem[];
+
+  if (loading) {
+    return <Root ref={rootRef} />;
+  }
+
+  if (error) {
+    return (
+      <Root ref={rootRef}>
+        <EmptyLabel variant="body2">
+          Couldn't load environment defaults
+        </EmptyLabel>
+      </Root>
+    );
+  }
 
   if (defaults.length === 0) {
     return (

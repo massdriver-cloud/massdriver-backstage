@@ -1,7 +1,4 @@
-import {
-  InstanceStatus,
-  MassdriverProject,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { InstanceStatus } from '@massdriver-cloud/backstage-plugin-massdriver-common';
 
 /** Instance fields fetched for tables and cards. */
 export interface InstanceRow {
@@ -66,21 +63,6 @@ export const INSTANCE_BY_ID = `
   }
 `;
 
-export const PROJECTS = `
-  query MassdriverProjectsList($organizationId: ID!, $cursor: Cursor) {
-    projects(organizationId: $organizationId, cursor: $cursor) {
-      items {
-        id
-        name
-        description
-      }
-      cursor {
-        next
-      }
-    }
-  }
-`;
-
 export interface InstancesPageResult {
   instances: {
     items: (InstanceRow | null)[] | null;
@@ -90,11 +72,4 @@ export interface InstancesPageResult {
 
 export interface InstanceResult {
   instance: InstanceRow | null;
-}
-
-export interface ProjectsPageResult {
-  projects: {
-    items: (MassdriverProject | null)[] | null;
-    cursor: { next: string | null };
-  };
 }

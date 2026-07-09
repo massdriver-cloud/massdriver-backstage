@@ -242,7 +242,7 @@ export const HISTORY_QUERY = `
       environment { id name }
     }
   }
-`
+`;
 
 // Full snapshot of a single deployment for the read-only detail panel. `id` is a
 // `UUID!` here (the `deployment(id:)` field), unlike the list filter's `ID!`.
@@ -263,6 +263,28 @@ export const DEPLOYMENT_QUERY = `
       instance {
         id
         component { id name }
+      }
+    }
+  }
+`;
+
+// Initial log backfill for the read-only logs viewer. The live tail is streamed
+// separately via the `deploymentLogs` subscription (see realtime/queries.ts).
+// `id` is a `UUID!` here, matching `deployment(id:)`.
+export const DEPLOYMENT_LOGS_QUERY = `
+  query MassdriverDeploymentLogs($organizationId: ID!, $id: UUID!) {
+    deployment(organizationId: $organizationId, id: $id) {
+      id
+      status
+      action
+      version
+      instance {
+        id
+        component { id name }
+      }
+      logs {
+        timestamp
+        message
       }
     }
   }

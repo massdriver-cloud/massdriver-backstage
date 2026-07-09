@@ -25,17 +25,26 @@ import {
   buildDependencyRows,
   DEPENDENCY_STATE,
   groupDependenciesBySection,
+  type BundleDependency,
   type DependencyRow,
+  type InstanceDependency,
 } from '../helpers';
 import type { ResourceType } from '../types';
 
 /** Read-only Dependencies tab: fulfilled + unfulfilled dependency cards. */
-export const DependenciesTab = ({ instanceId }: { instanceId: string | null }) => {
+export const DependenciesTab = ({
+  instanceId,
+}: {
+  instanceId: string | null;
+}) => {
   const { value, loading, error } = useInstanceApiQuery<{
     instance: {
       id: string;
-      bundle?: { id: string; dependencies?: any[] | null } | null;
-      dependencies?: any[] | null;
+      bundle?: {
+        id: string;
+        dependencies?: (BundleDependency | null)[] | null;
+      } | null;
+      dependencies?: (InstanceDependency | null)[] | null;
     } | null;
   }>(DEPENDENCIES_QUERY, instanceId);
 
@@ -53,7 +62,9 @@ export const DependenciesTab = ({ instanceId }: { instanceId: string | null }) =
     <TabState loading={loading} error={error}>
       <Root>
         {rows.length === 0 ? (
-          <EmptyNote>This instance does not require any dependencies.</EmptyNote>
+          <EmptyNote>
+            This instance does not require any dependencies.
+          </EmptyNote>
         ) : (
           <>
             <Section>
@@ -63,7 +74,11 @@ export const DependenciesTab = ({ instanceId }: { instanceId: string | null }) =
               ) : (
                 <CardList>
                   {sections.fulfilled.map(row => (
-                    <DependencyCard key={row.field} row={row} instanceId={instanceId} />
+                    <DependencyCard
+                      key={row.field}
+                      row={row}
+                      instanceId={instanceId}
+                    />
                   ))}
                 </CardList>
               )}
@@ -75,7 +90,11 @@ export const DependenciesTab = ({ instanceId }: { instanceId: string | null }) =
               ) : (
                 <CardList>
                   {sections.unfulfilled.map(row => (
-                    <DependencyCard key={row.field} row={row} instanceId={instanceId} />
+                    <DependencyCard
+                      key={row.field}
+                      row={row}
+                      instanceId={instanceId}
+                    />
                   ))}
                 </CardList>
               )}
@@ -91,15 +110,22 @@ export default DependenciesTab;
 
 const originHref = (id?: string | null): string | null => {
   if (!id) return null;
-  const { projectId, scopedEnvironmentId, scopedComponentId } = parseInstanceId(id);
+  const { projectId, scopedEnvironmentId, scopedComponentId } =
+    parseInstanceId(id);
   if (!projectId || !scopedEnvironmentId || !scopedComponentId) return null;
-  return internalRoutes.instance(projectId, scopedEnvironmentId, scopedComponentId);
+  return internalRoutes.instance(
+    projectId,
+    scopedEnvironmentId,
+    scopedComponentId,
+  );
 };
 
 const TypeRow = ({ resourceType }: { resourceType?: ResourceType | null }) => (
   <DetailRow>
     <Label>Type:</Label>
-    <Detail title={resourceType?.name || '—'}>{resourceType?.name || '—'}</Detail>
+    <Detail title={resourceType?.name || '—'}>
+      {resourceType?.name || '—'}
+    </Detail>
   </DetailRow>
 );
 
@@ -138,12 +164,16 @@ const DependencyCard = ({
     const fromField = row.source?.fromField ?? null;
     const isProvisioned =
       origin?.status === 'PROVISIONED' || origin?.status === 'EXTERNAL';
-    const fulfilledText = `${origin?.name || fromComponentName || '—'} :: ${fromField || '—'}`;
+    const fulfilledText = `${origin?.name || fromComponentName || '—'} :: ${
+      fromField || '—'
+    }`;
     const href = originHref(origin?.id);
 
     return (
       <Card pending={!isProvisioned}>
-        {row.required ? <RequiredChip label="Req" color="success" size="small" /> : null}
+        {row.required ? (
+          <RequiredChip label="Req" color="success" size="small" />
+        ) : null}
         <HeaderRow>
           <TitleRow>
             <CardTitle title={row.field}>{row.field}</CardTitle>
@@ -154,9 +184,7 @@ const DependencyCard = ({
               </div>
             </HelpTip>
           </TitleRow>
-          {origin?.status ? (
-            <StyledStatusPill status={origin.status} />
-          ) : null}
+          {origin?.status ? <StyledStatusPill status={origin.status} /> : null}
         </HeaderRow>
         <DetailColumn>
           <TypeRow resourceType={row.resourceType} />
@@ -190,7 +218,9 @@ const DependencyCard = ({
     const resHref = resourceHref(resource?.id);
     return (
       <Card>
-        {row.required ? <RequiredChip label="Req" color="success" size="small" /> : null}
+        {row.required ? (
+          <RequiredChip label="Req" color="success" size="small" />
+        ) : null}
         <FulfilledNote>
           * This connection is being fulfilled by the environment's default
           resource.
@@ -251,7 +281,9 @@ const DependencyCard = ({
     const resHref = resourceHref(resource?.id);
     return (
       <Card>
-        {row.required ? <RequiredChip label="Req" color="success" size="small" /> : null}
+        {row.required ? (
+          <RequiredChip label="Req" color="success" size="small" />
+        ) : null}
         <FulfilledNote>
           * This connection is overridden by a remote reference to a resource
           from another project or an imported resource.
@@ -300,7 +332,9 @@ const DependencyCard = ({
 
   return (
     <Card>
-      {row.required ? <RequiredChip label="Req" color="error" size="small" /> : null}
+      {row.required ? (
+        <RequiredChip label="Req" color="error" size="small" />
+      ) : null}
       <HeaderRow>
         <TitleRow>
           <CardTitle title={row.field}>{row.field}</CardTitle>
@@ -361,19 +395,18 @@ const EmptyNote = stylin(Typography)(({ theme }: { theme: any }) => ({
   fontStyle: 'italic',
 }));
 
-const Card = stylin(
-  Box,
-  ['pending'],
-)(({ theme, pending }: { theme: any; pending?: boolean }) => ({
-  position: 'relative',
-  border: `1px ${pending ? 'dashed' : 'solid'} ${theme.palette.divider}`,
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: '4px',
-  padding: theme.spacing(1, 1.75),
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing(0.5),
-}));
+const Card = stylin(Box, ['pending'])(
+  ({ theme, pending }: { theme: any; pending?: boolean }) => ({
+    position: 'relative',
+    border: `1px ${pending ? 'dashed' : 'solid'} ${theme.palette.divider}`,
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: '4px',
+    padding: theme.spacing(1, 1.75),
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.5),
+  }),
+);
 
 const RequiredChip = stylin(Chip)(({ theme }: { theme: any }) => ({
   position: 'absolute',
@@ -447,17 +480,19 @@ const Detail = stylin(Typography)(({ theme }: { theme: any }) => ({
   textOverflow: 'ellipsis',
 }));
 
-const FulfilledLink = stylin(RouterLinkAdapter)(({ theme }: { theme: any }) => ({
-  fontSize: theme.typography.pxToRem(11),
-  color: theme.palette.primary.main,
-  textDecoration: 'underline',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  minWidth: 0,
-  display: 'block',
-  '&:hover': { color: theme.palette.primary.dark },
-}));
+const FulfilledLink = stylin(RouterLinkAdapter)(
+  ({ theme }: { theme: any }) => ({
+    fontSize: theme.typography.pxToRem(11),
+    color: theme.palette.primary.main,
+    textDecoration: 'underline',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    minWidth: 0,
+    display: 'block',
+    '&:hover': { color: theme.palette.primary.dark },
+  }),
+);
 
 const FulfilledExtLink = stylin('a')(({ theme }: { theme: any }) => ({
   fontSize: theme.typography.pxToRem(11),
@@ -498,8 +533,10 @@ const TooltipBody = stylin(Box)(({ theme }: { theme: any }) => ({
   maxWidth: 320,
 }));
 
-const StyledStatusPill = stylin(InstanceStatusPill)(({ theme }: { theme: any }) => ({
-  height: 18,
-  fontSize: theme.typography.pxToRem(11),
-  flexShrink: 0,
-}));
+const StyledStatusPill = stylin(InstanceStatusPill)(
+  ({ theme }: { theme: any }) => ({
+    height: 18,
+    fontSize: theme.typography.pxToRem(11),
+    flexShrink: 0,
+  }),
+);

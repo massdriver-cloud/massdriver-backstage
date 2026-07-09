@@ -46,14 +46,16 @@ export const useCursorPagination = ({
 
   const sort = mapSort(state.sort, sortFieldMap);
 
-  const sortKey = `${sort?.field}-${sort?.order}-${state.pageSize}`;
+  // Cursors are only valid for the exact query shape that produced them —
+  // reset the map when sort, pageSize, or search change (a cursor from one
+  // filter set is meaningless in another).
+  const sortKey = `${sort?.field}-${sort?.order}-${state.pageSize}-${state.search}`;
   if (sortKey !== prevSortKeyRef.current) {
     cursorsRef.current = new Map();
     prevSortKeyRef.current = sortKey;
   }
 
-  const next =
-    state.page > 0 ? cursorsRef.current.get(state.page) : undefined;
+  const next = state.page > 0 ? cursorsRef.current.get(state.page) : undefined;
   const cursor = {
     limit: state.pageSize,
     ...(next ? { next } : {}),

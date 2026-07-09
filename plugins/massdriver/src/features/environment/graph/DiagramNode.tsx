@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useApi } from '@backstage/frontend-plugin-api';
 import Box from '@massdriver/ui/Box';
 import Chip from '@massdriver/ui/Chip';
 import Divider from '@massdriver/ui/Divider';
@@ -7,8 +6,7 @@ import Skeleton from '@massdriver/ui/Skeleton';
 import Typography from '@massdriver/ui/Typography';
 import IconTile from '@massdriver/ui/IconTile';
 import stylin from '@massdriver/ui/stylin';
-import useAsync from 'react-use/esm/useAsync';
-import { massdriverApiRef } from '../../../api';
+import { useLiveRelayQuery } from '../realtime/useLiveRelayQuery';
 import InstanceStatusPill from '../../../components/InstanceStatusPill';
 import VersionBadge from '../../../components/VersionBadge';
 import ExpandableHandleWrapper from './handles/ExpandableHandleWrapper';
@@ -39,17 +37,16 @@ const DiagramNode = ({
     resourceHandles = [],
   } = data;
 
-  const api = useApi(massdriverApiRef);
+  // Live query: cost, alarm dot, and upgrade/redeploy/drift badges refresh on
+  // realtime events (with the node kept rendered — no skeleton flash).
   const {
     value: meta,
     loading,
     error,
-  } = useAsync(async () => {
-    const result = (await api.query(NODE_META_QUERY, {
-      id: fullInstanceId,
-    })) as NodeMetaResult;
-    return result;
-  }, [api, fullInstanceId]);
+  } = useLiveRelayQuery<NodeMetaResult>(
+    NODE_META_QUERY,
+    fullInstanceId ? { id: fullInstanceId } : null,
+  );
 
   const instance = meta?.instance ?? null;
   const undeployedPlan = hasUndeployedPlan({
@@ -82,7 +79,11 @@ const DiagramNode = ({
           )}
         </Row>
         <Row>
-          {ociRepoName ? <Type title={ociRepoName}>{ociRepoName}</Type> : <span />}
+          {ociRepoName ? (
+            <Type title={ociRepoName}>{ociRepoName}</Type>
+          ) : (
+            <span />
+          )}
           {metaError ? null : loadingMeta ? (
             <Skeleton variant="rounded" width={64} height={20} />
           ) : (
@@ -134,24 +135,23 @@ const DiagramNode = ({
 
 export default DiagramNode;
 
-const NodeContainer = stylin(
-  Box,
-  ['isSelected'],
-)(({ theme, isSelected }: { theme: any; isSelected?: boolean }) => ({
-  position: 'relative',
-  padding: theme.spacing(2),
-  border: `2px solid ${
-    isSelected ? theme.palette.primary.dark : theme.palette.grey[400]
-  }`,
-  borderRadius: theme.custom.general.borderRadiusLg,
-  backgroundColor: theme.palette.background.paper,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing(1),
-  width: NODE_WIDTH,
-  height: NODE_HEIGHT,
-  cursor: 'pointer',
-}));
+const NodeContainer = stylin(Box, ['isSelected'])(
+  ({ theme, isSelected }: { theme: any; isSelected?: boolean }) => ({
+    position: 'relative',
+    padding: theme.spacing(2),
+    border: `2px solid ${
+      isSelected ? theme.palette.primary.dark : theme.palette.grey[400]
+    }`,
+    borderRadius: theme.custom.general.borderRadiusLg,
+    backgroundColor: theme.palette.background.paper,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(1),
+    width: NODE_WIDTH,
+    height: NODE_HEIGHT,
+    cursor: 'pointer',
+  }),
+);
 
 const NodeSection = stylin(Box)({
   display: 'flex',

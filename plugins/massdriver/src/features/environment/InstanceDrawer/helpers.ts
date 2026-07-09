@@ -22,7 +22,8 @@ export const parseMap = (value: unknown): Record<string, unknown> | null => {
 
 export const formatAttributeValue = (value: unknown): string => {
   if (value === '*') return 'any';
-  if (Array.isArray(value)) return value.length === 0 ? 'any' : value.join(', ');
+  if (Array.isArray(value))
+    return value.length === 0 ? 'any' : value.join(', ');
   return String(value);
 };
 
@@ -71,7 +72,10 @@ export const filterAndPaginateProperties = (
       })
     : properties;
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PROPERTY_PAGE_SIZE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filtered.length / PROPERTY_PAGE_SIZE),
+  );
   const safePage = Math.min(Math.max(page, 1), totalPages);
   const start = (safePage - 1) * PROPERTY_PAGE_SIZE;
   return {
@@ -113,7 +117,9 @@ export const describeThreshold = (alarm: Alarm): string | null => {
   if (!hasComparison && !alarm.period) return null;
   const parts: string[] = [];
   if (hasComparison) {
-    parts.push(`${describeOperator(alarm.comparisonOperator)} ${alarm.threshold}`);
+    parts.push(
+      `${describeOperator(alarm.comparisonOperator)} ${alarm.threshold}`,
+    );
   }
   if (alarm.period) parts.push(`for ${formatPeriod(alarm.period)}`);
   return parts.join(' ');
@@ -128,17 +134,17 @@ export const getStatusLabel = (
   currentState?: Alarm['currentState'],
 ): string => {
   if (!currentState) return 'No data';
-  return (currentState.status && STATUS_LABEL[currentState.status]) ??
+  return (
+    (currentState.status && STATUS_LABEL[currentState.status]) ??
     currentState.status ??
-    'No data';
+    'No data'
+  );
 };
 
 export const getSeverity = (alarm: Alarm): 'firing' | 'ok' | 'unknown' =>
   isFiring(alarm) ? 'firing' : alarm.currentState ? 'ok' : 'unknown';
 
-export const formatMetricLine = (
-  metric?: Alarm['metric'],
-): string | null => {
+export const formatMetricLine = (metric?: Alarm['metric']): string | null => {
   if (!metric) return null;
   const path = [metric.namespace, metric.name].filter(Boolean).join(' / ');
   if (!path && !metric.statistic) return null;
@@ -148,7 +154,9 @@ export const formatMetricLine = (
 };
 
 export const formatAlarmDimensions = (
-  dimensions?: ({ name?: string | null; value?: string | null } | null)[] | null,
+  dimensions?:
+    | ({ name?: string | null; value?: string | null } | null)[]
+    | null,
 ): string =>
   (dimensions ?? [])
     .filter(Boolean)
@@ -176,7 +184,10 @@ export const bucketAlarms = (items?: (Alarm | null)[] | null): AlarmBuckets => {
 
 // --- Resources ---------------------------------------------------------------
 
-export const RESOURCE_STATE = { CREATED: 'CREATED', UNCREATED: 'UNCREATED' } as const;
+export const RESOURCE_STATE = {
+  CREATED: 'CREATED',
+  UNCREATED: 'UNCREATED',
+} as const;
 
 export interface ResourceRow {
   field: string;
@@ -192,7 +203,9 @@ export const buildResourceRows = (
 ): ResourceRow[] => {
   const producedByField = new Map(
     (instanceResources ?? [])
-      .filter((produced): produced is InstanceResourceEntry => Boolean(produced?.field))
+      .filter((produced): produced is InstanceResourceEntry =>
+        Boolean(produced?.field),
+      )
       .map(produced => [produced.field, produced] as const),
   );
 
@@ -244,11 +257,14 @@ export const formatGrantConditions = (recipientConditions: unknown): string => {
     }
   }
   if (typeof recipientConditions === 'object') {
-    const entries = Object.entries(recipientConditions as Record<string, unknown>);
+    const entries = Object.entries(
+      recipientConditions as Record<string, unknown>,
+    );
     if (entries.length === 0) return 'no conditions';
     return entries
-      .map(([key, value]) =>
-        `${key}: ${Array.isArray(value) ? value.join(', ') : String(value)}`,
+      .map(
+        ([key, value]) =>
+          `${key}: ${Array.isArray(value) ? value.join(', ') : String(value)}`,
       )
       .join(' · ');
   }
@@ -273,8 +289,7 @@ export const DEPENDENCY_STATE = {
   UNFULFILLED: 'UNFULFILLED',
 } as const;
 
-type DependencyState =
-  (typeof DEPENDENCY_STATE)[keyof typeof DEPENDENCY_STATE];
+type DependencyState = (typeof DEPENDENCY_STATE)[keyof typeof DEPENDENCY_STATE];
 
 const FULFILLED_STATES = new Set<DependencyState>([
   DEPENDENCY_STATE.REMOTE_REFERENCE,
@@ -282,30 +297,71 @@ const FULFILLED_STATES = new Set<DependencyState>([
   DEPENDENCY_STATE.ENV_DEFAULT,
 ]);
 
+// Shapes matching DEPENDENCIES_QUERY's selections. Typed (rather than `any`)
+// so a schema field rename is a compile error here instead of a silent `—`.
+export interface BundleDependency {
+  name: string;
+  required?: boolean | null;
+  resourceType?: ResourceType | null;
+}
+
+export interface DependencySource {
+  __typename?: string;
+  id?: string;
+  // Connection members
+  fromField?: string | null;
+  fromInstance?: {
+    id: string;
+    name?: string | null;
+    status?: string | null;
+    environment?: { id: string } | null;
+  } | null;
+  link?: {
+    id: string;
+    fromComponent?: { id: string; name?: string | null } | null;
+  } | null;
+  // RemoteReference / EnvironmentDefault members
+  resource?: {
+    id: string;
+    name?: string | null;
+    resourceType?: ResourceType | null;
+  } | null;
+}
+
+export interface InstanceDependency {
+  field: string;
+  required?: boolean | null;
+  resource?: { id: string; name?: string | null } | null;
+  resourceType?: ResourceType | null;
+  source?: DependencySource | null;
+}
+
 export interface DependencyRow {
   field: string;
   required: boolean;
   resourceType?: ResourceType | null;
   state: DependencyState;
-  source: any;
+  source: DependencySource | null;
 }
 
 // The web app overlays a second `inbound links` query to distinguish
 // pending/link-and-default states; that overlay is dropped here (read-only,
 // single fetch), so state is derived purely from the dependency source type.
 export const buildDependencyRows = (
-  bundleDependencies?: any[] | null,
-  instanceDependencies?: any[] | null,
+  bundleDependencies?: (BundleDependency | null)[] | null,
+  instanceDependencies?: (InstanceDependency | null)[] | null,
 ): DependencyRow[] => {
   const byField = new Map(
     (instanceDependencies ?? [])
-      .filter(dep => dep?.field)
+      .filter((dep): dep is InstanceDependency => Boolean(dep?.field))
       .map(dep => [dep.field, dep] as const),
   );
 
   return (bundleDependencies ?? [])
     .filter(
-      dep => dep?.resourceType?.connectionOrientation !== 'ENVIRONMENT_DEFAULT',
+      (dep): dep is BundleDependency =>
+        Boolean(dep) &&
+        dep?.resourceType?.connectionOrientation !== 'ENVIRONMENT_DEFAULT',
     )
     .map(bundleDep => {
       const instanceDep = byField.get(bundleDep.name) ?? null;
@@ -315,10 +371,10 @@ export const buildDependencyRows = (
         sourceType === 'RemoteReference'
           ? DEPENDENCY_STATE.REMOTE_REFERENCE
           : sourceType === 'Connection'
-            ? DEPENDENCY_STATE.CONNECTION
-            : sourceType === 'EnvironmentDefault'
-              ? DEPENDENCY_STATE.ENV_DEFAULT
-              : DEPENDENCY_STATE.UNFULFILLED;
+          ? DEPENDENCY_STATE.CONNECTION
+          : sourceType === 'EnvironmentDefault'
+          ? DEPENDENCY_STATE.ENV_DEFAULT
+          : DEPENDENCY_STATE.UNFULFILLED;
 
       return {
         field: bundleDep.name,
@@ -351,7 +407,8 @@ export const truncateDeploymentId = (id?: string | null): string => {
   return parts.length > 1 ? parts[parts.length - 1] : id;
 };
 
-const PLAN_SOURCE_REGEX = /^Planning deployment ([0-9a-fA-F-]{36})(?:\n([\s\S]*))?$/;
+const PLAN_SOURCE_REGEX =
+  /^Planning deployment ([0-9a-fA-F-]{36})(?:\n([\s\S]*))?$/;
 const ROLLBACK_SOURCE_REGEX =
   /^Rollback to deployment ([0-9a-fA-F-]{36}) \(v([^)]*)\)(?:\n([\s\S]*))?$/;
 
@@ -419,12 +476,41 @@ export const formatDeploymentStatus = (
   const participles = ACTION_PARTICIPLES[action];
   if (status === 'FAILED' && participles) return `${participles.gerund} Failed`;
   if (status === 'COMPLETED' && participles) return participles.past;
-  return `${ACTION_LABELS[action] ?? action} ${STATUS_TITLES[status] ?? status}`;
+  return `${ACTION_LABELS[action] ?? action} ${
+    STATUS_TITLES[status] ?? status
+  }`;
+};
+
+// A deployment is "active" — actively executing or queued — while PENDING or
+// RUNNING. Mirrors the web app's `isDeploymentActive`; used to decide whether
+// to keep the deployment-logs subscription open.
+export const isDeploymentActive = (status?: string | null): boolean =>
+  status === 'PENDING' || status === 'RUNNING';
+
+// Statuses that never produce a deployment log stream. Everything else has (or
+// will have) logs to view in-app.
+export const STATUSES_WITHOUT_LOGS = ['PROPOSED', 'APPROVED', 'REJECTED'];
+
+export const deploymentHasLogs = (status?: string | null): boolean =>
+  Boolean(status) && !STATUSES_WITHOUT_LOGS.includes(status as string);
+
+// Join a deployment's log batches into a single string for LogViewer, matching
+// the web app's `composeText`: each batch may already carry its own newlines, so
+// we concatenate without inserting extra separators and guarantee a trailing \n.
+export const composeLogsText = (
+  logs?: ({ message?: string | null } | null)[] | null,
+): string => {
+  if (!Array.isArray(logs) || logs.length === 0) return '';
+  const joined = logs.map(line => line?.message ?? '').join('');
+  return `\n${joined}${joined.endsWith('\n') ? '' : '\n'}`;
 };
 
 // --- Relative / absolute time (local, avoids app util) -----------------------
 
-const RELATIVE_UNITS: Array<{ unit: Intl.RelativeTimeFormatUnit; seconds: number }> = [
+const RELATIVE_UNITS: Array<{
+  unit: Intl.RelativeTimeFormatUnit;
+  seconds: number;
+}> = [
   { unit: 'year', seconds: 31536000 },
   { unit: 'month', seconds: 2592000 },
   { unit: 'week', seconds: 604800 },
@@ -434,7 +520,9 @@ const RELATIVE_UNITS: Array<{ unit: Intl.RelativeTimeFormatUnit; seconds: number
   { unit: 'second', seconds: 1 },
 ];
 
-const RELATIVE_FORMATTER = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+const RELATIVE_FORMATTER = new Intl.RelativeTimeFormat('en', {
+  numeric: 'auto',
+});
 
 export const formatRelativeTime = (
   isoString?: string | null,
@@ -466,5 +554,7 @@ export const formatAbsoluteDateTime = (
 ): string => {
   if (!isoString) return fallback;
   const date = new Date(isoString);
-  return Number.isNaN(date.getTime()) ? fallback : ABSOLUTE_FORMATTER.format(date);
+  return Number.isNaN(date.getTime())
+    ? fallback
+    : ABSOLUTE_FORMATTER.format(date);
 };

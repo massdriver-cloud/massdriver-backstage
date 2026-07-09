@@ -1,7 +1,4 @@
 import { useMemo, useState } from 'react';
-import { useApi } from '@backstage/frontend-plugin-api';
-import useAsync from 'react-use/esm/useAsync';
-import { instanceTabUrl } from '@massdriver-cloud/backstage-plugin-massdriver-common';
 import Box from '@massdriver/ui/Box';
 import Typography from '@massdriver/ui/Typography';
 import Button from '@massdriver/ui/Button';
@@ -13,7 +10,7 @@ import { alpha, deploymentStatusColors } from '@massdriver/ui/theme';
 import CompareArrowsIcon from '@massdriver/ui/icons/CompareArrowsIcon';
 import FilterListIcon from '@massdriver/ui/icons/FilterListIcon';
 import SortIcon from '@massdriver/ui/icons/SortIcon';
-import { massdriverApiRef } from '../../../../api';
+import { useLiveRelayQuery } from '../../realtime/useLiveRelayQuery';
 import InstanceStatusPill from '../../../../components/InstanceStatusPill';
 import VersionBadge from '../../../../components/VersionBadge';
 import CompareDeploymentsDialog from '../../CompareDeploymentsDialog';
@@ -22,6 +19,7 @@ import { HISTORY_QUERY } from '../queries';
 import {
   formatDeploymentStatus,
   formatElapsed,
+  deploymentHasLogs,
   formatRelativeTime,
   parsePlanMessage,
   parseRollbackMessage,
@@ -30,9 +28,10 @@ import {
 } from '../helpers';
 import type { Deployment, HistoryInstance } from '../types';
 import ViewDeploymentDetails from './ViewDeploymentDetails';
+import { useOpenLogs } from './DeploymentLogsPanel';
 import {
   DisabledApprovalCluster,
-  LogsLinkButton,
+  LogsButton,
 } from './DeploymentReadOnlyActions';
 
 // --- Sort + filter controls (ported verbatim from the web app's
@@ -80,26 +79,29 @@ interface HistoryResult {
  * driven by local state (the drawer uses `?tab=`, not URL dialog params).
  */
 export const HistoryTab = ({ instanceId }: { instanceId: string | null }) => {
-  const api = useApi(massdriverApiRef);
+  const openLogs = useOpenLogs();
   const [sortValue, setSortValue] = useState(DEFAULT_SORT_VALUE);
   const [actionFilter, setActionFilter] = useState(DEFAULT_ACTION_VALUE);
-  const [selectedDeploymentId, setSelectedDeploymentId] = useState<string | null>(
-    null,
-  );
+  const [selectedDeploymentId, setSelectedDeploymentId] = useState<
+    string | null
+  >(null);
   const [compareOpen, setCompareOpen] = useState(false);
 
-  const { value, loading, error } = useAsync(async () => {
-    if (!instanceId) return null;
-    const filter: Record<string, unknown> = {
-      instanceId: { eq: instanceId },
-      ...(actionFilter !== 'ALL' && { action: { eq: actionFilter } }),
-    };
-    return (await api.query(HISTORY_QUERY, {
-      instanceId,
-      filter,
-      sort: sortValueToInput(sortValue),
-    })) as HistoryResult;
-  }, [api, instanceId, actionFilter, sortValue]);
+  // Live query: realtime revision bumps keep the rendered list mounted;
+  // changing instance/filter/sort resets to a fresh loading state.
+  const { value, loading, error } = useLiveRelayQuery<HistoryResult>(
+    HISTORY_QUERY,
+    instanceId
+      ? {
+          instanceId,
+          filter: {
+            instanceId: { eq: instanceId },
+            ...(actionFilter !== 'ALL' && { action: { eq: actionFilter } }),
+          },
+          sort: sortValueToInput(sortValue),
+        }
+      : null,
+  );
 
   const items = useMemo(
     () => (value?.deployments?.items ?? []).filter(Boolean) as Deployment[],
@@ -107,11 +109,6 @@ export const HistoryTab = ({ instanceId }: { instanceId: string | null }) => {
   );
   const instance = value?.instance ?? null;
   const canCompare = items.length >= 2;
-
-  const logsUrl =
-    instanceId && api.appUrl
-      ? instanceTabUrl(api.appUrl, api.organizationId, instanceId, 'history')
-      : '';
 
   const showInitializedRow = Boolean(instance) && actionFilter === 'ALL';
 
@@ -187,7 +184,7 @@ export const HistoryTab = ({ instanceId }: { instanceId: string | null }) => {
                 <DeploymentRow
                   key={deployment.id}
                   deployment={deployment}
-                  logsUrl={logsUrl}
+                  onViewLogs={openLogs}
                   onShowDetails={setSelectedDeploymentId}
                 />
               ))}
@@ -219,7 +216,6 @@ export const HistoryTab = ({ instanceId }: { instanceId: string | null }) => {
 
       <ViewDeploymentDetails
         deploymentId={selectedDeploymentId}
-        instanceId={instanceId}
         onClose={() => setSelectedDeploymentId(null)}
         onShowSource={setSelectedDeploymentId}
       />
@@ -236,14 +232,17 @@ export default HistoryTab;
 
 const DeploymentRow = ({
   deployment,
-  logsUrl,
+  onViewLogs,
   onShowDetails,
 }: {
   deployment: Deployment;
-  logsUrl: string;
+  onViewLogs: (id: string) => void;
   onShowDetails: (id: string) => void;
 }) => {
-  const statusLabel = formatDeploymentStatus(deployment.action, deployment.status);
+  const statusLabel = formatDeploymentStatus(
+    deployment.action,
+    deployment.status,
+  );
   const elapsed = formatElapsed(deployment.elapsedTime);
   const time = formatRelativeTime(
     deployment.lastTransitionedAt ?? deployment.createdAt,
@@ -254,9 +253,7 @@ const DeploymentRow = ({
   const isProposed = deployment.status === 'PROPOSED';
 
   const planSource =
-    deployment.action === 'PLAN'
-      ? parsePlanMessage(deployment.message)
-      : null;
+    deployment.action === 'PLAN' ? parsePlanMessage(deployment.message) : null;
   const rollbackSource = parseRollbackMessage(deployment.message);
   const displayMessage = stripMessageContext(deployment.message);
 
@@ -268,7 +265,9 @@ const DeploymentRow = ({
     <Row>
       <RowA>
         <StatusChip statusColor={statusColor}>{statusLabel}</StatusChip>
-        {deployment.version ? <VersionBadge version={deployment.version} /> : null}
+        {deployment.version ? (
+          <VersionBadge version={deployment.version} />
+        ) : null}
         {rollbackSource ? <RollbackTag>Rollback</RollbackTag> : null}
         <RowSpacer />
         <Tooltip
@@ -343,8 +342,8 @@ const DeploymentRow = ({
       <Footer>
         {isProposed ? (
           <DisabledApprovalCluster />
-        ) : logsUrl ? (
-          <LogsLinkButton href={logsUrl} />
+        ) : deploymentHasLogs(deployment.status) ? (
+          <LogsButton onClick={() => onViewLogs(deployment.id)} />
         ) : null}
       </Footer>
     </Row>
@@ -435,22 +434,25 @@ const RowA = stylin(Box)(({ theme }: { theme: any }) => ({
 
 const RowSpacer = stylin(Box)({ flex: 1 });
 
-const StatusChip = stylin(
-  Box,
-  ['statusColor'],
-)(({ theme, statusColor }: { theme: any; statusColor: string | null }) => ({
-  display: 'inline-flex',
-  alignItems: 'center',
-  fontSize: theme.typography.pxToRem(11),
-  fontWeight: theme.typography.fontWeightMedium,
-  textTransform: 'lowercase',
-  letterSpacing: '0.3px',
-  padding: theme.spacing(0.25, 0.75),
-  borderRadius: 1,
-  color: statusColor ?? theme.palette.text.secondary,
-  backgroundColor: statusColor ? `${statusColor}1f` : theme.palette.action.hover,
-  border: `1px solid ${statusColor ? `${statusColor}33` : theme.palette.divider}`,
-}));
+const StatusChip = stylin(Box, ['statusColor'])(
+  ({ theme, statusColor }: { theme: any; statusColor: string | null }) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    fontSize: theme.typography.pxToRem(11),
+    fontWeight: theme.typography.fontWeightMedium,
+    textTransform: 'lowercase',
+    letterSpacing: '0.3px',
+    padding: theme.spacing(0.25, 0.75),
+    borderRadius: 1,
+    color: statusColor ?? theme.palette.text.secondary,
+    backgroundColor: statusColor
+      ? `${statusColor}1f`
+      : theme.palette.action.hover,
+    border: `1px solid ${
+      statusColor ? `${statusColor}33` : theme.palette.divider
+    }`,
+  }),
+);
 
 const IdTooltip = stylin('span')(({ theme }: { theme: any }) => ({
   display: 'flex',
