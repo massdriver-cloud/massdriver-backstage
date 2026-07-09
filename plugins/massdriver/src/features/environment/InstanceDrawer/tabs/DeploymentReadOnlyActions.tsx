@@ -50,12 +50,14 @@ export const DisabledRollbackButton = ({ size = 'small' }: { size?: Size }) => (
 export const LogsLinkButton = ({
   href,
   size = 'small',
+  variant = 'text',
 }: {
   href: string;
   size?: Size;
+  variant?: 'text' | 'outlined' | 'contained';
 }) => (
   <Button
-    variant="outlined"
+    variant={variant}
     size={size}
     component="a"
     href={href}

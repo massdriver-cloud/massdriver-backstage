@@ -32,7 +32,6 @@ import type { Deployment, HistoryInstance } from '../types';
 import ViewDeploymentDetails from './ViewDeploymentDetails';
 import {
   DisabledApprovalCluster,
-  DisabledRollbackButton,
   LogsLinkButton,
 } from './DeploymentReadOnlyActions';
 
@@ -253,8 +252,6 @@ const DeploymentRow = ({
   const truncated = truncateDeploymentId(deployment.id);
 
   const isProposed = deployment.status === 'PROPOSED';
-  const isRollbackEligible =
-    deployment.action === 'PROVISION' && deployment.status === 'COMPLETED';
 
   const planSource =
     deployment.action === 'PLAN'
@@ -346,12 +343,9 @@ const DeploymentRow = ({
       <Footer>
         {isProposed ? (
           <DisabledApprovalCluster />
-        ) : (
-          <>
-            {isRollbackEligible ? <DisabledRollbackButton /> : null}
-            {logsUrl ? <LogsLinkButton href={logsUrl} /> : null}
-          </>
-        )}
+        ) : logsUrl ? (
+          <LogsLinkButton href={logsUrl} />
+        ) : null}
       </Footer>
     </Row>
   );
