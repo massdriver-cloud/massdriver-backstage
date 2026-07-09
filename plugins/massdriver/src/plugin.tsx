@@ -9,8 +9,8 @@ import {
   EntityCardBlueprint,
   EntityContentBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
-import CloudQueueIcon from '@material-ui/icons/CloudQueue';
 import { massdriverApiRef, MassdriverClientApi } from './api';
+import { MassdriverIcon } from './components/MassdriverIcon';
 import { isMassdriverEntity } from './entity';
 import { rootRouteRef } from './routes';
 
@@ -30,7 +30,7 @@ const page = PageBlueprint.make({
     path: '/massdriver',
     routeRef: rootRouteRef,
     title: 'Massdriver',
-    icon: <CloudQueueIcon />,
+    icon: <MassdriverIcon />,
     // The Massdriver shell renders its own header; fill the content area.
     noHeader: true,
     loader: () =>
