@@ -27,7 +27,11 @@ export const ComparisonValueCell = ({
   const present = side?.present === true;
 
   if (!present) {
-    return isMissing ? <MissingPill>not set</MissingPill> : <Missing>—</Missing>;
+    return isMissing ? (
+      <MissingPill>not set</MissingPill>
+    ) : (
+      <Missing>—</Missing>
+    );
   }
 
   const value = side?.value;
@@ -37,9 +41,7 @@ export const ComparisonValueCell = ({
 
   const display = formatValue(value);
   const truncated = display.length > TRUNCATE_LENGTH;
-  const visible = truncated
-    ? `${display.slice(0, TRUNCATE_LENGTH)}…`
-    : display;
+  const visible = truncated ? `${display.slice(0, TRUNCATE_LENGTH)}…` : display;
 
   const cell = <ValueText isDifferent={isDifferent}>{visible}</ValueText>;
 
@@ -54,20 +56,19 @@ export const ComparisonValueCell = ({
 
 export default ComparisonValueCell;
 
-const ValueText = stylin(
-  Box,
-  ['isDifferent'],
-)(({ theme, isDifferent }: { theme: any; isDifferent: boolean }) => ({
-  fontFamily: theme.typography.fontFamilyMono,
-  fontSize: theme.typography.caption.fontSize,
-  color: isDifferent
-    ? theme.palette.text.primary
-    : theme.palette.text.secondary,
-  fontWeight: isDifferent ? 600 : 400,
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-}));
+const ValueText = stylin(Box, ['isDifferent'])(
+  ({ theme, isDifferent }: { theme: any; isDifferent: boolean }) => ({
+    fontFamily: theme.typography.fontFamilyMono,
+    fontSize: theme.typography.caption.fontSize,
+    color: isDifferent
+      ? theme.palette.text.primary
+      : theme.palette.text.secondary,
+    fontWeight: isDifferent ? 600 : 400,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  }),
+);
 
 const NullLiteral = stylin(Box)(({ theme }: { theme: any }) => ({
   fontStyle: 'italic',

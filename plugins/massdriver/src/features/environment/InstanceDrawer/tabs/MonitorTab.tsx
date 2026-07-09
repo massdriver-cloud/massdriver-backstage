@@ -14,7 +14,10 @@ import type { Alarm } from '../types';
 /** Read-only Monitor tab: firing + configured alarms. */
 export const MonitorTab = ({ instanceId }: { instanceId: string | null }) => {
   const { value, loading, error } = useInstanceApiQuery<{
-    instance: { id: string; alarms?: { items?: (Alarm | null)[] | null } } | null;
+    instance: {
+      id: string;
+      alarms?: { items?: (Alarm | null)[] | null };
+    } | null;
   }>(ALARMS_QUERY, instanceId);
 
   const buckets = useMemo(
@@ -54,9 +57,14 @@ export const MonitorTab = ({ instanceId }: { instanceId: string | null }) => {
             </IconCircle>
             <EmptyTitle variant="body2">No alarms configured</EmptyTitle>
             <EmptyDescription variant="caption">
-              Alarms appear here once your bundle provisions monitoring resources.
+              Alarms appear here once your bundle provisions monitoring
+              resources.
             </EmptyDescription>
-            <DocsLink href={ALARMS_DOCS_URL} target="_blank" rel="noopener noreferrer">
+            <DocsLink
+              href={ALARMS_DOCS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Learn about alarms
             </DocsLink>
           </Empty>

@@ -82,18 +82,17 @@ const PathCellWrap = stylin(Box)(({ theme }: { theme: any }) => ({
   minWidth: 0,
 }));
 
-const StatusStripe = stylin(
-  Box,
-  ['status'],
-)(({ theme, status }: { theme: any; status: ComparisonStatus }) => ({
-  width: 3,
-  alignSelf: 'stretch',
-  minHeight: theme.spacing(3),
-  borderRadius: '2px',
-  backgroundColor: stripeColor(theme, status),
-  flexShrink: 0,
-  marginLeft: '-4px',
-}));
+const StatusStripe = stylin(Box, ['status'])(
+  ({ theme, status }: { theme: any; status: ComparisonStatus }) => ({
+    width: 3,
+    alignSelf: 'stretch',
+    minHeight: theme.spacing(3),
+    borderRadius: '2px',
+    backgroundColor: stripeColor(theme, status),
+    flexShrink: 0,
+    marginLeft: '-4px',
+  }),
+);
 
 const PathText = stylin(Box)(({ theme }: { theme: any }) => ({
   fontFamily: theme.typography.fontFamilyMono,

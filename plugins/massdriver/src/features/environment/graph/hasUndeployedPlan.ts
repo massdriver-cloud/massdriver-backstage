@@ -55,10 +55,7 @@ const hasUndeployedPlan = ({
   const current = parseMap(instanceParams);
   const lastProvisioned = parseMap(latestProvisionParams);
   if (!current || !lastProvisioned) return false;
-  return !deepEqual(
-    stripMdMetadata(lastProvisioned),
-    stripMdMetadata(current),
-  );
+  return !deepEqual(stripMdMetadata(lastProvisioned), stripMdMetadata(current));
 };
 
 export default hasUndeployedPlan;

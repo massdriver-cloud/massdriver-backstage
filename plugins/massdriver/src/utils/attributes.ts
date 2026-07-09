@@ -1,7 +1,5 @@
 /** Parse a Massdriver `Map` scalar (object or JSON string) into an object. */
-export const parseMap = (
-  value: unknown,
-): Record<string, unknown> | null => {
+export const parseMap = (value: unknown): Record<string, unknown> | null => {
   if (value == null) {
     return null;
   }

@@ -58,7 +58,8 @@ export const ResultsStep = ({
   );
 
   const columns = useMemo(
-    () => buildCompareColumns({ leftLabel: sourceName, rightLabel: targetName }),
+    () =>
+      buildCompareColumns({ leftLabel: sourceName, rightLabel: targetName }),
     [sourceName, targetName],
   );
 

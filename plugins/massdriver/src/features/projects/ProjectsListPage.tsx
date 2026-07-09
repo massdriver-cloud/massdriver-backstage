@@ -22,7 +22,10 @@ export const ProjectsListPage = () => {
       description="Projects are the top-level organizational unit in the platform. Each project can contain multiple environments, which are used to deploy and manage your infrastructure."
       actions={
         <OpenInMassdriverButton
-          url={`${projectsUrl(api.appUrl, api.organizationId)}?createProject=true`}
+          url={`${projectsUrl(
+            api.appUrl,
+            api.organizationId,
+          )}?createProject=true`}
         >
           Create Project
         </OpenInMassdriverButton>

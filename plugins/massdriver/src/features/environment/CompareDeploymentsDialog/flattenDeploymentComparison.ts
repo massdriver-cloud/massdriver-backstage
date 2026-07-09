@@ -52,7 +52,9 @@ const flattenDeploymentComparison = (
   if (!comparison) return [];
 
   const version = comparison.version;
-  const params = (comparison.params ?? []).filter(Boolean) as DeploymentCompareParam[];
+  const params = (comparison.params ?? []).filter(
+    Boolean,
+  ) as DeploymentCompareParam[];
 
   const versionSource: ComparisonSide = {
     present: version?.source != null,

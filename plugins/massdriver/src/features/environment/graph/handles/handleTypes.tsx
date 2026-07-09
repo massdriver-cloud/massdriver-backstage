@@ -21,10 +21,11 @@ const DefaultHandle = forwardRef<any, any>(
   ),
 );
 
-const DefaultStyledHandle = stylin(
-  Handle,
-  ['xPos', 'yPos', 'isValidConnectionTarget'],
-)(
+const DefaultStyledHandle = stylin(Handle, [
+  'xPos',
+  'yPos',
+  'isValidConnectionTarget',
+])(
   ({
     theme,
     xPos,
@@ -69,10 +70,7 @@ const ErrorHandle = forwardRef<any, any>(
   ),
 );
 
-const ErrorStyledHandle = stylin(
-  Handle,
-  ['xPos', 'yPos'],
-)(
+const ErrorStyledHandle = stylin(Handle, ['xPos', 'yPos'])(
   ({
     theme,
     xPos,
@@ -108,10 +106,12 @@ const RequiredHandle = forwardRef<any, any>(
   ),
 );
 
-const RequiredStyledHandle = stylin(
-  Handle,
-  ['hasConnection', 'xPos', 'yPos', 'isValidConnectionTarget'],
-)(
+const RequiredStyledHandle = stylin(Handle, [
+  'hasConnection',
+  'xPos',
+  'yPos',
+  'isValidConnectionTarget',
+])(
   ({
     theme,
     hasConnection,
@@ -144,8 +144,8 @@ const RequiredStyledHandle = stylin(
         isValidConnectionTarget
           ? theme.palette.success.main
           : hasConnection
-            ? theme.palette.grey[600]
-            : theme.palette.error.main
+          ? theme.palette.grey[600]
+          : theme.palette.error.main
       }`,
       '&.connectable': { cursor: 'pointer' },
       '&:hover': {
@@ -163,18 +163,17 @@ const RequiredStyledHandle = stylin(
   }),
 );
 
-const Dot = stylin(
-  Box,
-  ['hasConnection'],
-)(({ theme, hasConnection }: { theme: any; hasConnection?: boolean }) => ({
-  width: '4px',
-  height: '4px',
-  borderRadius: '50%',
-  pointerEvents: 'none',
-  backgroundColor: hasConnection
-    ? theme.palette.grey[600]
-    : theme.palette.error.main,
-}));
+const Dot = stylin(Box, ['hasConnection'])(
+  ({ theme, hasConnection }: { theme: any; hasConnection?: boolean }) => ({
+    width: '4px',
+    height: '4px',
+    borderRadius: '50%',
+    pointerEvents: 'none',
+    backgroundColor: hasConnection
+      ? theme.palette.grey[600]
+      : theme.palette.error.main,
+  }),
+);
 
 const REMOTE_ICON_CLASS = 'remote-reference-handle-icon';
 
@@ -186,10 +185,12 @@ const RemoteReferenceHandle = forwardRef<any, any>(
   ),
 );
 
-const RemoteStyledHandle = stylin(
-  Handle,
-  ['hasConnection', 'xPos', 'yPos', 'isValidConnectionTarget'],
-)(
+const RemoteStyledHandle = stylin(Handle, [
+  'hasConnection',
+  'xPos',
+  'yPos',
+  'isValidConnectionTarget',
+])(
   ({
     theme,
     xPos,

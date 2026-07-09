@@ -11,11 +11,11 @@ iframed and no changes to the Massdriver app are required.
 
 ## Packages
 
-| Package | Role |
-| --- | --- |
-| `@massdriver-cloud/backstage-plugin-massdriver` | Frontend: entity card, entity tab, and projects page |
-| `@massdriver-cloud/backstage-plugin-massdriver-backend` | Backend: authenticated GraphQL relay |
-| `@massdriver-cloud/backstage-plugin-massdriver-common` | Shared types, annotations, deep-link builders |
+| Package                                                 | Role                                                 |
+| ------------------------------------------------------- | ---------------------------------------------------- |
+| `@massdriver-cloud/backstage-plugin-massdriver`         | Frontend: entity card, entity tab, and projects page |
+| `@massdriver-cloud/backstage-plugin-massdriver-backend` | Backend: authenticated GraphQL relay                 |
+| `@massdriver-cloud/backstage-plugin-massdriver-common`  | Shared types, annotations, deep-link builders        |
 
 ## Install
 

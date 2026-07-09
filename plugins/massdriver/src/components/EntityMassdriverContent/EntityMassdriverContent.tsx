@@ -19,10 +19,7 @@ import { InstanceRow } from '../../queries';
 import { useMassdriverInstances } from '../../useInstances';
 import { InstanceStatusIndicator } from '../InstanceStatusIndicator';
 
-const columns = (
-  appUrl: string,
-  orgId: string,
-): TableColumn<InstanceRow>[] => [
+const columns = (appUrl: string, orgId: string): TableColumn<InstanceRow>[] => [
   {
     title: 'Instance',
     field: 'id',

@@ -45,7 +45,9 @@ export const AlarmCard = ({ alarm }: { alarm: Alarm }) => {
       </Header>
       <Body>
         <Title title={displayName}>{displayName}</Title>
-        {metricLine ? <MetricLine title={metricLine}>{metricLine}</MetricLine> : null}
+        {metricLine ? (
+          <MetricLine title={metricLine}>{metricLine}</MetricLine>
+        ) : null}
         {threshold ? (
           <ThresholdBlock>
             <ThresholdLabel>Triggers when</ThresholdLabel>{' '}
@@ -74,36 +76,37 @@ const Card = stylin(Box)(({ theme }: { theme: any }) => ({
   overflow: 'hidden',
 }));
 
-const Header = stylin(
-  Box,
-  ['severity'],
-)(({ theme, severity }: { theme: any; severity: string }) => {
-  const palette: Record<string, { color: string; backgroundColor: string }> = {
-    firing: {
-      color: theme.palette.error.contrastText,
-      backgroundColor: theme.palette.error.main,
-    },
-    ok: {
-      color: theme.palette.success.dark,
-      backgroundColor: theme.palette.success.lighter ?? theme.palette.success.light,
-    },
-    unknown: {
-      color: theme.palette.text.secondary,
-      backgroundColor: theme.palette.action.hover,
-    },
-  };
-  const tone = palette[severity] ?? palette.unknown;
-  return {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: theme.spacing(1),
-    padding: theme.spacing(0.5, 1.25),
-    color: tone.color,
-    backgroundColor: tone.backgroundColor,
-    fontSize: theme.typography.pxToRem(11),
-  };
-});
+const Header = stylin(Box, ['severity'])(
+  ({ theme, severity }: { theme: any; severity: string }) => {
+    const palette: Record<string, { color: string; backgroundColor: string }> =
+      {
+        firing: {
+          color: theme.palette.error.contrastText,
+          backgroundColor: theme.palette.error.main,
+        },
+        ok: {
+          color: theme.palette.success.dark,
+          backgroundColor:
+            theme.palette.success.lighter ?? theme.palette.success.light,
+        },
+        unknown: {
+          color: theme.palette.text.secondary,
+          backgroundColor: theme.palette.action.hover,
+        },
+      };
+    const tone = palette[severity] ?? palette.unknown;
+    return {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: theme.spacing(1),
+      padding: theme.spacing(0.5, 1.25),
+      color: tone.color,
+      backgroundColor: tone.backgroundColor,
+      fontSize: theme.typography.pxToRem(11),
+    };
+  },
+);
 
 const HeaderLeft = stylin(Box)(({ theme }: { theme: any }) => ({
   display: 'flex',

@@ -70,7 +70,10 @@ const Diagram = ({
     fileNameBase: snapshotName,
   });
 
-  const handleNodeClick = (_event: unknown, node: { data?: { id?: string } }) => {
+  const handleNodeClick = (
+    _event: unknown,
+    node: { data?: { id?: string } },
+  ) => {
     const scopedComponentId = node?.data?.id;
     if (scopedComponentId) onNodeClick?.(scopedComponentId);
   };

@@ -13,7 +13,10 @@ import CheckIcon from '@massdriver/ui/icons/CheckIcon';
 import CloseIcon from '@massdriver/ui/icons/CloseIcon';
 import stylin from '@massdriver/ui/stylin';
 import { massdriverApiRef } from '../../../api';
-import { buildAttributesColumn, Code } from '../../../components/AttributesColumn';
+import {
+  buildAttributesColumn,
+  Code,
+} from '../../../components/AttributesColumn';
 import { ForkPill } from '../../../components/ForkPill';
 import { OpenInMassdriverButton } from '../../../components/OpenInMassdriverButton';
 import { RouterLinkAdapter } from '../../../components/RouterLinkAdapter';

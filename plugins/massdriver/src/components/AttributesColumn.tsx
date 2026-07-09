@@ -57,7 +57,10 @@ export const buildAttributesColumn = ({
       directText={directText}
       effectiveText={effectiveText}
     />,
-    (_value: unknown, row: { attributes?: unknown; effectiveAttributes?: unknown }) => (
+    (
+      _value: unknown,
+      row: { attributes?: unknown; effectiveAttributes?: unknown },
+    ) => (
       <AttributesSummaryCell
         direct={row.attributes}
         effective={row.effectiveAttributes}

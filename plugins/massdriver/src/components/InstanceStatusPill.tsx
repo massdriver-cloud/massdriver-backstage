@@ -52,10 +52,7 @@ export default InstanceStatusPill;
 
 // Background and border use 12% / 20% alpha tints of the flat status color,
 // matching the web app's pill so surfaces stay visually consistent.
-const StyledChip = stylin(
-  Chip,
-  ['statusColor', 'external'],
-)(
+const StyledChip = stylin(Chip, ['statusColor', 'external'])(
   ({
     theme,
     statusColor,

@@ -26,7 +26,9 @@ const Group = ({
     ) : (
       <BulletList>
         {entries.map(([key, value]) => (
-          <BulletItem key={key}>{`${key}: ${formatAttributeValue(value)}`}</BulletItem>
+          <BulletItem key={key}>{`${key}: ${formatAttributeValue(
+            value,
+          )}`}</BulletItem>
         ))}
       </BulletList>
     )}

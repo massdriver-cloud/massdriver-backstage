@@ -1,9 +1,4 @@
-import type {
-  Component,
-  Connection,
-  Instance,
-  Link,
-} from './diagramFactory';
+import type { Component, Connection, Instance, Link } from './diagramFactory';
 
 // Blueprint of a project's components + links (the graph's static topology).
 export const PROJECT_BLUEPRINT_QUERY = `

@@ -18,10 +18,7 @@ export const MassdriverHeader = () => {
 
   return (
     <HeaderRoot>
-      <Logo
-        src={mode === 'dark' ? darkBgLogo : lightBgLogo}
-        alt="Massdriver"
-      />
+      <Logo src={mode === 'dark' ? darkBgLogo : lightBgLogo} alt="Massdriver" />
       <Tooltip title="Toggle theme" arrow>
         <IconButton onClick={toggleMode} aria-label="toggle theme" size="small">
           {mode === 'dark' ? (

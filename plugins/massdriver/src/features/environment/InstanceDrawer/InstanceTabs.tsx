@@ -111,35 +111,33 @@ const StyledTabs = stylin(Tabs)({
   width: '100%',
 });
 
-const StyledTab = stylin(
-  Tab,
-  ['measured'],
-)(({ measured }: { measured: boolean }) => ({
-  ...(measured && { flex: 1 }),
-}));
-
-const MoreButton = stylin(
-  IconButton,
-  ['selected'],
-)(({ theme, selected }: { theme: any; selected: boolean }) => ({
-  flexShrink: 0,
-  borderRadius: 0,
-  height: '100%',
-  width: MORE_BUTTON_WIDTH,
-  position: 'relative',
-  color: selected ? theme.palette.primary.main : theme.palette.text.secondary,
-  '&:hover': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  ...(selected && {
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      height: 2,
-      backgroundColor: theme.palette.primary.main,
-    },
+const StyledTab = stylin(Tab, ['measured'])(
+  ({ measured }: { measured: boolean }) => ({
+    ...(measured && { flex: 1 }),
   }),
-}));
+);
+
+const MoreButton = stylin(IconButton, ['selected'])(
+  ({ theme, selected }: { theme: any; selected: boolean }) => ({
+    flexShrink: 0,
+    borderRadius: 0,
+    height: '100%',
+    width: MORE_BUTTON_WIDTH,
+    position: 'relative',
+    color: selected ? theme.palette.primary.main : theme.palette.text.secondary,
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    ...(selected && {
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 2,
+        backgroundColor: theme.palette.primary.main,
+      },
+    }),
+  }),
+);

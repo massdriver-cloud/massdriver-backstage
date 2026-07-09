@@ -165,18 +165,17 @@ const Row = stylin(Box)({
   overflow: 'hidden',
 });
 
-const RowText = stylin(
-  Typography,
-  ['hasAlerts'],
-)(({ theme, hasAlerts }: { theme: any; hasAlerts?: boolean }) => ({
-  fontSize: '13px',
-  fontWeight: 400,
-  color: hasAlerts ? theme.palette.error.main : theme.palette.text.secondary,
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-  minWidth: 0,
-}));
+const RowText = stylin(Typography, ['hasAlerts'])(
+  ({ theme, hasAlerts }: { theme: any; hasAlerts?: boolean }) => ({
+    fontSize: '13px',
+    fontWeight: 400,
+    color: hasAlerts ? theme.palette.error.main : theme.palette.text.secondary,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    minWidth: 0,
+  }),
+);
 
 const EditedIcon = stylin(EditIcon)(({ theme }: { theme: any }) => ({
   width: 16,
@@ -185,25 +184,23 @@ const EditedIcon = stylin(EditIcon)(({ theme }: { theme: any }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const AlertsIcon = stylin(
-  NotificationsIcon,
-  ['hasAlerts'],
-)(({ theme, hasAlerts }: { theme: any; hasAlerts?: boolean }) => ({
-  width: 16,
-  height: 16,
-  flexShrink: 0,
-  color: hasAlerts ? theme.palette.error.main : theme.palette.text.secondary,
-}));
+const AlertsIcon = stylin(NotificationsIcon, ['hasAlerts'])(
+  ({ theme, hasAlerts }: { theme: any; hasAlerts?: boolean }) => ({
+    width: 16,
+    height: 16,
+    flexShrink: 0,
+    color: hasAlerts ? theme.palette.error.main : theme.palette.text.secondary,
+  }),
+);
 
-const MoneyIcon = stylin(
-  AttachMoneyIcon,
-  ['active'],
-)(({ theme, active }: { theme: any; active?: boolean }) => ({
-  width: 16,
-  height: 16,
-  flexShrink: 0,
-  color: active ? theme.palette.success.main : theme.palette.text.secondary,
-}));
+const MoneyIcon = stylin(AttachMoneyIcon, ['active'])(
+  ({ theme, active }: { theme: any; active?: boolean }) => ({
+    width: 16,
+    height: 16,
+    flexShrink: 0,
+    color: active ? theme.palette.success.main : theme.palette.text.secondary,
+  }),
+);
 
 const TrendUp = stylin(ArrowUpwardIcon)(({ theme }: { theme: any }) => ({
   width: 14,

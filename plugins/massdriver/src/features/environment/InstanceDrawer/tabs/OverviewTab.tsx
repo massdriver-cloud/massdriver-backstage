@@ -119,7 +119,9 @@ export const OverviewTab = ({ instanceId }: { instanceId: string | null }) => {
               <Field>
                 <Label>Name</Label>
                 <ValueRow>
-                  <Value title={instance.name ?? '—'}>{instance.name ?? '—'}</Value>
+                  <Value title={instance.name ?? '—'}>
+                    {instance.name ?? '—'}
+                  </Value>
                   {instance.name ? (
                     <CopyButton text={instance.name} tooltip="Copy name" />
                   ) : null}
@@ -138,7 +140,11 @@ export const OverviewTab = ({ instanceId }: { instanceId: string | null }) => {
             <SectionHeaderRow>
               <Header>Version</Header>
               {changeVersionUrl && instance.status !== 'EXTERNAL' ? (
-                <Tooltip arrow title="Change version in Massdriver" placement="top">
+                <Tooltip
+                  arrow
+                  title="Change version in Massdriver"
+                  placement="top"
+                >
                   <HeaderLink
                     href={changeVersionUrl}
                     target="_blank"
@@ -225,7 +231,9 @@ export const OverviewTab = ({ instanceId }: { instanceId: string | null }) => {
             }}
             onPrevPage={() => setPage(current => Math.max(1, current - 1))}
             onNextPage={() =>
-              setPage(current => Math.min(propertiesView.totalPages, current + 1))
+              setPage(current =>
+                Math.min(propertiesView.totalPages, current + 1),
+              )
             }
           />
         </Root>
@@ -380,11 +388,15 @@ const PropertyItem = ({
       <PropHeader>
         <PropContent>
           <PropName title={name}>{name}</PropName>
-          {!expanded ? <PropValueText title={formatted}>{formatted}</PropValueText> : null}
+          {!expanded ? (
+            <PropValueText title={formatted}>{formatted}</PropValueText>
+          ) : null}
           {path ? <PropPath title={path}>{path}</PropPath> : null}
         </PropContent>
         <PropActions>
-          {value != null ? <CopyButton text={formatted} tooltip="Copy value" /> : null}
+          {value != null ? (
+            <CopyButton text={formatted} tooltip="Copy value" />
+          ) : null}
           {isMultiline ? (
             <ExpandToggle
               expanded={expanded}
@@ -593,9 +605,14 @@ const SearchField = stylin(TextField)(({ theme }: { theme: any }) => ({
   '.MuiOutlinedInput-root': {
     fontSize: theme.typography.pxToRem(12),
     borderRadius: 0,
-    '& fieldset': { border: 'none', borderBottom: `1px solid ${theme.palette.divider}` },
+    '& fieldset': {
+      border: 'none',
+      borderBottom: `1px solid ${theme.palette.divider}`,
+    },
     '&:hover fieldset': { borderBottom: `1px solid ${theme.palette.divider}` },
-    '&.Mui-focused fieldset': { borderBottom: `1px solid ${theme.palette.divider}` },
+    '&.Mui-focused fieldset': {
+      borderBottom: `1px solid ${theme.palette.divider}`,
+    },
   },
   '.MuiOutlinedInput-input': {
     paddingTop: theme.spacing(1),
@@ -642,12 +659,11 @@ const PageButton = stylin(IconButton)(({ theme }: { theme: any }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const PropContainer = stylin(
-  Box,
-  ['isLast'],
-)(({ theme, isLast }: { theme: any; isLast: boolean }) => ({
-  borderBottom: isLast ? 'none' : `1px solid ${theme.palette.divider}`,
-}));
+const PropContainer = stylin(Box, ['isLast'])(
+  ({ theme, isLast }: { theme: any; isLast: boolean }) => ({
+    borderBottom: isLast ? 'none' : `1px solid ${theme.palette.divider}`,
+  }),
+);
 
 const PropHeader = stylin(Box)(({ theme }: { theme: any }) => ({
   display: 'flex',
@@ -700,15 +716,14 @@ const PropActions = stylin(Box)({
   flexShrink: 0,
 });
 
-const ExpandToggle = stylin(
-  IconButton,
-  ['expanded'],
-)(({ theme, expanded }: { theme: any; expanded: boolean }) => ({
-  padding: theme.spacing(0.75),
-  color: theme.palette.text.disabled,
-  transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
-  transition: 'transform 150ms ease',
-}));
+const ExpandToggle = stylin(IconButton, ['expanded'])(
+  ({ theme, expanded }: { theme: any; expanded: boolean }) => ({
+    padding: theme.spacing(0.75),
+    color: theme.palette.text.disabled,
+    transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+    transition: 'transform 150ms ease',
+  }),
+);
 
 const ExpandIcon = stylin(ExpandCircleDownOutlinedIcon)({
   width: 18,

@@ -28,7 +28,11 @@ const connectionSelector = ({ inProgress }: { inProgress: boolean }) =>
 
 const transitionStyle = (isOpen: boolean, index: number) => ({
   transition: isOpen
-    ? `top 250ms ${OPEN_EASING} ${index * TRANSITION_STAGGER_MS}ms, left 250ms ${OPEN_EASING} ${index * TRANSITION_STAGGER_MS}ms, right 250ms ${OPEN_EASING} ${index * TRANSITION_STAGGER_MS}ms`
+    ? `top 250ms ${OPEN_EASING} ${
+        index * TRANSITION_STAGGER_MS
+      }ms, left 250ms ${OPEN_EASING} ${
+        index * TRANSITION_STAGGER_MS
+      }ms, right 250ms ${OPEN_EASING} ${index * TRANSITION_STAGGER_MS}ms`
     : `top 200ms ${CLOSE_EASING}, left 200ms ${CLOSE_EASING}, right 200ms ${CLOSE_EASING}`,
   willChange: isOpen ? 'top, left, right' : 'auto',
 });
@@ -132,7 +136,7 @@ const ExpandableHandleWrapper = ({
       >
         {handles.map((handle, index) => {
           const { xPos, yPos } = isOpen
-            ? (openPositions?.[index] ?? CLOSED_POSITION)
+            ? openPositions?.[index] ?? CLOSED_POSITION
             : CLOSED_POSITION;
 
           return (
@@ -165,41 +169,41 @@ const ExpandableHandleWrapper = ({
   );
 };
 
-const HandleContainer = stylin(
-  Box,
-  ['placement'],
-)(({ placement }: { placement: 'left' | 'right' }) => ({
-  position: 'absolute',
-  width: `${HOTSPOT_WIDTH}px`,
-  height: `${HOTSPOT_HEIGHT}px`,
-  top: `calc(50% - ${HOTSPOT_HEIGHT / 2}px)`,
-  borderRadius: '50%',
-  ...(placement === 'left'
-    ? {
-        left: `-${HOTSPOT_WIDTH / 2}px`,
-        clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0 100%)',
-      }
-    : {
-        right: `-${HOTSPOT_WIDTH / 2}px`,
-        clipPath: 'polygon(50% 0, 100% 0, 100% 100%, 50% 100%)',
-      }),
-}));
+const HandleContainer = stylin(Box, ['placement'])(
+  ({ placement }: { placement: 'left' | 'right' }) => ({
+    position: 'absolute',
+    width: `${HOTSPOT_WIDTH}px`,
+    height: `${HOTSPOT_HEIGHT}px`,
+    top: `calc(50% - ${HOTSPOT_HEIGHT / 2}px)`,
+    borderRadius: '50%',
+    ...(placement === 'left'
+      ? {
+          left: `-${HOTSPOT_WIDTH / 2}px`,
+          clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0 100%)',
+        }
+      : {
+          right: `-${HOTSPOT_WIDTH / 2}px`,
+          clipPath: 'polygon(50% 0, 100% 0, 100% 100%, 50% 100%)',
+        }),
+  }),
+);
 
-const NestedIcon = stylin(
-  ExpandCircleDownOutlinedIcon,
-  ['placement'],
-)(({ theme, placement }: { theme: any; placement: 'left' | 'right' }) => ({
-  zIndex: 10,
-  position: 'absolute',
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: '50%',
-  fontSize: '18px',
-  width: '27px',
-  height: '27px',
-  top: '50%',
-  left: placement === 'left' ? '0%' : '100%',
-  transform: `translate(-50%, -50%) rotate(${placement === 'left' ? 90 : 270}deg)`,
-  color: theme.palette.grey[600],
-}));
+const NestedIcon = stylin(ExpandCircleDownOutlinedIcon, ['placement'])(
+  ({ theme, placement }: { theme: any; placement: 'left' | 'right' }) => ({
+    zIndex: 10,
+    position: 'absolute',
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: '50%',
+    fontSize: '18px',
+    width: '27px',
+    height: '27px',
+    top: '50%',
+    left: placement === 'left' ? '0%' : '100%',
+    transform: `translate(-50%, -50%) rotate(${
+      placement === 'left' ? 90 : 270
+    }deg)`,
+    color: theme.palette.grey[600],
+  }),
+);
 
 export default ExpandableHandleWrapper;

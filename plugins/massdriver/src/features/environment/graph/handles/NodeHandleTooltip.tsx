@@ -51,7 +51,9 @@ const NodeHandleTooltip = ({
           <FieldStatusLabel variant="caption">Field Status</FieldStatusLabel>
           <RequiredChip
             label={required ? 'Required' : 'Optional'}
-            color={required ? (isRemoteReference ? 'success' : 'error') : 'info'}
+            color={
+              required ? (isRemoteReference ? 'success' : 'error') : 'info'
+            }
             variant="filled"
             size="small"
           />

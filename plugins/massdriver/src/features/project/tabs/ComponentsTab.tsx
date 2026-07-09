@@ -11,7 +11,10 @@ import ExtensionIcon from '@massdriver/ui/icons/ExtensionIcon';
 import stylin from '@massdriver/ui/stylin';
 import useAsync from 'react-use/esm/useAsync';
 import { massdriverApiRef } from '../../../api';
-import { buildAttributesColumn, Code } from '../../../components/AttributesColumn';
+import {
+  buildAttributesColumn,
+  Code,
+} from '../../../components/AttributesColumn';
 import { internalRoutes } from '../../../internalRoutes';
 import { EnvInstance, EnvStatusStrip } from './EnvStatus';
 
@@ -137,7 +140,10 @@ export const ComponentsTab = ({ projectId }: { projectId: string }) => {
       'status',
       'Status across environments',
       (_value: unknown, row: ComponentRow) => (
-        <EnvStatusStrip instances={row.instances} getInstanceUrl={getInstanceUrl} />
+        <EnvStatusStrip
+          instances={row.instances}
+          getInstanceUrl={getInstanceUrl}
+        />
       ),
       { flex: 3, minWidth: 280, sortable: false, searchable: false },
     ),

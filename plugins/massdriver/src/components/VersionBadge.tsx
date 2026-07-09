@@ -43,24 +43,23 @@ const VersionBadge = ({
   );
 };
 
-const BadgeRoot = stylin(
-  Box,
-  ['pinned'],
-)(({ theme, pinned }: { theme: any; pinned: boolean }) => ({
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: theme.spacing(0.5),
-  padding: theme.spacing(0.25, 0.75),
-  borderRadius: 1,
-  lineHeight: 1,
-  backgroundColor: pinned
-    ? alpha(theme.palette.warning.main, 0.12)
-    : theme.palette.background.field,
-  color: pinned ? theme.palette.warning.main : theme.palette.text.secondary,
-  border: `1px solid ${
-    pinned ? alpha(theme.palette.warning.main, 0.3) : theme.palette.divider
-  }`,
-}));
+const BadgeRoot = stylin(Box, ['pinned'])(
+  ({ theme, pinned }: { theme: any; pinned: boolean }) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: theme.spacing(0.5),
+    padding: theme.spacing(0.25, 0.75),
+    borderRadius: 1,
+    lineHeight: 1,
+    backgroundColor: pinned
+      ? alpha(theme.palette.warning.main, 0.12)
+      : theme.palette.background.field,
+    color: pinned ? theme.palette.warning.main : theme.palette.text.secondary,
+    border: `1px solid ${
+      pinned ? alpha(theme.palette.warning.main, 0.3) : theme.palette.divider
+    }`,
+  }),
+);
 
 const PinnedIcon = stylin(LockIcon)({
   fontSize: 12,

@@ -24,7 +24,8 @@ const NodeHandle = ({
   placement?: string;
   [key: string]: unknown;
 }) => {
-  const Component = HANDLE_TYPES[handleType] ?? HANDLE_TYPES[HANDLE_TYPE.DEFAULT];
+  const Component =
+    HANDLE_TYPES[handleType] ?? HANDLE_TYPES[HANDLE_TYPE.DEFAULT];
   const isError = handleType === HANDLE_TYPE.ERROR;
   const isRemoteReference = handleType === HANDLE_TYPE.REMOTE_REFERENCE;
 

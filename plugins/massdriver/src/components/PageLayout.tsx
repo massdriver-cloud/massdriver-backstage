@@ -32,7 +32,9 @@ export const PageLayout = ({
         <Typography variant="h3" component="h1">
           {title}
         </Typography>
-        {description && <Description variant="body2">{description}</Description>}
+        {description && (
+          <Description variant="body2">{description}</Description>
+        )}
       </HeaderText>
       {headerActions && <HeaderActions>{headerActions}</HeaderActions>}
     </PageHeader>

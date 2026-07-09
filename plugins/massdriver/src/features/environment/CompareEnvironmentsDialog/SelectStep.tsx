@@ -88,7 +88,10 @@ export const SelectStep = ({
             </Select>
           </PickerSlot>
 
-          <Tooltip title={canSwap ? 'Swap environments' : 'Pick both first'} arrow>
+          <Tooltip
+            title={canSwap ? 'Swap environments' : 'Pick both first'}
+            arrow
+          >
             <span>
               <SwapButton
                 size="medium"

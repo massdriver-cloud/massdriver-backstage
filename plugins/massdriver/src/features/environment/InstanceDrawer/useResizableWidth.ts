@@ -1,4 +1,10 @@
-import { MouseEvent as ReactMouseEvent, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  MouseEvent as ReactMouseEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 /**
  * Drag-to-resize width for the right-anchored instance panel. Mirrors the

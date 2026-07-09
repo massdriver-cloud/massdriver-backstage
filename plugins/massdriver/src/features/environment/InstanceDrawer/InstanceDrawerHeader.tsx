@@ -43,11 +43,17 @@ export const InstanceDrawerHeader = ({
           {instance?.version ? (
             <VersionBadge version={instance.version} showPinnedWarning />
           ) : null}
-          {instance?.status ? <InstanceStatusPill status={instance.status} /> : null}
+          {instance?.status ? (
+            <InstanceStatusPill status={instance.status} />
+          ) : null}
         </TitleArea>
         <Actions>
           {appUrl ? (
-            <OpenInMassdriverButton url={appUrl} variant="outlined" size="small" />
+            <OpenInMassdriverButton
+              url={appUrl}
+              variant="outlined"
+              size="small"
+            />
           ) : null}
           <CloseIconButton onClick={onClose} tooltip="Close panel" />
         </Actions>
@@ -65,9 +71,17 @@ const InstanceMeta = ({ instance }: { instance: PanelInstance }) => {
   return (
     <MetaGrid>
       <AlertsRow numAlerts={numAlerts} />
-      <CostRow label="yesterday" sample={cost?.lastDay} average={cost?.dailyAverage} />
+      <CostRow
+        label="yesterday"
+        sample={cost?.lastDay}
+        average={cost?.dailyAverage}
+      />
       <EditedRow updatedAt={instance.updatedAt} />
-      <CostRow label="last month" sample={cost?.lastMonth} average={cost?.monthlyAverage} />
+      <CostRow
+        label="last month"
+        sample={cost?.lastMonth}
+        average={cost?.monthlyAverage}
+      />
     </MetaGrid>
   );
 };
@@ -110,7 +124,9 @@ const CostRow = ({
   const hasValue = amount != null;
   const formatted = formatCurrency(amount, currency, '---');
   const formattedAverage =
-    averageAmount != null ? formatCurrency(averageAmount, currency, '---') : null;
+    averageAmount != null
+      ? formatCurrency(averageAmount, currency, '---')
+      : null;
 
   return (
     <MetaRow title={`${label}: ${formatted}`}>
@@ -205,18 +221,17 @@ const MetaRow = stylin(Box)({
   overflow: 'hidden',
 });
 
-const RowText = stylin(
-  Typography,
-  ['hasAlerts'],
-)(({ theme, hasAlerts }: { theme: any; hasAlerts?: boolean }) => ({
-  fontSize: '14px',
-  fontWeight: 400,
-  color: hasAlerts ? theme.palette.error.main : theme.palette.text.secondary,
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-  minWidth: 0,
-}));
+const RowText = stylin(Typography, ['hasAlerts'])(
+  ({ theme, hasAlerts }: { theme: any; hasAlerts?: boolean }) => ({
+    fontSize: '14px',
+    fontWeight: 400,
+    color: hasAlerts ? theme.palette.error.main : theme.palette.text.secondary,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    minWidth: 0,
+  }),
+);
 
 const StyledEditIcon = stylin(EditIcon)(({ theme }: { theme: any }) => ({
   width: 16,
@@ -225,25 +240,23 @@ const StyledEditIcon = stylin(EditIcon)(({ theme }: { theme: any }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const AlertsIcon = stylin(
-  NotificationsIcon,
-  ['hasAlerts'],
-)(({ theme, hasAlerts }: { theme: any; hasAlerts?: boolean }) => ({
-  width: 16,
-  height: 16,
-  flexShrink: 0,
-  color: hasAlerts ? theme.palette.error.main : theme.palette.text.secondary,
-}));
+const AlertsIcon = stylin(NotificationsIcon, ['hasAlerts'])(
+  ({ theme, hasAlerts }: { theme: any; hasAlerts?: boolean }) => ({
+    width: 16,
+    height: 16,
+    flexShrink: 0,
+    color: hasAlerts ? theme.palette.error.main : theme.palette.text.secondary,
+  }),
+);
 
-const MoneyIcon = stylin(
-  AttachMoneyIcon,
-  ['active'],
-)(({ theme, active }: { theme: any; active?: boolean }) => ({
-  width: 16,
-  height: 16,
-  flexShrink: 0,
-  color: active ? theme.palette.success.main : theme.palette.text.secondary,
-}));
+const MoneyIcon = stylin(AttachMoneyIcon, ['active'])(
+  ({ theme, active }: { theme: any; active?: boolean }) => ({
+    width: 16,
+    height: 16,
+    flexShrink: 0,
+    color: active ? theme.palette.success.main : theme.palette.text.secondary,
+  }),
+);
 
 const TrendUp = stylin(ArrowUpwardIcon)(({ theme }: { theme: any }) => ({
   width: 16,

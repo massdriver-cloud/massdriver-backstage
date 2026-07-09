@@ -1,1 +1,4 @@
-export { CompareEnvironmentsDialog, default } from './CompareEnvironmentsDialog';
+export {
+  CompareEnvironmentsDialog,
+  default,
+} from './CompareEnvironmentsDialog';
