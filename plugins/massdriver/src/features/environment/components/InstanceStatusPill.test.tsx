@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { TestApiProvider } from '@backstage/frontend-test-utils';
 import { massdriverApiRef, MassdriverApi } from '../../../api';
 import { MassdriverThemeScope } from '../../../theme/MassdriverThemeScope';
@@ -132,6 +133,83 @@ describe('InstanceStatusPill', () => {
       expect(api.query.mock.calls[0][1]).toEqual({
         instanceId: 'proj-env-cache',
       });
+    });
+  });
+
+  describe('click-to-logs', () => {
+    it('clicking an in-flight pill passes the resolved deployment', async () => {
+      const onClick = jest.fn();
+      renderPill(
+        <InstanceStatusPill
+          instance={{ id: 'proj-env-cache', status: 'PROVISIONED' }}
+          onClick={onClick}
+        />,
+        createMockApi(latestDeployment('PROVISION', 'RUNNING')),
+      );
+      await waitFor(() =>
+        expect(screen.getByText('Provision Running')).toBeInTheDocument(),
+      );
+
+      await userEvent.click(screen.getByText('Provision Running'));
+
+      expect(onClick).toHaveBeenCalledWith({
+        id: 'dep-1',
+        action: 'PROVISION',
+        status: 'RUNNING',
+      });
+    });
+
+    it('is inert for a static status even when onClick is provided', async () => {
+      const onClick = jest.fn();
+      const api = createMockApi(latestDeployment('PROVISION', 'COMPLETED'));
+      renderPill(
+        <InstanceStatusPill
+          instance={{ id: 'proj-env-cache', status: 'PROVISIONED' }}
+          onClick={onClick}
+        />,
+        api,
+      );
+      await waitFor(() => expect(api.query).toHaveBeenCalled());
+
+      await userEvent.click(screen.getByText('Provisioned'));
+
+      expect(onClick).not.toHaveBeenCalled();
+    });
+
+    it('clicking an actionable status-mode pill passes null (caller closes over its row)', async () => {
+      const onClick = jest.fn();
+      renderPill(
+        <InstanceStatusPill status="PROVISION_FAILED" onClick={onClick} />,
+      );
+
+      await userEvent.click(screen.getByText('Provisioning Failed'));
+
+      expect(onClick).toHaveBeenCalledWith(null);
+    });
+
+    it('does not propagate the click to ancestors', async () => {
+      const onAncestorClick = jest.fn();
+      const api = createMockApi(latestDeployment('PROVISION', 'RUNNING'));
+      render(
+        <TestApiProvider apis={[[massdriverApiRef, api]]}>
+          <MassdriverThemeScope>
+            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+            <div onClick={onAncestorClick}>
+              <InstanceStatusPill
+                instance={{ id: 'proj-env-cache', status: 'PROVISIONED' }}
+                onClick={() => {}}
+              />
+            </div>
+          </MassdriverThemeScope>
+        </TestApiProvider>,
+      );
+      await waitFor(() =>
+        expect(screen.getByText('Provision Running')).toBeInTheDocument(),
+      );
+
+      await userEvent.click(screen.getByText('Provision Running'));
+
+      expect(onAncestorClick).not.toHaveBeenCalled();
     });
   });
 });

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { composeEnvironmentId } from '@massdriver-cloud/backstage-plugin-massdriver-common';
 import Alert from '@massdriver/ui/Alert';
 import Box from '@massdriver/ui/Box';
@@ -11,6 +11,9 @@ import { NotFound } from '../../components/NotFound';
 import { internalRoutes } from '../../internalRoutes';
 import { GraphHeader } from './GraphHeader';
 import { InstanceDrawer } from './InstanceDrawer';
+import DeploymentLogsPanel, {
+  OpenLogsProvider,
+} from './InstanceDrawer/tabs/DeploymentLogsPanel';
 import { RealtimeProvider } from './realtime/RealtimeProvider';
 import { useLiveRelayQuery } from './realtime/useLiveRelayQuery';
 import Diagram from './graph/Diagram';
@@ -51,6 +54,18 @@ const EnvironmentGraphContent = () => {
     navigate(internalRoutes.instance(projectId, scopedEnvironmentId, id));
   const closeInstance = () =>
     navigate(internalRoutes.environment(projectId, environmentId));
+
+  // Page-level logs overlay, mirroring the web app's DeploymentLogsDrawer:
+  // status pills on the graph and the drawer tabs all open it via useOpenLogs.
+  const [logsDeploymentId, setLogsDeploymentId] = useState<string | null>(null);
+  useEffect(() => setLogsDeploymentId(null), [environmentId]);
+
+  // Pane click closes the topmost overlay: logs first, then the drawer.
+  const onPaneClick = logsDeploymentId
+    ? () => setLogsDeploymentId(null)
+    : scopedComponentId
+    ? closeInstance
+    : undefined;
 
   // Two live queries (blueprint + environment). Revision refetches keep the
   // rendered diagram mounted — see useLiveRelayQuery for the no-flash contract.
@@ -99,43 +114,51 @@ const EnvironmentGraphContent = () => {
   }
 
   return (
-    <Root>
-      <GraphHeader projectId={projectId} environmentId={environmentId} />
-      <GraphArea>
-        {loading ? (
-          <Centered>
-            <LoadingIndicator />
-          </Centered>
-        ) : error ? (
-          <Centered>
-            <Alert severity="error">{String(error.message ?? error)}</Alert>
-          </Centered>
-        ) : nodes.length === 0 ? (
-          <Centered>
-            <Typography variant="body2" color="text.secondary">
-              No deployed instances in this environment yet.
-            </Typography>
-          </Centered>
-        ) : (
-          <ReactFlowProvider>
-            <Diagram
-              nodes={nodes}
-              edges={edges}
-              snapshotName={environmentId || environmentName}
-              onNodeClick={openInstance}
-              onPaneClick={scopedComponentId ? closeInstance : undefined}
-              selectedComponentId={scopedComponentId}
+    <OpenLogsProvider value={setLogsDeploymentId}>
+      <Root>
+        <GraphHeader projectId={projectId} environmentId={environmentId} />
+        <GraphArea>
+          {loading ? (
+            <Centered>
+              <LoadingIndicator />
+            </Centered>
+          ) : error ? (
+            <Centered>
+              <Alert severity="error">{String(error.message ?? error)}</Alert>
+            </Centered>
+          ) : nodes.length === 0 ? (
+            <Centered>
+              <Typography variant="body2" color="text.secondary">
+                No deployed instances in this environment yet.
+              </Typography>
+            </Centered>
+          ) : (
+            <ReactFlowProvider>
+              <Diagram
+                nodes={nodes}
+                edges={edges}
+                snapshotName={environmentId || environmentName}
+                onNodeClick={openInstance}
+                onPaneClick={onPaneClick}
+                selectedComponentId={scopedComponentId}
+              />
+            </ReactFlowProvider>
+          )}
+          <InstanceDrawer
+            projectId={projectId}
+            environmentId={environmentId}
+            scopedComponentId={scopedComponentId}
+            onClose={closeInstance}
+          />
+          {logsDeploymentId ? (
+            <DeploymentLogsPanel
+              deploymentId={logsDeploymentId}
+              onClose={() => setLogsDeploymentId(null)}
             />
-          </ReactFlowProvider>
-        )}
-        <InstanceDrawer
-          projectId={projectId}
-          environmentId={environmentId}
-          scopedComponentId={scopedComponentId}
-          onClose={closeInstance}
-        />
-      </GraphArea>
-    </Root>
+          ) : null}
+        </GraphArea>
+      </Root>
+    </OpenLogsProvider>
   );
 };
 

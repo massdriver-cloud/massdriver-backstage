@@ -6,6 +6,7 @@ import {
   INSTANCE_STATUS,
   deriveInstanceStatus,
   formatInstanceStatus,
+  isInstanceStatusActionable,
 } from '../instanceStatuses';
 
 // Latest deployment (any action/status) for an instance — drives the pill's
@@ -57,17 +58,27 @@ interface LatestDeploymentResult {
  *   id, which is free under Apollo's cache but would be one HTTP request per
  *   row through the relay).
  *
- * Read-only: no click-to-logs affordance — inspecting a deployment happens
- * through the drawer's History tab.
+ * `onClick` receives the resolved deployment (instance mode's latest
+ * deployment; null in status mode — callers there close over their own row).
+ * The pill is only clickable while the status is actionable (a deployment in
+ * flight or failed), mirroring the web app's click-to-logs affordance.
  */
+export interface ResolvedDeployment {
+  id: string;
+  action?: string | null;
+  status?: string | null;
+}
+
 const InstanceStatusPill = ({
   instance,
   status,
+  onClick,
   size = 'small',
   ...props
 }: {
   instance?: { id: string; status?: string | null } | null;
   status?: string | null;
+  onClick?: (deployment: ResolvedDeployment | null) => void;
   size?: string;
   [key: string]: unknown;
 }) => {
@@ -85,6 +96,17 @@ const InstanceStatusPill = ({
       })
     : status ?? null;
 
+  const clickable =
+    Boolean(onClick) && isInstanceStatusActionable(resolvedStatus);
+  // Stop propagation so the pill click doesn't fall through to ancestor click
+  // handlers (e.g. the diagram node opening the instance drawer).
+  const handleClick = clickable
+    ? (event: { stopPropagation?: () => void }) => {
+        event?.stopPropagation?.();
+        onClick?.(instance ? latestDeployment : null);
+      }
+    : undefined;
+
   const label = formatInstanceStatus(resolvedStatus);
   const color =
     (resolvedStatus && instanceStatusColors[resolvedStatus]) ?? null;
@@ -94,6 +116,8 @@ const InstanceStatusPill = ({
       size={size}
       statusColor={color}
       external={resolvedStatus === INSTANCE_STATUS.EXTERNAL}
+      clickable={clickable}
+      onClick={handleClick}
       {...props}
     />
   );
@@ -103,15 +127,17 @@ export default InstanceStatusPill;
 
 // Background and border use 12% / 20% alpha tints of the flat status color,
 // matching the web app's pill so surfaces stay visually consistent.
-const StyledChip = stylin(Chip, ['statusColor', 'external'])(
+const StyledChip = stylin(Chip, ['statusColor', 'external', 'clickable'])(
   ({
     theme,
     statusColor,
     external,
+    clickable,
   }: {
     theme: any;
     statusColor: string | null;
     external: boolean;
+    clickable: boolean;
   }) => ({
     height: 'auto',
     fontSize: theme.typography.pxToRem(11),
@@ -128,6 +154,12 @@ const StyledChip = stylin(Chip, ['statusColor', 'external'])(
         }`
       : `1px solid ${theme.palette.divider}`,
     fontStyle: external ? 'italic' : undefined,
+    ...(clickable && {
+      cursor: 'pointer',
+      '&:hover': {
+        filter: 'brightness(0.96)',
+      },
+    }),
     '& .MuiChip-label': {
       textTransform: 'lowercase',
     },

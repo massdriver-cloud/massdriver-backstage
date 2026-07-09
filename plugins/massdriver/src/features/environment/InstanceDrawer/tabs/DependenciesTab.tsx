@@ -14,6 +14,7 @@ import HelpOutlineIcon from '@massdriver/ui/icons/HelpOutlineIcon';
 import stylin from '@massdriver/ui/stylin';
 import { massdriverApiRef } from '../../../../api';
 import InstanceStatusPill from '../../components/InstanceStatusPill';
+import { useOpenLogs } from './DeploymentLogsPanel';
 import { DisabledAction } from '../../../../components/DisabledAction';
 import { OpenInMassdriverButton } from '../../../../components/OpenInMassdriverButton';
 import { RouterLinkAdapter } from '../../../../components/RouterLinkAdapter';
@@ -143,6 +144,10 @@ const DependencyCard = ({
   instanceId: string | null;
 }) => {
   const api = useApi(massdriverApiRef);
+  const openLogs = useOpenLogs();
+  const onStatusClick = (deployment: { id: string } | null) => {
+    if (deployment?.id) openLogs(deployment.id);
+  };
   const parts = instanceId ? parseInstanceId(instanceId) : null;
   const envDefaultsUrl =
     parts?.projectId && parts?.scopedEnvironmentId && api.appUrl
@@ -184,7 +189,9 @@ const DependencyCard = ({
               </div>
             </HelpTip>
           </TitleRow>
-          {origin ? <StyledStatusPill instance={origin} /> : null}
+          {origin ? (
+            <StyledStatusPill instance={origin} onClick={onStatusClick} />
+          ) : null}
         </HeaderRow>
         <DetailColumn>
           <TypeRow resourceType={row.resourceType} />

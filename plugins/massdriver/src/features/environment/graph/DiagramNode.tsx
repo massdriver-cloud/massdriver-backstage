@@ -7,6 +7,7 @@ import Typography from '@massdriver/ui/Typography';
 import IconTile from '@massdriver/ui/IconTile';
 import stylin from '@massdriver/ui/stylin';
 import { useLiveRelayQuery } from '../realtime/useLiveRelayQuery';
+import { useOpenLogs } from '../InstanceDrawer/tabs/DeploymentLogsPanel';
 import InstanceStatusPill from '../components/InstanceStatusPill';
 import VersionBadge from '../../../components/VersionBadge';
 import ExpandableHandleWrapper from './handles/ExpandableHandleWrapper';
@@ -59,6 +60,13 @@ const DiagramNode = ({
   const loadingMeta = loading && !instance;
   const metaError = error && !instance ? error : null;
 
+  // Clicking an in-flight/failed status pill opens the page-level logs
+  // overlay for that deployment (mirrors the web app's onStatusClick).
+  const openLogs = useOpenLogs();
+  const onStatusClick = (deployment: { id: string } | null) => {
+    if (deployment?.id) openLogs(deployment.id);
+  };
+
   return (
     <NodeContainer
       isSelected={isSelected}
@@ -78,6 +86,7 @@ const DiagramNode = ({
             fullInstanceId && (
               <InstanceStatusPill
                 instance={{ id: fullInstanceId, status }}
+                onClick={onStatusClick}
                 size="small"
               />
             )

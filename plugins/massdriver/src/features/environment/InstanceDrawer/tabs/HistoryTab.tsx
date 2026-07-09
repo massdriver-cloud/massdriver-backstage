@@ -263,6 +263,7 @@ const DeploymentRow = ({
       <RowA>
         <InstanceStatusPill
           status={composeInstanceStatus(deployment.action, deployment.status)}
+          onClick={() => onViewLogs(deployment.id)}
         />
         {deployment.version ? (
           <VersionBadge version={deployment.version} />

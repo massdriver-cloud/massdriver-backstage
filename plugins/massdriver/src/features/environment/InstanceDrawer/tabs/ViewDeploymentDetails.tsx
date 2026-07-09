@@ -175,6 +175,7 @@ export const ViewDeploymentDetails = ({
                       deployment.action,
                       deployment.status,
                     )}
+                    onClick={hasLogs ? handleViewLogs : undefined}
                   />
                   {deployment.version ? (
                     <VersionBadge version={deployment.version} />

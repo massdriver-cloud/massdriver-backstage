@@ -62,6 +62,24 @@ const STATUS_TITLES: Record<string, string> = {
 export const isDeploymentActive = (status?: string | null): boolean =>
   status === 'PENDING' || status === 'RUNNING';
 
+const isDeploymentFailure = (status?: string | null): boolean =>
+  status === 'FAILED' || status === 'REJECTED';
+
+const isStaticInstanceStatus = (status?: string | null): boolean =>
+  Boolean(status && STATIC_LABELS[status as string]);
+
+// True when the rich status implies an inspectable deployment behind it (in
+// flight or failed) — the consumer uses this to decide whether to wire a
+// click-to-open-logs handler on the pill. Mirrors the web app helper.
+export const isInstanceStatusActionable = (status?: string | null): boolean => {
+  if (!status || isStaticInstanceStatus(status)) return false;
+  const [, deploymentStatus] = status.split('_');
+  return (
+    isDeploymentActive(deploymentStatus) ||
+    isDeploymentFailure(deploymentStatus)
+  );
+};
+
 // Pure combinator: action + deployment-status → compound string. Returns null
 // when either piece is missing — the caller decides on a fallback.
 export const composeInstanceStatus = (
