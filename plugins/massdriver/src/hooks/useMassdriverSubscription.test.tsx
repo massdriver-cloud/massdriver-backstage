@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { TestApiProvider } from '@backstage/frontend-test-utils';
-import { massdriverApiRef, MassdriverApi } from '../../../api';
+import { massdriverApiRef, MassdriverApi } from '../api';
 import { useMassdriverSubscription } from './useMassdriverSubscription';
 
 const QUERY =
@@ -25,6 +25,7 @@ describe('useMassdriverSubscription', () => {
       appUrl: 'https://app.massdriver.cloud',
       organizationId: 'org-1',
       query: jest.fn(),
+      fetchText: jest.fn(),
       subscribe: jest.fn().mockImplementation(
         (
           _query: string,

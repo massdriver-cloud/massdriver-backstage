@@ -194,6 +194,72 @@ export const instanceActionUrl = (
 ): string => `${instanceUrl(appUrl, orgId, instanceId)}?action=${action}`;
 
 /**
+ * Deep-link into the Massdriver web app's repositories list.
+ *
+ * @public
+ */
+export const reposUrl = (appUrl: string, orgId: string): string =>
+  `${trimTrailingSlash(appUrl)}/orgs/${orgId}/repos`;
+
+/**
+ * Deep-link to a repository's default view in the web app:
+ * `/orgs/{orgId}/repos/{repoId}/all` (the "all versions" view, matching the
+ * app's repo list link target).
+ *
+ * @public
+ */
+export const repoUrl = (
+  appUrl: string,
+  orgId: string,
+  repoId: string,
+): string =>
+  `${trimTrailingSlash(appUrl)}/orgs/${orgId}/repos/${encodeURIComponent(
+    repoId,
+  )}/all`;
+
+/**
+ * Deep-link to a specific tab of a repository version in the web app:
+ * `/orgs/{orgId}/repos/{repoId}/{version}/{tab}`. Version is `all` for the
+ * all-versions view.
+ *
+ * @public
+ */
+export const repoTabUrl = (
+  appUrl: string,
+  orgId: string,
+  repoId: string,
+  version: string,
+  tab: string,
+): string =>
+  `${trimTrailingSlash(appUrl)}/orgs/${orgId}/repos/${encodeURIComponent(
+    repoId,
+  )}/${encodeURIComponent(version)}/${tab}`;
+
+/**
+ * Deep-link into the Massdriver web app's resources list.
+ *
+ * @public
+ */
+export const resourcesUrl = (appUrl: string, orgId: string): string =>
+  `${trimTrailingSlash(appUrl)}/orgs/${orgId}/resources`;
+
+/**
+ * Deep-link to a specific tab of a resource's detail page in the web app:
+ * `/orgs/{orgId}/resources/{resourceId}/{tab}`.
+ *
+ * @public
+ */
+export const resourceTabUrl = (
+  appUrl: string,
+  orgId: string,
+  resourceId: string,
+  tab: string,
+): string =>
+  `${trimTrailingSlash(appUrl)}/orgs/${orgId}/resources/${encodeURIComponent(
+    resourceId,
+  )}/${tab}`;
+
+/**
  * Deep-link to a cloud resource's detail page in the web app:
  * `/orgs/{orgId}/resources/{resourceId}/general`. Used by the instance
  * Dependencies/Resources tabs' "fulfilled by" / resource-name links.

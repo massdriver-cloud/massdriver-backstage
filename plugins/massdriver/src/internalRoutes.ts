@@ -23,4 +23,19 @@ export const internalRoutes = {
     scopedComponentId: string,
   ) =>
     `${BASE}/projects/${projectId}/environments/${scopedEnvironmentId}/instances/${scopedComponentId}`,
+  repositories: () => `${BASE}/repositories`,
+  /** Mirrors the app's `/repos/[repoId]/[version]/[tab]`; version defaults to `all`. */
+  repository: (repoId: string, version = 'all') =>
+    `${BASE}/repositories/${encodeURIComponent(repoId)}/${encodeURIComponent(
+      version,
+    )}`,
+  repositoryTab: (repoId: string, version: string, tab: string) =>
+    `${BASE}/repositories/${encodeURIComponent(repoId)}/${encodeURIComponent(
+      version,
+    )}/${tab}`,
+  resources: () => `${BASE}/resources`,
+  resource: (resourceId: string) =>
+    `${BASE}/resources/${encodeURIComponent(resourceId)}`,
+  resourceTab: (resourceId: string, tab: string) =>
+    `${BASE}/resources/${encodeURIComponent(resourceId)}/${tab}`,
 };

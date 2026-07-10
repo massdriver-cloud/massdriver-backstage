@@ -6,6 +6,7 @@ import {
 import { InputError } from '@backstage/errors';
 import {
   createMassdriverClient,
+  graphqlUrl,
   MassdriverClient,
   MassdriverConfig,
   readMassdriverConfig,
@@ -80,6 +81,44 @@ export async function createRouter({
 
     const data = await getClient().query(query, variables);
     res.json({ data });
+  });
+
+  // Authenticated content proxy. The web app fetches auth-guarded assets (OCI
+  // repo icon SVGs, repo tag file contents) directly with the browser's bearer
+  // token; this plugin's browser holds no token, so the backend fetches with
+  // the service-account token instead. Locked to the configured Massdriver API
+  // origin so this can't be used as an open proxy.
+  router.get('/content', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+
+    const { url } = req.query as { url?: unknown };
+    if (typeof url !== 'string' || !url) {
+      throw new InputError('A `url` query parameter is required');
+    }
+
+    const { apiToken, baseUrl } = getConfig();
+    const apiOrigin = new URL(graphqlUrl(baseUrl)).origin;
+
+    let target: URL;
+    try {
+      target = new URL(url);
+    } catch {
+      throw new InputError('`url` must be an absolute URL');
+    }
+    if (target.origin !== apiOrigin) {
+      throw new InputError(
+        `\`url\` must be on the Massdriver API origin (${apiOrigin})`,
+      );
+    }
+
+    const upstream = await fetch(target, {
+      headers: { Authorization: `Bearer ${apiToken}` },
+    });
+
+    res.status(upstream.status);
+    const contentType = upstream.headers.get('content-type');
+    if (contentType) res.setHeader('Content-Type', contentType);
+    res.send(Buffer.from(await upstream.arrayBuffer()));
   });
 
   // Server-Sent Events relay for GraphQL subscriptions. The browser cannot open

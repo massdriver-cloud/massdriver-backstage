@@ -20,7 +20,7 @@ import CloseIcon from '@massdriver/ui/icons/CloseIcon';
 import HistoryIcon from '@massdriver/ui/icons/HistoryIcon';
 import { massdriverApiRef } from '../../../../api';
 import InstanceStatusPill from '../../components/InstanceStatusPill';
-import { composeInstanceStatus } from '../../instanceStatuses';
+import { composeInstanceStatus } from '../../../../utils/instanceStatuses';
 import VersionBadge from '../../../../components/VersionBadge';
 import ComparisonValueCell from '../../CompareEnvironmentsDialog/ComparisonValueCell';
 import { DEPLOYMENT_QUERY } from '../queries';

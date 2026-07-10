@@ -12,7 +12,7 @@ import FilterListIcon from '@massdriver/ui/icons/FilterListIcon';
 import SortIcon from '@massdriver/ui/icons/SortIcon';
 import { useLiveRelayQuery } from '../../realtime/useLiveRelayQuery';
 import InstanceStatusPill from '../../components/InstanceStatusPill';
-import { composeInstanceStatus } from '../../instanceStatuses';
+import { composeInstanceStatus } from '../../../../utils/instanceStatuses';
 import VersionBadge from '../../../../components/VersionBadge';
 import CompareDeploymentsDialog from '../../CompareDeploymentsDialog';
 import { TabState } from '../TabState';

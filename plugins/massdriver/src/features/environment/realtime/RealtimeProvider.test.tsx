@@ -19,6 +19,7 @@ describe('RealtimeProvider', () => {
       appUrl: 'https://app.massdriver.cloud',
       organizationId: 'org-1',
       query: jest.fn(),
+      fetchText: jest.fn(),
       subscribe: jest
         .fn()
         .mockImplementation(

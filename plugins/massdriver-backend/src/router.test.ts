@@ -128,6 +128,86 @@ describe('createRouter POST /graphql', () => {
   });
 });
 
+describe('createRouter GET /content', () => {
+  const fetchMock = jest.fn();
+  const realFetch = global.fetch;
+
+  beforeEach(() => {
+    fetchMock.mockReset();
+    global.fetch = fetchMock as unknown as typeof fetch;
+  });
+
+  afterAll(() => {
+    global.fetch = realFetch;
+  });
+
+  it('rejects a missing url with a 400 InputError', async () => {
+    const { app } = await buildApp();
+    const response = await request(app).get('/content');
+    expect(response.status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('rejects a url off the configured API origin', async () => {
+    const { app } = await buildApp();
+    const response = await request(app).get(
+      `/content?url=${encodeURIComponent('https://evil.example.com/icon.svg')}`,
+    );
+    expect(response.status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('rejects a relative url', async () => {
+    const { app } = await buildApp();
+    const response = await request(app).get(
+      `/content?url=${encodeURIComponent('/icons/thing.svg')}`,
+    );
+    expect(response.status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('proxies an on-origin url with the service-account token and forwards the body', async () => {
+    fetchMock.mockResolvedValue(
+      new Response('<svg>icon</svg>', {
+        status: 200,
+        headers: { 'content-type': 'image/svg+xml' },
+      }),
+    );
+    const { app, httpAuth } = await buildApp();
+
+    const response = await request(app).get(
+      `/content?url=${encodeURIComponent(
+        'https://api.example.com/icons/thing.svg',
+      )}`,
+    );
+
+    expect(httpAuth.credentials).toHaveBeenCalledWith(expect.anything(), {
+      allow: ['user'],
+    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://api.example.com/icons/thing.svg'),
+      { headers: { Authorization: 'Bearer tok' } },
+    );
+    expect(response.status).toBe(200);
+    expect(response.headers['content-type']).toContain('image/svg+xml');
+    // supertest parses image/* bodies into a Buffer rather than `text`.
+    expect(Buffer.from(response.body).toString('utf8')).toBe('<svg>icon</svg>');
+  });
+
+  it('forwards an upstream error status', async () => {
+    fetchMock.mockResolvedValue(new Response('nope', { status: 404 }));
+    const { app } = await buildApp();
+
+    const response = await request(app).get(
+      `/content?url=${encodeURIComponent(
+        'https://api.example.com/icons/missing.svg',
+      )}`,
+    );
+
+    expect(response.status).toBe(404);
+  });
+});
+
 /** POST /subscribe against a real listening server so SSE chunks flush live. */
 interface SseRequest {
   request: http.ClientRequest;

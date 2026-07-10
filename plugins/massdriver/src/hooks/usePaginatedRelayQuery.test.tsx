@@ -18,6 +18,7 @@ describe('usePaginatedRelayQuery', () => {
       appUrl: 'https://app.massdriver.cloud',
       organizationId: 'org-1',
       query: jest.fn(),
+      fetchText: jest.fn(),
       subscribe: jest.fn().mockResolvedValue(undefined),
     };
     return api;
@@ -168,6 +169,52 @@ describe('usePaginatedRelayQuery', () => {
       cursor: { limit: 10, next: 'cursor-2' },
       filter: undefined,
     });
+    expect(result.current.hasMore).toBe(false);
+  });
+
+  it('walks an array responseKey to a nested page and merges extra variables', async () => {
+    const api = createMockApi();
+    api.query.mockResolvedValue({
+      parent: {
+        id: 'p1',
+        [RESPONSE_KEY]: { items: [{ id: 'a' }], cursor: { next: null } },
+      },
+    });
+
+    const { result } = renderHook(
+      () =>
+        usePaginatedRelayQuery<Thing>(QUERY, {
+          responseKey: ['parent', RESPONSE_KEY],
+          variables: { id: 'p1' },
+        }),
+      { wrapper: createWrapper(api) },
+    );
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(api.query).toHaveBeenCalledWith(QUERY, {
+      id: 'p1',
+      sort: undefined,
+      cursor: { limit: 20 },
+      filter: undefined,
+    });
+    expect(result.current.items).toEqual([{ id: 'a' }]);
+  });
+
+  it('returns no items when the nested responseKey parent is null', async () => {
+    const api = createMockApi();
+    api.query.mockResolvedValue({ parent: null });
+
+    const { result } = renderHook(
+      () =>
+        usePaginatedRelayQuery<Thing>(QUERY, {
+          responseKey: ['parent', RESPONSE_KEY],
+          variables: { id: 'missing' },
+        }),
+      { wrapper: createWrapper(api) },
+    );
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.items).toEqual([]);
     expect(result.current.hasMore).toBe(false);
   });
 

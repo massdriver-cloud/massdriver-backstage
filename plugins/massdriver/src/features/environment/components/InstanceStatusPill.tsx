@@ -1,13 +1,6 @@
-import Chip from '@massdriver/ui/Chip';
-import stylin from '@massdriver/ui/stylin';
-import { instanceStatusColors } from '@massdriver/ui/theme';
+import { InstanceStatusPill as StatusPillBase } from '../../../components/InstanceStatusPill';
 import { useLiveRelayQuery } from '../realtime/useLiveRelayQuery';
-import {
-  INSTANCE_STATUS,
-  deriveInstanceStatus,
-  formatInstanceStatus,
-  isInstanceStatusActionable,
-} from '../instanceStatuses';
+import { deriveInstanceStatus } from '../../../utils/instanceStatuses';
 
 // Latest deployment (any action/status) for an instance — drives the pill's
 // in-flight compound statuses, mirroring the web app's
@@ -96,72 +89,19 @@ const InstanceStatusPill = ({
       })
     : status ?? null;
 
-  const clickable =
-    Boolean(onClick) && isInstanceStatusActionable(resolvedStatus);
-  // Stop propagation so the pill click doesn't fall through to ancestor click
-  // handlers (e.g. the diagram node opening the instance drawer).
-  const handleClick = clickable
-    ? (event: { stopPropagation?: () => void }) => {
-        event?.stopPropagation?.();
-        onClick?.(instance ? latestDeployment : null);
-      }
-    : undefined;
-
-  const label = formatInstanceStatus(resolvedStatus);
-  const color =
-    (resolvedStatus && instanceStatusColors[resolvedStatus]) ?? null;
+  // The presentational base (components/InstanceStatusPill) owns the rendering
+  // and the actionable-only clickability gate; this wrapper resolves the live
+  // status and hands the resolved deployment to the click handler.
   return (
-    <StyledChip
-      label={label}
+    <StatusPillBase
+      status={resolvedStatus}
       size={size}
-      statusColor={color}
-      external={resolvedStatus === INSTANCE_STATUS.EXTERNAL}
-      clickable={clickable}
-      onClick={handleClick}
+      onClick={
+        onClick ? () => onClick(instance ? latestDeployment : null) : undefined
+      }
       {...props}
     />
   );
 };
 
 export default InstanceStatusPill;
-
-// Background and border use 12% / 20% alpha tints of the flat status color,
-// matching the web app's pill so surfaces stay visually consistent.
-const StyledChip = stylin(Chip, ['statusColor', 'external', 'clickable'])(
-  ({
-    theme,
-    statusColor,
-    external,
-    clickable,
-  }: {
-    theme: any;
-    statusColor: string | null;
-    external: boolean;
-    clickable: boolean;
-  }) => ({
-    height: 'auto',
-    fontSize: theme.typography.pxToRem(11),
-    fontWeight: theme.typography.fontWeightMedium,
-    letterSpacing: '0.3px',
-    textTransform: 'lowercase',
-    color: statusColor ?? theme.palette.text.secondary,
-    backgroundColor: statusColor
-      ? `${statusColor}1f`
-      : theme.palette.action.hover,
-    border: statusColor
-      ? `${external ? '2px dashed' : '1px solid'} ${statusColor}${
-          external ? '' : '33'
-        }`
-      : `1px solid ${theme.palette.divider}`,
-    fontStyle: external ? 'italic' : undefined,
-    ...(clickable && {
-      cursor: 'pointer',
-      '&:hover': {
-        filter: 'brightness(0.96)',
-      },
-    }),
-    '& .MuiChip-label': {
-      textTransform: 'lowercase',
-    },
-  }),
-);

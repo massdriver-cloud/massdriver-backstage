@@ -41,6 +41,13 @@ export interface MassdriverApi {
     variables?: Record<string, unknown>,
   ): Promise<T>;
   /**
+   * Fetch an auth-guarded Massdriver asset (OCI repo icon SVG, repo tag file
+   * contents) as text, via the backend content proxy — the web app fetches
+   * these directly with the browser's bearer token, which this plugin's
+   * browser doesn't hold.
+   */
+  fetchText(url: string): Promise<string>;
+  /**
    * Open a GraphQL subscription via the backend SSE relay. Invokes
    * `handlers.onData` with each streamed result's `data`. The returned promise
    * resolves when the stream ends (server close, error, or abort). Pass a
@@ -102,6 +109,18 @@ export class MassdriverClientApi implements MassdriverApi {
     }
 
     return body.data as T;
+  }
+
+  async fetchText(url: string): Promise<string> {
+    const response = await this.fetchApi.fetch(
+      `plugin://massdriver/content?url=${encodeURIComponent(url)}`,
+    );
+    if (!response.ok) {
+      throw new Error(
+        `Massdriver content fetch failed: ${response.status} ${response.statusText}`,
+      );
+    }
+    return response.text();
   }
 
   async subscribe<T = unknown>(

@@ -3,7 +3,7 @@
 import {
   composeInstanceStatus,
   formatInstanceStatus,
-} from '../instanceStatuses';
+} from '../../../utils/instanceStatuses';
 import type {
   Alarm,
   BundleResourceEntry,
@@ -460,7 +460,7 @@ export const formatDeploymentStatus = (
 
 // Re-exported for the logs panel / history rows, which decide off deployment
 // liveness whether to keep the log subscription open.
-export { isDeploymentActive } from '../instanceStatuses';
+export { isDeploymentActive } from '../../../utils/instanceStatuses';
 
 // Statuses that never produce a deployment log stream. Everything else has (or
 // will have) logs to view in-app.

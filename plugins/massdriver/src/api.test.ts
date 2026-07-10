@@ -147,6 +147,47 @@ describe('MassdriverClientApi', () => {
     });
   });
 
+  describe('fetchText', () => {
+    const buildApi = () => {
+      const fetchApi = createFetchApi();
+      const api = new MassdriverClientApi({
+        fetchApi,
+        configApi: createConfigApi() as unknown as ConfigApi,
+      });
+      return { api, fetchApi };
+    };
+
+    it('GETs the content proxy with the target url encoded', async () => {
+      const { api, fetchApi } = buildApi();
+      fetchApi.fetch.mockResolvedValue({
+        ok: true,
+        text: async () => '<svg/>',
+      } as unknown as Response);
+
+      const result = await api.fetchText('https://api.massdriver.cloud/a b');
+
+      expect(result).toBe('<svg/>');
+      expect(fetchApi.fetch).toHaveBeenCalledWith(
+        `plugin://massdriver/content?url=${encodeURIComponent(
+          'https://api.massdriver.cloud/a b',
+        )}`,
+      );
+    });
+
+    it('throws with the status when the response is not ok', async () => {
+      const { api, fetchApi } = buildApi();
+      fetchApi.fetch.mockResolvedValue({
+        ok: false,
+        status: 404,
+        statusText: 'Not Found',
+      } as unknown as Response);
+
+      await expect(api.fetchText('https://api.massdriver.cloud/x')).rejects.toThrow(
+        'Massdriver content fetch failed: 404 Not Found',
+      );
+    });
+  });
+
   describe('subscribe (SSE parsing)', () => {
     const buildApi = () => {
       const fetchApi = createFetchApi();

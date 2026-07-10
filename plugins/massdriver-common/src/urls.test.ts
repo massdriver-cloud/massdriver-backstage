@@ -12,6 +12,11 @@ import {
   instanceUrl,
   instanceTabUrl,
   instanceActionUrl,
+  reposUrl,
+  repoUrl,
+  repoTabUrl,
+  resourcesUrl,
+  resourceTabUrl,
   resourceUrl,
   repoVersionOverviewUrl,
 } from './urls';
@@ -152,6 +157,36 @@ describe('deep-link builders', () => {
   it('builds a resource url and percent-encodes the resource id', () => {
     expect(resourceUrl(APP_URL, ORG_ID, 'aws/bucket 1')).toBe(
       'https://app.massdriver.cloud/orgs/org1/resources/aws%2Fbucket%201/general',
+    );
+  });
+
+  it('builds a repos list url', () => {
+    expect(reposUrl(APP_URL, ORG_ID)).toBe(
+      'https://app.massdriver.cloud/orgs/org1/repos',
+    );
+  });
+
+  it('builds a repo url pointing at the all-versions view', () => {
+    expect(repoUrl(APP_URL, ORG_ID, 'my-repo')).toBe(
+      'https://app.massdriver.cloud/orgs/org1/repos/my-repo/all',
+    );
+  });
+
+  it('builds a resources list url', () => {
+    expect(resourcesUrl(APP_URL, ORG_ID)).toBe(
+      'https://app.massdriver.cloud/orgs/org1/resources',
+    );
+  });
+
+  it('builds a repo tab url', () => {
+    expect(repoTabUrl(APP_URL, ORG_ID, 'my-repo', '1.2.3', 'permissions')).toBe(
+      'https://app.massdriver.cloud/orgs/org1/repos/my-repo/1.2.3/permissions',
+    );
+  });
+
+  it('builds a resource tab url and percent-encodes the resource id', () => {
+    expect(resourceTabUrl(APP_URL, ORG_ID, 'aws/bucket', 'usage')).toBe(
+      'https://app.massdriver.cloud/orgs/org1/resources/aws%2Fbucket/usage',
     );
   });
 

@@ -3,7 +3,7 @@ import { useApi } from '@backstage/frontend-plugin-api';
 import {
   massdriverApiRef,
   type MassdriverSubscriptionError,
-} from '../../../api';
+} from '../api';
 
 const MAX_BACKOFF_MS = 10_000;
 

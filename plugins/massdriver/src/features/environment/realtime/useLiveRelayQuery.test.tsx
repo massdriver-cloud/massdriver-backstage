@@ -13,6 +13,7 @@ describe('useLiveRelayQuery', () => {
       appUrl: 'https://app.massdriver.cloud',
       organizationId: 'org-1',
       query: jest.fn(),
+      fetchText: jest.fn(),
       subscribe: jest.fn().mockImplementation(
         // Keep the subscription stream open until aborted.
         (_query, _variables, _handlers, signal?: AbortSignal) =>

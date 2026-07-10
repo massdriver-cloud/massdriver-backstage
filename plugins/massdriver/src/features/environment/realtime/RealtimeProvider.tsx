@@ -6,7 +6,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { useMassdriverSubscription } from './useMassdriverSubscription';
+import { useMassdriverSubscription } from '../../../hooks/useMassdriverSubscription';
 import {
   ENVIRONMENT_EVENTS_SUBSCRIPTION,
   PROJECT_EVENTS_SUBSCRIPTION,

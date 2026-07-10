@@ -12,7 +12,7 @@ import DownloadIcon from '@massdriver/ui/icons/DownloadIcon';
 import stylin from '@massdriver/ui/stylin';
 import { deploymentStatusColors, logSurfaceColors } from '@massdriver/ui/theme';
 import { useLiveRelayQuery } from '../../realtime/useLiveRelayQuery';
-import { useMassdriverSubscription } from '../../realtime/useMassdriverSubscription';
+import { useMassdriverSubscription } from '../../../../hooks/useMassdriverSubscription';
 import { useResizableWidth } from '../useResizableWidth';
 import { DEPLOYMENT_LOGS_SUBSCRIPTION } from '../../realtime/queries';
 import { DEPLOYMENT_LOGS_QUERY } from '../queries';
