@@ -47,7 +47,10 @@ export const MassdriverRouter = () => (
       path="resources/:resourceId"
       element={<Navigate to="general" replace />}
     />
-    <Route path="resources/:resourceId/:tab" element={<ResourceDetailsPage />} />
+    <Route
+      path="resources/:resourceId/:tab"
+      element={<ResourceDetailsPage />}
+    />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );

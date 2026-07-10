@@ -46,9 +46,7 @@ describe('ReposListPage', () => {
     expect(
       screen.getByRole('heading', { name: 'Repositories' }),
     ).toBeInTheDocument();
-    await waitFor(() =>
-      expect(screen.getByText('aws-s3')).toBeInTheDocument(),
-    );
+    await waitFor(() => expect(screen.getByText('aws-s3')).toBeInTheDocument());
     expect(screen.getByText('S3 bucket bundle')).toBeInTheDocument();
     expect(screen.getByText('v1.4.0')).toBeInTheDocument();
   });

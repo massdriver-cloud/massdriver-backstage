@@ -24,7 +24,10 @@ const mockApi = (): jest.Mocked<MassdriverApi> => ({
   subscribe: jest.fn().mockResolvedValue(undefined),
 });
 
-const renderDrawer = (api: MassdriverApi, entry = '/?logs=proj-env-cache-abc123') =>
+const renderDrawer = (
+  api: MassdriverApi,
+  entry = '/?logs=proj-env-cache-abc123',
+) =>
   renderInTestApp(
     <TestApiProvider apis={[[massdriverApiRef, api]]}>
       <MassdriverThemeScope>
@@ -43,7 +46,10 @@ describe('DeploymentLogsDrawer', () => {
         status: 'COMPLETED',
         action: 'PROVISION',
         version: '1.2.3',
-        instance: { id: 'proj-env-cache', component: { id: 'c', name: 'cache' } },
+        instance: {
+          id: 'proj-env-cache',
+          component: { id: 'c', name: 'cache' },
+        },
         logs: [{ timestamp: '2024-01-01T00:00:00Z', message: 'hello world\n' }],
       },
     });
@@ -84,7 +90,10 @@ describe('DeploymentLogsDrawer', () => {
         id: 'proj-env-cache-abc123',
         status: 'RUNNING',
         action: 'PROVISION',
-        instance: { id: 'proj-env-cache', component: { id: 'c', name: 'cache' } },
+        instance: {
+          id: 'proj-env-cache',
+          component: { id: 'c', name: 'cache' },
+        },
         logs: [],
       },
     });

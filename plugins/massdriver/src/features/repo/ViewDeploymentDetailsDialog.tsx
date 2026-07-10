@@ -63,9 +63,7 @@ const renderValueCell = (_value: unknown, row: { value: unknown }) => {
   if (value == null) return <NullLiteral>null</NullLiteral>;
   const display = formatParamValue(value);
   const truncated = display.length > TRUNCATE_LENGTH;
-  const visible = truncated
-    ? `${display.slice(0, TRUNCATE_LENGTH)}…`
-    : display;
+  const visible = truncated ? `${display.slice(0, TRUNCATE_LENGTH)}…` : display;
   const cell = <ValueText>{visible}</ValueText>;
   return truncated ? (
     <Tooltip title={display} arrow placement="top">
@@ -227,7 +225,11 @@ export const ViewDeploymentDetailsDialog = () => {
                 </SummaryHeaderLeft>
                 {hasLogs ? (
                   <HeaderActions>
-                    <Button variant="outlined" size="small" onClick={onViewLogs}>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={onViewLogs}
+                    >
                       View logs
                     </Button>
                   </HeaderActions>

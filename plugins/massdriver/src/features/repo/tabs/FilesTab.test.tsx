@@ -38,12 +38,12 @@ const renderTab = (api: MassdriverApi, props: Record<string, unknown> = {}) =>
     </TestApiProvider>,
   );
 
-const filesResult = (
-  items: Array<{ name: string; url?: string }>,
-) => ({
+const filesResult = (items: Array<{ name: string; url?: string }>) => ({
   ociRepo: {
     id: 'aws-s3',
-    tags: { items: [{ tag: '1.2.3', files: { cursor: { next: null }, items } }] },
+    tags: {
+      items: [{ tag: '1.2.3', files: { cursor: { next: null }, items } }],
+    },
   },
 });
 

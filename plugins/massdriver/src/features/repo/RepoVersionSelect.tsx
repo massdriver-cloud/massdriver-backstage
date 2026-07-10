@@ -60,8 +60,7 @@ export const RepoVersionSelect = ({
   const [showDevVersions, setShowDevVersions] = useState(false);
 
   const allChannels = useMemo(
-    () =>
-      (repo?.releaseChannels?.items ?? []).filter(Boolean) as Channel[],
+    () => (repo?.releaseChannels?.items ?? []).filter(Boolean) as Channel[],
     [repo],
   );
   const releaseChannels = useMemo(

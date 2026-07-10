@@ -51,10 +51,9 @@ describe('GeneralTab', () => {
     // Payload rendered as formatted JSON.
     expect(screen.getByText(/arn:aws:sns:topic/)).toBeInTheDocument();
     // Export mutates, so the download button deep-links out to Massdriver.
-    expect(screen.getByLabelText('Download payload in Massdriver')).toHaveAttribute(
-      'target',
-      '_blank',
-    );
+    expect(
+      screen.getByLabelText('Download payload in Massdriver'),
+    ).toHaveAttribute('target', '_blank');
   });
 
   it('omits the payload card when there is no payload', async () => {
@@ -71,7 +70,9 @@ describe('GeneralTab', () => {
 
     await renderTab(api);
 
-    await waitFor(() => expect(screen.getByText('Imported')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText('Imported')).toBeInTheDocument(),
+    );
     expect(
       screen.queryByLabelText('Download payload in Massdriver'),
     ).not.toBeInTheDocument();

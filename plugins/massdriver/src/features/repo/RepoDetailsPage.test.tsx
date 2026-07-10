@@ -48,7 +48,11 @@ describe('RepoDetailsPage', () => {
     });
 
     // Versions tab is purely presentational (no extra query).
-    await renderPage(api, { repoId: 'aws-s3', version: 'all', tab: 'versions' });
+    await renderPage(api, {
+      repoId: 'aws-s3',
+      version: 'all',
+      tab: 'versions',
+    });
 
     await waitFor(() =>
       expect(

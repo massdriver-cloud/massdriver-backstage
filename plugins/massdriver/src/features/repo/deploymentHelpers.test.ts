@@ -120,9 +120,9 @@ describe('composeLogsText', () => {
   });
 
   it('concatenates batch messages without extra separators, trailing newline', () => {
-    expect(composeLogsText([{ message: 'line 1\n' }, { message: 'line 2' }])).toBe(
-      '\nline 1\nline 2\n',
-    );
+    expect(
+      composeLogsText([{ message: 'line 1\n' }, { message: 'line 2' }]),
+    ).toBe('\nline 1\nline 2\n');
   });
 
   it('keeps an already-trailing newline without doubling it', () => {

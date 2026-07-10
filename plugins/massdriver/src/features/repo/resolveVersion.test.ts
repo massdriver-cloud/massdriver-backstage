@@ -1,4 +1,8 @@
-import { ALL_VERSIONS, bundleQueryId, resolveSelectedVersion } from './resolveVersion';
+import {
+  ALL_VERSIONS,
+  bundleQueryId,
+  resolveSelectedVersion,
+} from './resolveVersion';
 
 describe('bundleQueryId', () => {
   it('uses semver "latest" for the all-versions view', () => {

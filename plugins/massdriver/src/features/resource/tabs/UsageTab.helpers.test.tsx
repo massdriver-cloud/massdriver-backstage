@@ -14,7 +14,10 @@ describe('UsageTab.helpers', () => {
         id: 'proj-env-cache',
         status: 'PROVISIONED',
         bundle: { id: 'b1', name: 'aws-sns' },
-        environment: { id: 'proj-env', project: { id: 'proj', name: 'Payments' } },
+        environment: {
+          id: 'proj-env',
+          project: { id: 'proj', name: 'Payments' },
+        },
       },
     });
     expect(row).toMatchObject({
@@ -40,7 +43,10 @@ describe('UsageTab.helpers', () => {
         id: 'proj-env-api',
         status: 'FAILED',
         bundle: { id: 'b2', name: 'postgres' },
-        environment: { id: 'proj-env', project: { id: 'proj', name: 'Payments' } },
+        environment: {
+          id: 'proj-env',
+          project: { id: 'proj', name: 'Payments' },
+        },
       },
     });
     expect(row).toMatchObject({

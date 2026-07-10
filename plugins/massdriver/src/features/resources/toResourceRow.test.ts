@@ -18,7 +18,11 @@ describe('toResourceRow', () => {
       id: 'r2',
       name: 'cache',
       origin: 'PROVISIONED',
-      resourceType: { id: 'aws-sns', name: 'SNS Topic', icon: 'https://x/i.svg' },
+      resourceType: {
+        id: 'aws-sns',
+        name: 'SNS Topic',
+        icon: 'https://x/i.svg',
+      },
       instance: {
         id: 'proj-env-cache',
         name: 'cache',

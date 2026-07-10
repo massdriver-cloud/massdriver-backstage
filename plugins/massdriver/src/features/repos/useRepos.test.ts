@@ -11,7 +11,11 @@ describe('toRepoRow', () => {
   });
 
   it('leaves latestVersion null when there are no tags', () => {
-    const row = toRepoRow({ id: 'aws-s3', name: 'aws-s3', tags: { items: [] } });
+    const row = toRepoRow({
+      id: 'aws-s3',
+      name: 'aws-s3',
+      tags: { items: [] },
+    });
     expect(row.latestVersion).toBeNull();
   });
 

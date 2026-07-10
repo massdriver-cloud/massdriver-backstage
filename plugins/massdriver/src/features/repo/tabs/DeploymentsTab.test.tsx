@@ -58,7 +58,10 @@ describe('DeploymentsTab', () => {
             instance: {
               id: 'proj-env-cache',
               environment: { id: 'proj-env', name: 'staging' },
-              component: { id: 'proj-cache', project: { id: 'proj', name: 'app' } },
+              component: {
+                id: 'proj-cache',
+                project: { id: 'proj', name: 'app' },
+              },
             },
           },
         ],

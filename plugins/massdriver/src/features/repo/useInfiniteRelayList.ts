@@ -47,7 +47,11 @@ export const useInfiniteRelayList = <T>(
   variablesRef.current = variables;
   const path = Array.isArray(responseKey) ? responseKey : [responseKey];
 
-  const resetKey = JSON.stringify({ query, variables: variables ?? null, skip });
+  const resetKey = JSON.stringify({
+    query,
+    variables: variables ?? null,
+    skip,
+  });
 
   const [items, setItems] = useState<T[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -68,7 +72,10 @@ export const useInfiniteRelayList = <T>(
       try {
         const data = (await api.query(query, {
           ...(variablesRef.current ?? {}),
-          cursor: { limit: pageSize, ...(cursorNext ? { next: cursorNext } : {}) },
+          cursor: {
+            limit: pageSize,
+            ...(cursorNext ? { next: cursorNext } : {}),
+          },
         })) as Record<string, unknown>;
         // A newer fetch superseded this one (filters changed mid-flight); drop it.
         if (requestId !== requestIdRef.current) return;

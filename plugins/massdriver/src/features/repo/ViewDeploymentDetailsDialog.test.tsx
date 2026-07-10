@@ -28,7 +28,10 @@ const DEPLOYMENT = {
   lastTransitionedAt: '2024-01-01T00:05:00Z',
   elapsedTime: 125,
   deployedBy: 'joe',
-  instance: { id: 'proj-env-cache', component: { id: 'proj-cache', name: 'cache' } },
+  instance: {
+    id: 'proj-env-cache',
+    component: { id: 'proj-cache', name: 'cache' },
+  },
 };
 
 const LocationProbe = () => {
@@ -36,7 +39,10 @@ const LocationProbe = () => {
   return <div data-testid="search">{search}</div>;
 };
 
-const renderDialog = (api: MassdriverApi, entry = '/?deployment=proj-env-cache-abc123') =>
+const renderDialog = (
+  api: MassdriverApi,
+  entry = '/?deployment=proj-env-cache-abc123',
+) =>
   renderInTestApp(
     <TestApiProvider apis={[[massdriverApiRef, api]]}>
       <MassdriverThemeScope>

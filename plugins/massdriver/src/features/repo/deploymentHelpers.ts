@@ -39,9 +39,7 @@ export const parsePlanMessage = (
  * run time as "Xm Ys". Returns null for missing / non-positive durations so the
  * row can omit the segment entirely.
  */
-export const formatElapsed = (
-  seconds?: number | null,
-): string | null => {
+export const formatElapsed = (seconds?: number | null): string | null => {
   if (!seconds || seconds <= 0) return null;
   const minutes = Math.floor(seconds / 60);
   const remainder = seconds % 60;

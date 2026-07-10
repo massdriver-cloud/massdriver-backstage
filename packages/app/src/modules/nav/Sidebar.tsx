@@ -49,7 +49,11 @@ export const SidebarContent = NavContentBlueprint.make({
             </SidebarSubmenu>
           </SidebarItem>
         ) : (
-          <SidebarItem icon={() => item.icon} to={item.href} text={item.title} />
+          <SidebarItem
+            icon={() => item.icon}
+            to={item.href}
+            text={item.title}
+          />
         ),
       );
 

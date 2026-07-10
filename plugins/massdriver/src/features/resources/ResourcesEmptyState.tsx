@@ -51,9 +51,9 @@ export const ResourcesEmptyState = ({ importUrl }: { importUrl?: string }) => (
     <Heading variant="h5">Set Up Your Massdriver Catalog</Heading>
     <Body>
       The Massdriver Catalog is where you define resource types, infrastructure
-      bundles, and cloud support for your developer platform. Resources flow into
-      Massdriver automatically as instances deploy, or you can import existing
-      resources by hand.
+      bundles, and cloud support for your developer platform. Resources flow
+      into Massdriver automatically as instances deploy, or you can import
+      existing resources by hand.
     </Body>
 
     <Subtitle>Next Steps</Subtitle>

@@ -49,7 +49,9 @@ const parseMap = (value: unknown): any => {
   }
 };
 
-const buildLocation = (instance: GeneralResource['instance']): string | null => {
+const buildLocation = (
+  instance: GeneralResource['instance'],
+): string | null => {
   if (!instance?.id) return null;
   const { projectId, scopedEnvironmentId } = parseInstanceId(instance.id);
   if (!projectId || !scopedEnvironmentId) return null;
@@ -274,7 +276,15 @@ const ValueWrap = stylin(Box)(({ theme }: { theme: any }) => ({
 }));
 
 const ValueText = stylin(Box, ['mono', 'truncate'])(
-  ({ theme, mono, truncate }: { theme: any; mono?: boolean; truncate?: boolean }) => ({
+  ({
+    theme,
+    mono,
+    truncate,
+  }: {
+    theme: any;
+    mono?: boolean;
+    truncate?: boolean;
+  }) => ({
     fontSize: '0.875rem',
     color: theme.palette.text.primary,
     flex: 1,

@@ -17,7 +17,11 @@ import type { RepoBundle } from '../types';
 
 // Ported from apps/web/features/repos/sections/OverviewTab/. Renders the
 // bundle's README; empty state links out to the source repository when known.
-export const OverviewTab = ({ repoId, version, hasNoVersions }: RepoTabProps) => {
+export const OverviewTab = ({
+  repoId,
+  version,
+  hasNoVersions,
+}: RepoTabProps) => {
   const api = useApi(massdriverApiRef);
   const id = bundleQueryId(repoId, version);
 

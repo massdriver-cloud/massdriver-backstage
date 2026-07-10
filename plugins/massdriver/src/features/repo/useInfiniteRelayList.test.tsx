@@ -22,7 +22,11 @@ const mockApi = (): jest.Mocked<MassdriverApi> => ({
 const wrapper =
   (api: MassdriverApi) =>
   ({ children }: { children: ReactNode }) =>
-    <TestApiProvider apis={[[massdriverApiRef, api]]}>{children}</TestApiProvider>;
+    (
+      <TestApiProvider apis={[[massdriverApiRef, api]]}>
+        {children}
+      </TestApiProvider>
+    );
 
 const page = (items: (Thing | null)[], next?: string) => ({
   things: { items, cursor: { next: next ?? null } },

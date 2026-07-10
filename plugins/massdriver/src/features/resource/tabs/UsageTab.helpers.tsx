@@ -45,7 +45,10 @@ interface InstanceLeaf {
   id?: string;
   status?: string | null;
   bundle?: { id: string; name?: string | null } | null;
-  environment?: { id: string; project?: { id: string; name?: string | null } | null } | null;
+  environment?: {
+    id: string;
+    project?: { id: string; name?: string | null } | null;
+  } | null;
 }
 
 const buildInstanceHref = (instance?: InstanceLeaf | null): string | null => {
@@ -70,9 +73,8 @@ const buildEnvironmentHref = (
   return internalRoutes.environment(projectId, environment.id);
 };
 
-const buildProjectHref = (
-  project?: { id?: string } | null,
-): string | null => (project?.id ? internalRoutes.project(project.id) : null);
+const buildProjectHref = (project?: { id?: string } | null): string | null =>
+  project?.id ? internalRoutes.project(project.id) : null;
 
 const since = (iso?: string | null) => ({
   when: formatRelativeTime(iso),
@@ -170,7 +172,8 @@ const staticCol = (
   field: string,
   header: string,
   options: Record<string, unknown> = {},
-) => col.text(field, header, { sortable: false, searchable: false, ...options });
+) =>
+  col.text(field, header, { sortable: false, searchable: false, ...options });
 
 const whenColumn = (header: string) =>
   staticCol('when', header, {

@@ -1,9 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useApi } from '@backstage/frontend-plugin-api';
-import {
-  massdriverApiRef,
-  type MassdriverSubscriptionError,
-} from '../api';
+import { massdriverApiRef, type MassdriverSubscriptionError } from '../api';
 
 const MAX_BACKOFF_MS = 10_000;
 

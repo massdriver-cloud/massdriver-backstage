@@ -36,7 +36,8 @@ describe('mapGrantToRow', () => {
 describe('buildGrantColumns', () => {
   it('builds action, recipients, created, and a deep-linked remove action', () => {
     const columns = buildGrantColumns({
-      manageUrl: 'https://app.massdriver.cloud/orgs/org1/repos/r/all/permissions',
+      manageUrl:
+        'https://app.massdriver.cloud/orgs/org1/repos/r/all/permissions',
     });
     expect(columns.map(column => column.field)).toEqual([
       'action',

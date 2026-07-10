@@ -32,10 +32,7 @@ export const ReposListPage = () => {
       description="Repositories are the basic building blocks of infrastructure, applications, and architectures in Massdriver."
       actions={
         <OpenInMassdriverButton
-          url={`${reposUrl(
-            api.appUrl,
-            api.organizationId,
-          )}?createOciRepo=true`}
+          url={`${reposUrl(api.appUrl, api.organizationId)}?createOciRepo=true`}
         >
           New Repository
         </OpenInMassdriverButton>

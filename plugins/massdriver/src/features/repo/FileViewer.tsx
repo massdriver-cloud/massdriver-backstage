@@ -90,7 +90,10 @@ export const FileViewer = ({ file }: { file: RepoFile | null }) => {
         </Body>
       ) : (
         <EmptyContainer>
-          <RepoEmptyState title="Empty file" description="This file is empty." />
+          <RepoEmptyState
+            title="Empty file"
+            description="This file is empty."
+          />
         </EmptyContainer>
       )}
     </Container>

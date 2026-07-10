@@ -56,7 +56,11 @@ interface ResourceHeader {
   id: string;
   name: string;
   origin?: string | null;
-  resourceType?: { id: string; name?: string | null; icon?: string | null } | null;
+  resourceType?: {
+    id: string;
+    name?: string | null;
+    icon?: string | null;
+  } | null;
 }
 
 /** Read-only resource details: vertical side-tabs mirroring the web app. */
@@ -133,7 +137,9 @@ export const ResourceDetailsPage = () => {
             {/* Web renders Delete as a danger icon button; imported resources
                 deep-link out, provisioned stay disabled like the web app. */}
             <Tooltip
-              title={isProvisioned ? PROVISIONED_DELETE_TOOLTIP : DELETE_TOOLTIP}
+              title={
+                isProvisioned ? PROVISIONED_DELETE_TOOLTIP : DELETE_TOOLTIP
+              }
               arrow
               placement="top"
             >

@@ -182,9 +182,9 @@ describe('MassdriverClientApi', () => {
         statusText: 'Not Found',
       } as unknown as Response);
 
-      await expect(api.fetchText('https://api.massdriver.cloud/x')).rejects.toThrow(
-        'Massdriver content fetch failed: 404 Not Found',
-      );
+      await expect(
+        api.fetchText('https://api.massdriver.cloud/x'),
+      ).rejects.toThrow('Massdriver content fetch failed: 404 Not Found');
     });
   });
 

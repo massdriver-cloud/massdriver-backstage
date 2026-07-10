@@ -28,7 +28,11 @@ export interface ResourceListItem {
   effectiveAttributes?: unknown;
   createdAt?: string | null;
   updatedAt?: string | null;
-  resourceType?: { id: string; name?: string | null; icon?: string | null } | null;
+  resourceType?: {
+    id: string;
+    name?: string | null;
+    icon?: string | null;
+  } | null;
   instance?: {
     id: string;
     name?: string | null;

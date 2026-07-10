@@ -43,10 +43,7 @@ export const InstancesTab = ({
   const versionScoped = version !== ALL_VERSIONS;
 
   const sort = useMemo(() => sortValueToInput(sortValue), [sortValue]);
-  const status = useMemo(
-    () => statusValueToFilter(statusValue),
-    [statusValue],
-  );
+  const status = useMemo(() => statusValueToFilter(statusValue), [statusValue]);
 
   const versionFilter = buildRepoVersionFilter(repoId, version);
   const filter =

@@ -44,7 +44,10 @@ describe('InstancesTab', () => {
             updatedAt: '2024-01-01T00:00:00Z',
             cost: { lastMonth: { amount: 12.5, currency: 'USD' } },
             environment: { id: 'proj-env', name: 'staging' },
-            component: { id: 'proj-cache', project: { id: 'proj', name: 'app' } },
+            component: {
+              id: 'proj-cache',
+              project: { id: 'proj', name: 'app' },
+            },
           },
         ],
       },
@@ -73,7 +76,9 @@ describe('InstancesTab', () => {
 
   it('renders the empty state when there are no instances', async () => {
     const api = mockApi();
-    api.query.mockResolvedValue({ instances: { cursor: { next: null }, items: [] } });
+    api.query.mockResolvedValue({
+      instances: { cursor: { next: null }, items: [] },
+    });
 
     await renderTab(api);
 

@@ -67,8 +67,7 @@ const ResourcesList = ({
   onOriginChange: (origin: Origin) => void;
   importUrl: string;
 }) => {
-  const baseFilter =
-    origin === 'all' ? undefined : { origin: { eq: origin } };
+  const baseFilter = origin === 'all' ? undefined : { origin: { eq: origin } };
 
   const { items, loading, error, hasMore, dataListParams } =
     usePaginatedRelayQuery<ResourceListItem>(RESOURCES_QUERY, {

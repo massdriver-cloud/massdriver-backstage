@@ -42,9 +42,14 @@ export interface RepoInstance {
   deployedVersion?: string | null;
   createdAt?: string | null;
   updatedAt?: string | null;
-  cost?: { lastMonth?: { amount?: number | null; currency?: string } | null } | null;
+  cost?: {
+    lastMonth?: { amount?: number | null; currency?: string } | null;
+  } | null;
   environment?: { id: string; name?: string | null } | null;
-  component?: { id: string; project?: { id: string; name?: string | null } | null } | null;
+  component?: {
+    id: string;
+    project?: { id: string; name?: string | null } | null;
+  } | null;
 }
 
 /** A deployment row on the repo Deployments tab (MassdriverRepoDeployments). */

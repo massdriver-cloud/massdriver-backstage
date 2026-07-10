@@ -90,7 +90,8 @@ export const usePaginatedRelayQuery = <T>(
     })) as Record<string, unknown>;
     const path = Array.isArray(responseKey) ? responseKey : [responseKey];
     return path.reduce<unknown>(
-      (node, key) => (node as Record<string, unknown> | null | undefined)?.[key],
+      (node, key) =>
+        (node as Record<string, unknown> | null | undefined)?.[key],
       data,
     ) as RelayPage<T> | undefined;
     // Re-fetch whenever the effective query inputs change.

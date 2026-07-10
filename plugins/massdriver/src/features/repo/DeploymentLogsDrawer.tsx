@@ -16,10 +16,7 @@ import stylin from '@massdriver/ui/stylin';
 import { instanceStatusColors, logSurfaceColors } from '@massdriver/ui/theme';
 import { massdriverApiRef } from '../../api';
 import { composeInstanceStatus } from '../../utils/instanceStatuses';
-import {
-  DEPLOYMENT_LOGS_QUERY,
-  DEPLOYMENT_LOGS_SUBSCRIPTION,
-} from './queries';
+import { DEPLOYMENT_LOGS_QUERY, DEPLOYMENT_LOGS_SUBSCRIPTION } from './queries';
 import {
   composeLogsText,
   formatDeploymentStatus,
