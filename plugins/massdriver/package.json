@@ -2,11 +2,7 @@
   "name": "@massdriver/backstage-plugin",
   "version": "1.0.0",
   "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/massdriver-cloud/massdriver-backstage",
-    "directory": "plugins/massdriver"
-  },
+  "homepage": "https://www.massdriver.cloud/",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "publishConfig": {
