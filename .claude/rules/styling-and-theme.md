@@ -7,19 +7,29 @@ paths:
 
 # Styling, Theme Scope & MUI v4/v5 Coexistence
 
-Backstage's host app runs MUI v4; the Massdriver plugin renders MUI v5 (`@massdriver/ui`) inside an isolated island. Getting this wrong produces specificity fights and unstyled/blank components.
+Backstage's host app runs MUI v4; the Massdriver plugin renders MUI v5 (`@massdriver/ui`) inside an isolated island.
+
+## The `v5-` Class Prefix (the one fact that explains everything)
+
+Backstage's `UnifiedThemeProvider` (`@backstage/theme`, imported statically by `@backstage/plugin-app` at boot — before any plugin chunk loads) configures MUI v5's `ClassNameGenerator` to prefix every generated slot class: the DOM carries `v5-MuiSwitch-thumb`, not `MuiSwitch-thumb`. Consequences:
+
+- Backstage's v4 rules (which target unprefixed `.Mui*` names) **cannot** match the plugin's v5 DOM — the old "v4 clobbers v5" fear is handled upstream.
+- The inverse hazard is ours: **a hardcoded `.Mui*` slot selector in a `stylin()` style silently never matches.** Build slot selectors from the constants re-exported by `theme/muiClasses.ts` (`` [`& .${toggleButtonClasses.root}`] ``) — they resolve through the generator. State classes (`.Mui-checked`, `.Mui-selected`, `.Mui-disabled`, …) are never renamed and may stay literal.
+- `@massdriver/ui` ≥ 1.0.1 uses class constants internally for the same reason; earlier versions render subtly broken in Backstage (off-kilter Switch, etc.).
+- **Never let `@mui/material` evaluate before Backstage's configure (the boot-graph rule).** MUI freezes every `*Classes` constant and internal cross-slot selector at module evaluation. Backstage's package detection `require()`s this plugin's ROOT entry at boot (`__backstage-autodetected-plugins__` webpack entry) — before the configure — so anything the root entry statically imports that reaches the `@mui/material` barrel (any `@massdriver/ui` component or icon) freezes ALL slot names unprefixed while the DOM later renders prefixed, silently breaking MUI's own internals (small-Switch geometry, Tooltip arrow) and every constant-based selector. Guards: package-root exports that reach `@massdriver/ui` go through dynamic import (`ProjectsListPageLazy`), `src/index.test.ts` fails if the barrel becomes eagerly reachable, and the host app's sidebar uses local v4 icon copies (`packages/app/src/modules/nav/icons/`) instead of `@massdriver/ui/icons/*`. Verified via prod build: no v5 component code in any boot chunk.
+- **Do NOT call `ClassNameGenerator.configure` anywhere** — it's one process-global singleton shared with Backstage and cannot give the plugin "its own" names. An eager app-entry configure was tried (2026-07-13) and broke Backstage's own chrome; the boot-graph rule above is the correct fix.
 
 ## The Theme Island
 
-- **`theme/MassdriverThemeScope.tsx`** is the only file allowed to import `@mui/material`. It creates a dedicated Emotion cache (`key: 'mdui'`, deliberately **not** `prepend: true` so v5 styles win specificity ties against Backstage's v4 JSS) and mounts `ThemeProvider` + `ScopedCssBaseline` with `@massdriver/ui/theme`'s Light/Dark themes.
+- **`theme/MassdriverThemeScope.tsx`**, **`theme/muiClasses.ts`**, and **`theme/muiClassNameAudit.ts`** are the only files allowed to import `@mui/material` (the scope for its providers, `muiClasses` for slot-class constants, the audit for the dev-mode freeze detector). The scope creates a dedicated Emotion cache (`key: 'mdui'`) to keep the island's style tags separate from Backstage's caches, mounts `ThemeProvider` + `ScopedCssBaseline` with `@massdriver/ui/theme`'s Light/Dark themes, and runs `auditMuiClassNameConsistency` once (dev only) to `console.warn` when a host app has tripped the boot-graph freeze.
 - **`theme/ThemeModeContext.tsx`** persists light/dark to localStorage, independent of Backstage's theme. The shell header owns the toggle.
 - Every Massdriver page/entity surface renders inside `MassdriverShell` (or wraps itself in `MassdriverThemeScope` for entity cards). New top-level surfaces must not render `@massdriver/ui` components outside the scope — they'd pick up the wrong theme.
 
 ## Hybrid-Runtime Component Bans
 
-- **No MUI `Drawer`, `Modal`, `Dialog`-as-modal, or `Slide`-transition components.** They rely on portals/transitions that do not paint reliably in the hybrid v4+v5 runtime. Overlays are absolutely-positioned `Box` panels anchored to a `position: relative` container — see `InstanceDrawer` (`Panel`) and `DeploymentLogsPanel` (`Root`). `@massdriver/ui/Dialog` is used only where already proven to work (compare dialogs); prefer the panel pattern for anything new.
+- **No MUI `Drawer`, `Modal`, `Dialog`-as-modal, or `Slide`-transition components.** Historically they didn't paint reliably in the hybrid runtime; the likely root cause (the pre-1.0.1 `@massdriver/ui` selector breakage above) is now fixed, but the ban stays until portal components are visually re-verified in Backstage. Overlays are absolutely-positioned `Box` panels anchored to a `position: relative` container — see `InstanceDrawer` (`Panel`) and `DeploymentLogsPanel` (`Root`). `@massdriver/ui/Dialog` is used only where already proven to work (compare dialogs); prefer the panel pattern for anything new. Note portaled content renders outside `ScopedCssBaseline` — it still gets the theme (context crosses portals) but not the scoped baseline.
 - MUI v4 (`@material-ui/*`) is Backstage's — never import it in the plugin. `@mui/icons-material` v5 icons are fine.
-- Watch for v4/v5 class-name collisions when styling near Backstage chrome (both stacks emit `Mui*` classes); scope selectors inside `stylin()` components rather than global overrides.
+- **Never hardcode `.Mui*` slot selectors** — see "The `v5-` Class Prefix" above; use `theme/muiClasses.ts` constants.
 
 ## `@massdriver/ui` Conventions (carried from the web app)
 
