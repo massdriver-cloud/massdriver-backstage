@@ -20,13 +20,14 @@
     "lint": "backstage-cli repo lint --since origin/master",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
-    "new": "backstage-cli new"
+    "new": "backstage-cli new",
+    "release": "node scripts/release.mjs"
   },
   "backstage": {
     "cli": {
       "new": {
         "globals": {
-          "license": "UNLICENSED"
+          "license": "Apache-2.0"
         }
       }
     }

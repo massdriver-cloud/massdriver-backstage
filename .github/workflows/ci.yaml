@@ -13,6 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Enable corepack (Yarn 4)
+        run: corepack enable
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -32,3 +35,8 @@ jobs:
 
       - name: Test
         run: yarn test:all
+
+      # Build the publishable packages so packaging breakage (entry points,
+      # d.ts generation) fails in CI rather than during a tagged release.
+      - name: Build packages
+        run: yarn workspaces foreach -A --topological --include '@massdriver-cloud/*' run build
