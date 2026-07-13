@@ -5,6 +5,12 @@ on:
     branches: [main]
   pull_request:
 
+# Cancel superseded runs on PR updates; never cancel main runs — every merge
+# gets a full post-merge verification (and seeds the yarn cache for PRs).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   ci:
     runs-on: ubuntu-latest
