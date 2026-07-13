@@ -1,0 +1,81 @@
+{
+  "name": "@massdriver/backstage-plugin",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/massdriver-cloud/massdriver-backstage",
+    "directory": "plugins/massdriver"
+  },
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "frontend-plugin",
+    "pluginId": "massdriver",
+    "pluginPackages": [
+      "@massdriver/backstage-plugin",
+      "@massdriver/backstage-plugin-backend",
+      "@massdriver/backstage-plugin-common"
+    ]
+  },
+  "sideEffects": false,
+  "scripts": {
+    "start": "backstage-cli package start",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "^1.9.0",
+    "@backstage/core-components": "^0.18.11",
+    "@backstage/frontend-plugin-api": "^0.17.2",
+    "@backstage/plugin-catalog-react": "^3.1.0",
+    "@backstage/theme": "^0.7.3",
+    "@backstage/ui": "^0.16.0",
+    "@emotion/cache": "^11.11.0",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@massdriver/backstage-plugin-common": "workspace:^",
+    "@massdriver/forms": "^2.0.1",
+    "@massdriver/ui": "^1.0.1",
+    "@material-ui/core": "^4.12.2",
+    "@material-ui/icons": "^4.9.1",
+    "@mui/icons-material": "^5.14.18",
+    "@mui/lab": "^5.0.0-alpha.153",
+    "@mui/material": "^5.14.18",
+    "@rjsf/core": "^5.7.3",
+    "@rjsf/mui": "^5.7.3",
+    "@rjsf/utils": "^5.8.2",
+    "@rjsf/validator-ajv8": "^5.8.2",
+    "@xyflow/react": "^12.0.0",
+    "graphql": "^16.8.1",
+    "html-to-image": "^1.11.13",
+    "react-use": "^17.2.4"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.36.3",
+    "@backstage/frontend-defaults": "^0.5.3",
+    "@backstage/frontend-dev-utils": "^0.1.3",
+    "@backstage/frontend-test-utils": "^0.6.1",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "msw": "^1.0.0",
+    "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

@@ -1,0 +1,198 @@
+import {
+  HttpAuthService,
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
+import { InputError } from '@backstage/errors';
+import {
+  createMassdriverClient,
+  graphqlUrl,
+  MassdriverClient,
+  MassdriverConfig,
+  readMassdriverConfig,
+  socketUrl,
+} from '@massdriver/backstage-plugin-common';
+import express from 'express';
+import Router from 'express-promise-router';
+import { openAbsintheSubscription } from './absinthe';
+
+// Keep the downstream SSE connection (and any intermediary proxies) alive
+// between events. The upstream Absinthe socket has its own heartbeat.
+const SSE_KEEPALIVE_MS = 25_000;
+
+/**
+ * Builds the Massdriver relay router.
+ *
+ * The client is created lazily on first use so the backend still boots when the
+ * plugin is installed but not yet configured — misconfiguration surfaces as a
+ * request error rather than a startup crash.
+ */
+export async function createRouter({
+  config,
+  logger,
+  httpAuth,
+}: {
+  config: RootConfigService;
+  logger: LoggerService;
+  httpAuth: HttpAuthService;
+}): Promise<express.Router> {
+  let settings: MassdriverConfig | undefined;
+  const getConfig = (): MassdriverConfig => {
+    if (!settings) {
+      settings = readMassdriverConfig(config);
+      logger.info(
+        `Massdriver relay initialised for organization "${settings.organizationId}"`,
+      );
+    }
+    return settings;
+  };
+
+  let client: MassdriverClient | undefined;
+  const getClient = (): MassdriverClient => {
+    if (!client) {
+      const { organizationId, apiToken, baseUrl } = getConfig();
+      client = createMassdriverClient({
+        token: apiToken,
+        organizationId,
+        baseUrl,
+      });
+    }
+    return client;
+  };
+
+  const router = Router();
+  router.use(express.json());
+
+  router.post('/graphql', async (req, res) => {
+    // Require an authenticated Backstage user; the relay then queries with the
+    // org's service-account token (org-wide read access — see plugin README).
+    await httpAuth.credentials(req, { allow: ['user'] });
+
+    const { query, variables } = (req.body ?? {}) as {
+      query?: unknown;
+      variables?: Record<string, unknown>;
+    };
+
+    if (typeof query !== 'string' || !query.trim()) {
+      throw new InputError(
+        'Request body must include a non-empty `query` string',
+      );
+    }
+
+    const data = await getClient().query(query, variables);
+    res.json({ data });
+  });
+
+  // Authenticated content proxy. The web app fetches auth-guarded assets (OCI
+  // repo icon SVGs, repo tag file contents) directly with the browser's bearer
+  // token; this plugin's browser holds no token, so the backend fetches with
+  // the service-account token instead. Locked to the configured Massdriver API
+  // origin so this can't be used as an open proxy.
+  router.get('/content', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+
+    const { url } = req.query as { url?: unknown };
+    if (typeof url !== 'string' || !url) {
+      throw new InputError('A `url` query parameter is required');
+    }
+
+    const { apiToken, baseUrl } = getConfig();
+    const apiOrigin = new URL(graphqlUrl(baseUrl)).origin;
+
+    let target: URL;
+    try {
+      target = new URL(url);
+    } catch {
+      throw new InputError('`url` must be an absolute URL');
+    }
+    if (target.origin !== apiOrigin) {
+      throw new InputError(
+        `\`url\` must be on the Massdriver API origin (${apiOrigin})`,
+      );
+    }
+
+    const upstream = await fetch(target, {
+      headers: { Authorization: `Bearer ${apiToken}` },
+    });
+
+    res.status(upstream.status);
+    const contentType = upstream.headers.get('content-type');
+    if (contentType) res.setHeader('Content-Type', contentType);
+    res.send(Buffer.from(await upstream.arrayBuffer()));
+  });
+
+  // Server-Sent Events relay for GraphQL subscriptions. The browser cannot open
+  // the Massdriver Absinthe socket directly (it holds no token), so the backend
+  // opens it with the service-account token and streams each result down as an
+  // SSE `data:` frame. `organizationId` is injected server-side, mirroring the
+  // `/graphql` relay, so callers only declare `$organizationId` in the document.
+  router.post('/subscribe', async (req, res) => {
+    await httpAuth.credentials(req, { allow: ['user'] });
+
+    const { query, variables } = (req.body ?? {}) as {
+      query?: unknown;
+      variables?: Record<string, unknown>;
+    };
+
+    if (typeof query !== 'string' || !query.trim()) {
+      throw new InputError(
+        'Request body must include a non-empty `query` string',
+      );
+    }
+
+    const { organizationId, apiToken, baseUrl } = getConfig();
+
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive',
+      // Disable proxy buffering (nginx) so events flush immediately.
+      'X-Accel-Buffering': 'no',
+    });
+    res.flushHeaders?.();
+
+    const write = (event: string | null, data: unknown) => {
+      if (res.writableEnded) return;
+      if (event) res.write(`event: ${event}\n`);
+      res.write(`data: ${JSON.stringify(data)}\n\n`);
+    };
+
+    const keepalive = setInterval(() => {
+      if (!res.writableEnded) res.write(': ping\n\n');
+    }, SSE_KEEPALIVE_MS);
+
+    const subscription = openAbsintheSubscription({
+      socketUrl: socketUrl(baseUrl),
+      token: apiToken,
+      query,
+      // Server-injected org id must win over request variables.
+      variables: { ...(variables ?? {}), organizationId },
+      logger,
+      onData: data => write(null, data),
+      onError: error => {
+        // `fatal` marks channel-level rejections (bad token/doc/environment)
+        // that retrying cannot fix — the frontend stops reconnecting on it.
+        write('error', { message: error.message, fatal: Boolean(error.fatal) });
+        teardown();
+      },
+      onClose: () => teardown(),
+    });
+
+    let torndown = false;
+    function teardown() {
+      if (torndown) return;
+      torndown = true;
+      clearInterval(keepalive);
+      subscription.close();
+      if (!res.writableEnded) res.end();
+    }
+
+    // Browser navigated away / closed the EventSource-style reader. The
+    // response 'close' event is the reliable disconnect signal — the request
+    // readable closes as soon as the JSON body is consumed, long before the
+    // client goes away.
+    res.on('close', teardown);
+  });
+
+  return router;
+}

@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write # create the GitHub release
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable corepack (Yarn 4)
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Verify tag matches package versions
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          for pkg in plugins/massdriver-common plugins/massdriver-backend plugins/massdriver; do
+            PKG_VERSION="$(node -p "require('./$pkg/package.json').version")"
+            if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+              echo "::error::$pkg is at $PKG_VERSION but tag is $TAG_VERSION — cut releases with 'yarn release'."
+              exit 1
+            fi
+          done
+
+      - name: Type check
+        run: yarn tsc
+
+      - name: Test
+        run: yarn test
+
+      - name: Build packages
+        run: yarn workspaces foreach -A --topological --include '@massdriver/*' run build
+
+      - name: Publish to npm
+        env:
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: yarn workspaces foreach -A --no-private --topological npm publish --access public --tolerate-republish
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --generate-notes
