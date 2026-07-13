@@ -1,6 +1,6 @@
 {
   "name": "@massdriver/backstage-plugin-common",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "Apache-2.0",
   "homepage": "https://www.massdriver.cloud/",
   "description": "Common functionalities for the massdriver plugin",
