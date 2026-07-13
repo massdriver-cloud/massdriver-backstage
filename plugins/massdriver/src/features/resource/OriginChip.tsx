@@ -1,5 +1,6 @@
 import Chip from '@massdriver/ui/Chip';
 import stylin from '@massdriver/ui/stylin';
+import { chipClasses } from '../../theme/muiClasses';
 
 // Ported from apps/web/features/resources/sections/GeneralTab/GeneralTab.view.js
 // (the OriginChip styled component + ORIGIN_LABELS).
@@ -35,7 +36,7 @@ const StyledChip = stylin(Chip, ['provisioned'])(
       ? theme.palette.info.lighter
       : theme.palette.success.lighter,
     color: provisioned ? theme.palette.info.dark : theme.palette.success.dark,
-    '& .MuiChip-label': {
+    [`& .${chipClasses.label}`]: {
       padding: theme.spacing(0, 0.75),
     },
   }),

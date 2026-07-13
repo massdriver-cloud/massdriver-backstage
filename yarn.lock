@@ -6226,7 +6226,7 @@ __metadata:
     "@emotion/styled": "npm:^11.11.0"
     "@massdriver-cloud/backstage-plugin-massdriver-common": "workspace:^"
     "@massdriver/forms": "npm:^2.0.1"
-    "@massdriver/ui": "npm:^1.0.0"
+    "@massdriver/ui": "npm:^1.0.1"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@mui/icons-material": "npm:^5.14.18"
@@ -6300,6 +6300,33 @@ __metadata:
     react: ^18.0.0
     react-dom: ^18.0.0
   checksum: 10c0/b87a400ddeac53965db184719ab62e74e12e1f20c9ddd0fad9392df2cfc3575d68175ee5774565cdd0c5b3bec44f3b05e525c93a9daa405347ab9f0c5eb74cd6
+  languageName: node
+  linkType: hard
+
+"@massdriver/ui@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@massdriver/ui@npm:1.0.1"
+  dependencies:
+    "@melloware/react-logviewer": "npm:^6.5.5"
+    dompurify: "npm:^3.4.11"
+    highlight.js: "npm:^11.11.1"
+    prism-react-renderer: "npm:^2.4.1"
+    react-markdown: "npm:^8.0.5"
+    rehype-autolink-headings: "npm:^6.1.1"
+    rehype-highlight: "npm:^5.0.2"
+    rehype-raw: "npm:^6.1.1"
+    rehype-sanitize: "npm:^5.0.1"
+    rehype-slug: "npm:^5.1.0"
+    remark-gfm: "npm:^3.0.1"
+  peerDependencies:
+    "@emotion/react": ^11.0.0
+    "@emotion/styled": ^11.0.0
+    "@mui/icons-material": ^5.0.0
+    "@mui/lab": ^5.0.0-alpha.0
+    "@mui/material": ^5.0.0
+    react: ^18.0.0
+    react-dom: ^18.0.0
+  checksum: 10c0/5b2a589e5b5b49a2d6a118a52ba4e116744bef78a7f8eca51fb97832a8b99945b92bf2cd83a89af1a23d57c5114a9f3b4a7df92c876a86029f3d6b0cbd48bffa
   languageName: node
   linkType: hard
 
@@ -12953,7 +12980,6 @@ __metadata:
     "@backstage/plugin-user-settings": "npm:^0.9.4"
     "@backstage/ui": "npm:^0.16.0"
     "@massdriver-cloud/backstage-plugin-massdriver": "workspace:^"
-    "@massdriver/ui": "npm:^1.0.0"
     "@material-ui/core": "npm:^4.12.2"
     "@material-ui/icons": "npm:^4.9.1"
     "@playwright/test": "npm:^1.32.3"

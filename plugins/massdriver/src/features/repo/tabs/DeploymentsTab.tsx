@@ -31,6 +31,7 @@ import {
   filterValue,
   sortValueToInput,
 } from './DeploymentsTab.helpers';
+import { selectClasses } from '../../../theme/muiClasses';
 
 // Ported from apps/web/features/repos/sections/DeploymentsTab/ (container + view
 // merged into one component, matching this plugin's single-file tab style). The
@@ -215,7 +216,7 @@ const ControlGroup = stylin(Box)(({ theme }: { theme: any }) => ({
 }));
 
 const ControlSelect = stylin(Select)(({ theme }: { theme: any }) => ({
-  '& .MuiSelect-select': {
+  [`& .${selectClasses.select}`]: {
     fontSize: theme.typography.body2.fontSize,
     padding: theme.spacing(0.25, 0.5),
     paddingRight: `${theme.spacing(3)} !important`,

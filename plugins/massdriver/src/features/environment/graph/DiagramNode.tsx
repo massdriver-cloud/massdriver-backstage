@@ -17,6 +17,7 @@ import hasUndeployedPlan from './hasUndeployedPlan';
 import { NODE_META_QUERY, type NodeMetaResult } from './queries';
 import { NODE_WIDTH, NODE_HEIGHT } from './DiagramNode.constants';
 import type { DiagramNodeData } from './diagramFactory';
+import { chipClasses } from '../../../theme/muiClasses';
 
 /** React Flow node: an instance card with live per-node metadata. */
 const DiagramNode = ({
@@ -224,7 +225,7 @@ const MetaErrorPill = stylin(Chip)(({ theme }: { theme: any }) => ({
   color: theme.palette.error.main,
   backgroundColor: `${theme.palette.error.main}1f`,
   border: `1px solid ${theme.palette.error.main}33`,
-  '& .MuiChip-label': {
+  [`& .${chipClasses.label}`]: {
     textTransform: 'lowercase',
   },
 }));

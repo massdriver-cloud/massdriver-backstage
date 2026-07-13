@@ -9,6 +9,7 @@ import Tooltip from '@massdriver/ui/Tooltip';
 import Typography from '@massdriver/ui/Typography';
 import stylin from '@massdriver/ui/stylin';
 import { Form, DataSourceProvider } from '@massdriver/forms';
+import { toggleButtonClasses } from '../../../../theme/muiClasses';
 import { useInstanceApiQuery } from '../useInstanceApiQuery';
 import { TabState } from '../TabState';
 import { formsDataSource } from '../formsDataSource';
@@ -185,25 +186,17 @@ const Header = stylin(Box)(({ theme }: { theme: any }) => ({
   minHeight: theme.spacing(5.5),
 }));
 
+// Ported from apps/web/features/environments/sections/InstancePanel/tabs/ConfigTab/ConfigTab.view.js
 const ViewToggle = stylin(ToggleButtonGroup)(({ theme }: { theme: any }) => ({
+  width: theme.spacing(16),
   height: theme.spacing(3.5),
-  // Backstage's MUI v4 shares the .MuiToggleButton-* class names and clobbers
-  // v5's per-button radius, so the selected fill and the group outline ended up
-  // with mismatched corners. Round + clip the GROUP and keep the buttons square:
-  // the border and the selected background then share the group's rounded corner.
-  borderRadius: `${theme.shape.borderRadius}px`,
-  overflow: 'hidden',
-  '& .MuiToggleButton-root': {
+  [`& .${toggleButtonClasses.root}`]: {
+    flex: 1,
     height: '100%',
-    minWidth: theme.spacing(7),
     fontWeight: 400,
     fontSize: theme.typography.pxToRem(13),
-    textTransform: 'none',
     paddingTop: 0,
     paddingBottom: 0,
-    paddingLeft: theme.spacing(1.5),
-    paddingRight: theme.spacing(1.5),
-    borderRadius: '0 !important',
   },
 }));
 

@@ -38,6 +38,7 @@ import type {
   InstanceResourceEntry,
   ProducedResource,
 } from '../types';
+import { chipClasses } from '../../../../theme/muiClasses';
 
 /** Read-only Resources tab: produced/pending resources with consumers + grants. */
 export const ResourcesTab = ({ instanceId }: { instanceId: string | null }) => {
@@ -587,7 +588,7 @@ const GrantConditions = stylin('span')(({ theme }: { theme: any }) => ({
 const SharedChip = stylin(Chip)(({ theme }: { theme: any }) => ({
   height: 18,
   fontSize: theme.typography.pxToRem(11),
-  '& .MuiChip-label': { paddingLeft: '6px', paddingRight: '6px' },
+  [`& .${chipClasses.label}`]: { paddingLeft: '6px', paddingRight: '6px' },
 }));
 
 const PayloadSection = stylin(Box)(({ theme }: { theme: any }) => ({

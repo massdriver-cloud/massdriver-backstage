@@ -31,6 +31,7 @@ import {
   type InstanceDependency,
 } from '../helpers';
 import type { ResourceType } from '../types';
+import { chipClasses } from '../../../../theme/muiClasses';
 
 /** Read-only Dependencies tab: fulfilled + unfulfilled dependency cards. */
 export const DependenciesTab = ({
@@ -422,7 +423,7 @@ const RequiredChip = stylin(Chip)(({ theme }: { theme: any }) => ({
   height: 16,
   fontSize: theme.typography.pxToRem(11),
   pointerEvents: 'none',
-  '& .MuiChip-label': { paddingLeft: '6px', paddingRight: '6px' },
+  [`& .${chipClasses.label}`]: { paddingLeft: '6px', paddingRight: '6px' },
 }));
 
 const HeaderRow = stylin(Box)(({ theme }: { theme: any }) => ({

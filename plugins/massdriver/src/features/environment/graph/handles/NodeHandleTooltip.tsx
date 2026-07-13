@@ -4,6 +4,7 @@ import Typography from '@massdriver/ui/Typography';
 import Tooltip from '@massdriver/ui/Tooltip';
 import Chip from '@massdriver/ui/Chip';
 import stylin from '@massdriver/ui/stylin';
+import { chipClasses } from '../../../../theme/muiClasses';
 
 // Read-only port of NodeHandleTooltip. The web app fetches the resource type
 // (for its icon) lazily on hover; that query is dropped here — the tooltip
@@ -161,5 +162,5 @@ const RequiredChip = stylin(Chip)({
   height: 18,
   fontSize: '0.625rem',
   fontWeight: 600,
-  '& .MuiChip-label': { px: 0.75 },
+  [`& .${chipClasses.label}`]: { px: 0.75 },
 });

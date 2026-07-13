@@ -15,6 +15,7 @@ import DownloadIcon from '@massdriver/ui/icons/DownloadIcon';
 import stylin from '@massdriver/ui/stylin';
 import { instanceStatusColors, logSurfaceColors } from '@massdriver/ui/theme';
 import { massdriverApiRef } from '../../api';
+import { drawerClasses } from '../../theme/muiClasses';
 import { composeInstanceStatus } from '../../utils/instanceStatuses';
 import { DEPLOYMENT_LOGS_QUERY, DEPLOYMENT_LOGS_SUBSCRIPTION } from './queries';
 import {
@@ -191,7 +192,7 @@ export const DeploymentLogsDrawer = () => {
 export default DeploymentLogsDrawer;
 
 const StyledDrawer = stylin(Drawer)({
-  '& .MuiDrawer-paper': {
+  [`& .${drawerClasses.paper}`]: {
     backgroundColor: logSurfaceColors.bg,
   },
 });

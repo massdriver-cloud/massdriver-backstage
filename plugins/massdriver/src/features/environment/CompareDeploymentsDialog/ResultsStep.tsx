@@ -202,22 +202,4 @@ const SwitchLabel = stylin(Box)(({ theme }: { theme: any }) => ({
   alignItems: 'center',
   gap: theme.spacing(0.5),
   userSelect: 'none',
-  '& .MuiSwitch-root': {
-    width: '40px !important',
-    height: '24px !important',
-    padding: '7px !important',
-  },
-  '& .MuiSwitch-switchBase': {
-    top: '0 !important',
-    left: '0 !important',
-    padding: '4px !important',
-  },
-  '& .MuiSwitch-switchBase.Mui-checked': {
-    transform: 'translateX(16px) !important',
-  },
-  '& .MuiSwitch-thumb': {
-    width: '16px !important',
-    height: '16px !important',
-  },
-  '& .MuiSwitch-track': { borderRadius: '7px !important' },
 }));

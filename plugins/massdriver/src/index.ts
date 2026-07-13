@@ -13,4 +13,5 @@ export { isMassdriverEntity, getMassdriverScope } from './entity';
 export type { MassdriverScope } from './entity';
 export { EntityMassdriverContent } from './components/EntityMassdriverContent';
 export { EntityMassdriverOverviewCard } from './components/EntityMassdriverOverviewCard';
-export { ProjectsListPage } from './features/projects/ProjectsListPage';
+export { MassdriverSidebarItem } from './components/MassdriverSidebarItem';
+export { ProjectsListPage } from './features/projects/ProjectsListPageLazy';

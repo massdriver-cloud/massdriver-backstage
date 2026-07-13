@@ -33,6 +33,7 @@ import {
   parseMap,
 } from '../helpers';
 import type { Alarm, Bundle, InstanceProperty } from '../types';
+import { outlinedInputClasses } from '../../../../theme/muiClasses';
 
 interface OverviewInstance {
   id: string;
@@ -602,7 +603,7 @@ const EmptyNote = stylin(Typography)(({ theme }: { theme: any }) => ({
 }));
 
 const SearchField = stylin(TextField)(({ theme }: { theme: any }) => ({
-  '.MuiOutlinedInput-root': {
+  [`.${outlinedInputClasses.root}`]: {
     fontSize: theme.typography.pxToRem(12),
     borderRadius: 0,
     '& fieldset': {
@@ -614,7 +615,7 @@ const SearchField = stylin(TextField)(({ theme }: { theme: any }) => ({
       borderBottom: `1px solid ${theme.palette.divider}`,
     },
   },
-  '.MuiOutlinedInput-input': {
+  [`.${outlinedInputClasses.input}`]: {
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
     paddingRight: theme.spacing(1.5),

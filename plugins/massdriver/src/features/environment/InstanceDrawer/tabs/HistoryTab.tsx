@@ -34,6 +34,7 @@ import {
   DisabledApprovalCluster,
   LogsButton,
 } from './DeploymentReadOnlyActions';
+import { selectClasses } from '../../../../theme/muiClasses';
 
 // --- Sort + filter controls (ported verbatim from the web app's
 // historyControls.js). Centralised so label rendering and the DeploymentsSort
@@ -390,7 +391,7 @@ const ControlGroup = stylin(Box)(({ theme }: { theme: any }) => ({
 }));
 
 const ControlSelect = stylin(Select)(({ theme }: { theme: any }) => ({
-  '& .MuiSelect-select': {
+  [`& .${selectClasses.select}`]: {
     fontSize: theme.typography.body2.fontSize,
     padding: theme.spacing(0.25, 0.5),
     paddingRight: `${theme.spacing(3)} !important`,

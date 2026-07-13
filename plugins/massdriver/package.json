@@ -35,7 +35,7 @@
     "@emotion/styled": "^11.11.0",
     "@massdriver-cloud/backstage-plugin-massdriver-common": "workspace:^",
     "@massdriver/forms": "^2.0.1",
-    "@massdriver/ui": "^1.0.0",
+    "@massdriver/ui": "^1.0.1",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@mui/icons-material": "^5.14.18",

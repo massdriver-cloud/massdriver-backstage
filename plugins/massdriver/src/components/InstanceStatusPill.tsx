@@ -6,6 +6,7 @@ import {
   formatInstanceStatus,
   isInstanceStatusActionable,
 } from '../utils/instanceStatuses';
+import { chipClasses } from '../theme/muiClasses';
 
 /**
  * Presentational instance/deployment status pill — the web app's
@@ -91,7 +92,7 @@ const StyledChip = stylin(Chip, ['statusColor', 'external', 'clickable'])(
         filter: 'brightness(0.96)',
       },
     }),
-    '& .MuiChip-label': {
+    [`& .${chipClasses.label}`]: {
       textTransform: 'lowercase',
     },
   }),
