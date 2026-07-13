@@ -1,5 +1,5 @@
 {
-  "name": "@massdriver-cloud/backstage-plugin-massdriver-common",
+  "name": "@massdriver/backstage-plugin-common",
   "version": "1.0.0",
   "license": "Apache-2.0",
   "repository": {
@@ -20,9 +20,9 @@
     "role": "common-library",
     "pluginId": "massdriver",
     "pluginPackages": [
-      "@massdriver-cloud/backstage-plugin-massdriver",
-      "@massdriver-cloud/backstage-plugin-massdriver-backend",
-      "@massdriver-cloud/backstage-plugin-massdriver-common"
+      "@massdriver/backstage-plugin",
+      "@massdriver/backstage-plugin-backend",
+      "@massdriver/backstage-plugin-common"
     ]
   },
   "configSchema": "config.d.ts",

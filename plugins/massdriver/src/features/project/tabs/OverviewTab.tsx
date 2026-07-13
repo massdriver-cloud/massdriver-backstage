@@ -1,5 +1,5 @@
 import { useApi } from '@backstage/frontend-plugin-api';
-import { parseEnvironmentId } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { parseEnvironmentId } from '@massdriver/backstage-plugin-common';
 import Box from '@massdriver/ui/Box';
 import Card from '@massdriver/ui/Card';
 import Divider from '@massdriver/ui/Divider';

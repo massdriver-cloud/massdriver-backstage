@@ -71,7 +71,7 @@ Carried over from the web app: no single-letter variable names (loop `i`/`j` OK)
 
 ## Critical Pitfalls
 
-- **This repo uses Yarn 4** (`yarn install`, `yarn test`), not pnpm. Run single-package tests with `yarn workspace @massdriver-cloud/backstage-plugin-massdriver test`. CI-style one-shot: `CI=true yarn test`.
+- **This repo uses Yarn 4** (`yarn install`, `yarn test`), not pnpm. Run single-package tests with `yarn workspace @massdriver/backstage-plugin test`. CI-style one-shot: `CI=true yarn test`.
 - **`backstage-cli repo lint --since origin/master`** — the default branch is `main`; use `yarn lint:all` locally.
 - **No hand-rolled `useAsync` + revision** — reads under `RealtimeProvider` go through `useLiveRelayQuery` (Golden Rule 5).
 - **Never swallow query errors.** Every fetch surfaces `error` somewhere visible (`TabState`, inline `Alert`, or an honest fallback label) — a failed query must not render as an empty state.

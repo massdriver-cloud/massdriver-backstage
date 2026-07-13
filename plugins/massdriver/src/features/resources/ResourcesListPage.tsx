@@ -1,5 +1,5 @@
 import { useApi } from '@backstage/frontend-plugin-api';
-import { resourcesUrl } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { resourcesUrl } from '@massdriver/backstage-plugin-common';
 import Alert from '@massdriver/ui/Alert';
 import Box from '@massdriver/ui/Box';
 import DataList from '@massdriver/ui/DataList';

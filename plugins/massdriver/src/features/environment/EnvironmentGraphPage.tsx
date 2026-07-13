@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { composeEnvironmentId } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { composeEnvironmentId } from '@massdriver/backstage-plugin-common';
 import Alert from '@massdriver/ui/Alert';
 import Box from '@massdriver/ui/Box';
 import LoadingIndicator from '@massdriver/ui/LoadingIndicator';

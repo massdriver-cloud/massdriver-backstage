@@ -7,7 +7,7 @@ import {
   SidebarSpace,
 } from '@backstage/core-components';
 import { NavContentBlueprint } from '@backstage/plugin-app-react';
-import { MassdriverSidebarItem } from '@massdriver-cloud/backstage-plugin-massdriver';
+import { MassdriverSidebarItem } from '@massdriver/backstage-plugin';
 import { SidebarLogo } from './SidebarLogo';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';

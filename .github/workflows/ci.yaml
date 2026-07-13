@@ -45,4 +45,4 @@ jobs:
       # Build the publishable packages so packaging breakage (entry points,
       # d.ts generation) fails in CI rather than during a tagged release.
       - name: Build packages
-        run: yarn workspaces foreach -A --topological --include '@massdriver-cloud/*' run build
+        run: yarn workspaces foreach -A --topological --include '@massdriver/*' run build

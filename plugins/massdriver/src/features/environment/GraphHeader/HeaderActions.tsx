@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { environmentUrl } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { environmentUrl } from '@massdriver/backstage-plugin-common';
 import Box from '@massdriver/ui/Box';
 import Button from '@massdriver/ui/Button';
 import IconButton from '@massdriver/ui/IconButton';

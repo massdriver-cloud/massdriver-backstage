@@ -1,4 +1,4 @@
-import type { InstanceStatus } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import type { InstanceStatus } from '@massdriver/backstage-plugin-common';
 
 /** OCI repo header shape (MassdriverOciRepoHeader). */
 export interface RepoHeader {

@@ -11,7 +11,7 @@ import {
   MassdriverConfig,
   readMassdriverConfig,
   socketUrl,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+} from '@massdriver/backstage-plugin-common';
 import express from 'express';
 import Router from 'express-promise-router';
 import { openAbsintheSubscription } from './absinthe';

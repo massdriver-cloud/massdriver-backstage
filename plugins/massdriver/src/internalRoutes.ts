@@ -1,4 +1,4 @@
-import { parseEnvironmentId } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { parseEnvironmentId } from '@massdriver/backstage-plugin-common';
 
 // Internal (within-Backstage) routes for the embedded Massdriver views, all
 // under the plugin's `/massdriver` page mount. Environment URLs use only the

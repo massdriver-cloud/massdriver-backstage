@@ -3,9 +3,9 @@
 The three publishable packages are versioned **in lockstep** — one version,
 one tag, all three published together:
 
-- `@massdriver-cloud/backstage-plugin-massdriver`
-- `@massdriver-cloud/backstage-plugin-massdriver-backend`
-- `@massdriver-cloud/backstage-plugin-massdriver-common`
+- `@massdriver/backstage-plugin`
+- `@massdriver/backstage-plugin-backend`
+- `@massdriver/backstage-plugin-common`
 
 `common` is a hard dependency of the other two and the frontend/backend relay
 protocol evolves together, so independent versions would only create a
@@ -47,7 +47,7 @@ The tag push runs `.github/workflows/release.yml`, which:
 ## One-time setup
 
 - **`NPM_TOKEN` repository secret** — an npm automation token with publish
-  rights to the `@massdriver-cloud` scope (npmjs.com → Access Tokens →
+  rights to the `@massdriver` scope (npmjs.com → Access Tokens →
   Granular/Automation). Set it under GitHub → Settings → Secrets and
   variables → Actions.
 

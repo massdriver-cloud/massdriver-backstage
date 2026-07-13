@@ -1,5 +1,5 @@
 {
-  "name": "@massdriver-cloud/backstage-plugin-massdriver",
+  "name": "@massdriver/backstage-plugin",
   "version": "1.0.0",
   "license": "Apache-2.0",
   "repository": {
@@ -18,9 +18,9 @@
     "role": "frontend-plugin",
     "pluginId": "massdriver",
     "pluginPackages": [
-      "@massdriver-cloud/backstage-plugin-massdriver",
-      "@massdriver-cloud/backstage-plugin-massdriver-backend",
-      "@massdriver-cloud/backstage-plugin-massdriver-common"
+      "@massdriver/backstage-plugin",
+      "@massdriver/backstage-plugin-backend",
+      "@massdriver/backstage-plugin-common"
     ]
   },
   "sideEffects": false,
@@ -43,7 +43,7 @@
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
-    "@massdriver-cloud/backstage-plugin-massdriver-common": "workspace:^",
+    "@massdriver/backstage-plugin-common": "workspace:^",
     "@massdriver/forms": "^2.0.1",
     "@massdriver/ui": "^1.0.1",
     "@material-ui/core": "^4.12.2",

@@ -4,7 +4,7 @@ import {
   composeInstanceId,
   instanceUrl,
   parseEnvironmentId,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+} from '@massdriver/backstage-plugin-common';
 import Box from '@massdriver/ui/Box';
 import Alert from '@massdriver/ui/Alert';
 import LoadingIndicator from '@massdriver/ui/LoadingIndicator';

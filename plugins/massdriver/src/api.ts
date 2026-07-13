@@ -6,7 +6,7 @@ import {
 import {
   DEFAULT_APP_URL,
   MASSDRIVER_CONFIG_KEY,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+} from '@massdriver/backstage-plugin-common';
 
 /**
  * Subscription errors carry `fatal: true` when retrying cannot succeed — a 4xx

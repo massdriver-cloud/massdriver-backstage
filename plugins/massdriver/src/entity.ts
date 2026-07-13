@@ -4,7 +4,7 @@ import {
   ANNOTATION_INSTANCE_ID,
   ANNOTATION_ORG_ID,
   ANNOTATION_PROJECT_ID,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+} from '@massdriver/backstage-plugin-common';
 
 /** The Massdriver resource an entity maps to. */
 export type MassdriverScope =

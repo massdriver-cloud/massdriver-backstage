@@ -1,4 +1,4 @@
-import { InstanceStatus } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { InstanceStatus } from '@massdriver/backstage-plugin-common';
 
 /** Instance fields fetched for tables and cards. */
 export interface InstanceRow {

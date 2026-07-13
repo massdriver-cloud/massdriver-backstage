@@ -12,7 +12,7 @@ import {
   environmentUrl,
   instanceUrl,
   projectUrl,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+} from '@massdriver/backstage-plugin-common';
 import { massdriverApiRef } from '../../api';
 import { getMassdriverScope, MassdriverScope } from '../../entity';
 import { InstanceRow } from '../../queries';

@@ -1,7 +1,7 @@
 import {
   parseEnvironmentId,
   parseInstanceId,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+} from '@massdriver/backstage-plugin-common';
 import Box from '@massdriver/ui/Box';
 import { col } from '@massdriver/ui/DataList';
 import stylin from '@massdriver/ui/stylin';

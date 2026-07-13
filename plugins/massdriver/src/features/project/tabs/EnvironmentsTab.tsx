@@ -2,7 +2,7 @@ import { useApi } from '@backstage/frontend-plugin-api';
 import {
   parseEnvironmentId,
   projectUrl,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+} from '@massdriver/backstage-plugin-common';
 import Box from '@massdriver/ui/Box';
 import { col } from '@massdriver/ui/DataList';
 import DataList from '@massdriver/ui/DataList';

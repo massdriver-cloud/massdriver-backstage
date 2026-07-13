@@ -18,7 +18,7 @@ import { useApi } from '@backstage/frontend-plugin-api';
 import {
   instanceTabUrl,
   repoVersionOverviewUrl,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+} from '@massdriver/backstage-plugin-common';
 import { massdriverApiRef } from '../../../../api';
 import { TabState } from '../TabState';
 import AlarmCard from '../AlarmCard';

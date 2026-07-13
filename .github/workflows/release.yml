@@ -45,7 +45,7 @@ jobs:
         run: yarn test
 
       - name: Build packages
-        run: yarn workspaces foreach -A --topological --include '@massdriver-cloud/*' run build
+        run: yarn workspaces foreach -A --topological --include '@massdriver/*' run build
 
       - name: Publish to npm
         env:

@@ -1,4 +1,4 @@
-import { parseInstanceId } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { parseInstanceId } from '@massdriver/backstage-plugin-common';
 import Box from '@massdriver/ui/Box';
 import Typography from '@massdriver/ui/Typography';
 import stylin from '@massdriver/ui/stylin';

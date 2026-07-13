@@ -6,7 +6,7 @@ import DeleteIcon from '@massdriver/ui/icons/DeleteIcon';
 import EditIcon from '@massdriver/ui/icons/EditIcon';
 import ExtensionIcon from '@massdriver/ui/icons/ExtensionIcon';
 import stylin from '@massdriver/ui/stylin';
-import { resourceUrl } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { resourceUrl } from '@massdriver/backstage-plugin-common';
 import { buildAttributesColumn, Code } from '../../components/AttributesColumn';
 import { RouterLinkAdapter } from '../../components/RouterLinkAdapter';
 import { internalRoutes } from '../../internalRoutes';

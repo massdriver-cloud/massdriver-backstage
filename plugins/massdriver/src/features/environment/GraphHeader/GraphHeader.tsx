@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   parseEnvironmentId,
   projectUrl,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+} from '@massdriver/backstage-plugin-common';
 import Box from '@massdriver/ui/Box';
 import Typography from '@massdriver/ui/Typography';
 import IconButton from '@massdriver/ui/IconButton';

@@ -1,7 +1,7 @@
-# @massdriver-cloud/backstage-plugin-massdriver-backend
+# @massdriver/backstage-plugin-backend
 
 Backend relay for the
-[Massdriver Backstage plugin](https://www.npmjs.com/package/@massdriver-cloud/backstage-plugin-massdriver).
+[Massdriver Backstage plugin](https://www.npmjs.com/package/@massdriver/backstage-plugin).
 It is the only component that holds Massdriver credentials:
 
 - **`POST /api/massdriver/graphql`** — forwards read-only GraphQL queries to
@@ -18,19 +18,19 @@ There are **no mutation endpoints** — the integration is read-only by design.
 
 ```bash
 # From your Backstage repo root
-yarn --cwd packages/backend add @massdriver-cloud/backstage-plugin-massdriver-backend
+yarn --cwd packages/backend add @massdriver/backstage-plugin-backend
 ```
 
 Then add it in `packages/backend/src/index.ts`:
 
 ```ts
-backend.add(import('@massdriver-cloud/backstage-plugin-massdriver-backend'));
+backend.add(import('@massdriver/backstage-plugin-backend'));
 ```
 
 ## Configuration
 
 Reads the `massdriver` block from your app config — see the
-[frontend plugin README](https://www.npmjs.com/package/@massdriver-cloud/backstage-plugin-massdriver)
+[frontend plugin README](https://www.npmjs.com/package/@massdriver/backstage-plugin)
 for the full reference, including where to find your organization ID and how
 to mint a service-account token. Minimal setup:
 

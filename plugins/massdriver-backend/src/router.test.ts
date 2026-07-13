@@ -5,7 +5,7 @@ import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import {
   createMassdriverClient,
   MassdriverClient,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+} from '@massdriver/backstage-plugin-common';
 import express from 'express';
 import request from 'supertest';
 import type {
@@ -16,8 +16,8 @@ import { openAbsintheSubscription } from './absinthe';
 import { createRouter } from './router';
 
 // Relay the upstream at the module boundary — never hit the real API/socket.
-jest.mock('@massdriver-cloud/backstage-plugin-massdriver-common', () => ({
-  ...jest.requireActual('@massdriver-cloud/backstage-plugin-massdriver-common'),
+jest.mock('@massdriver/backstage-plugin-common', () => ({
+  ...jest.requireActual('@massdriver/backstage-plugin-common'),
   createMassdriverClient: jest.fn(),
 }));
 

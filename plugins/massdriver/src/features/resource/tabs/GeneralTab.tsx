@@ -2,7 +2,7 @@ import { useApi } from '@backstage/frontend-plugin-api';
 import {
   parseInstanceId,
   resourceUrl,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+} from '@massdriver/backstage-plugin-common';
 import Alert from '@massdriver/ui/Alert';
 import Box from '@massdriver/ui/Box';
 import CodeBlock from '@massdriver/ui/CodeBlock';

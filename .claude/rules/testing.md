@@ -15,9 +15,9 @@ Jest is fully delegated to `@backstage/cli` (no standalone `jest.config.js`). Th
 ```bash
 CI=true yarn test                 # one-shot run, all packages (watch mode without CI=true)
 yarn test:all                     # with coverage
-yarn workspace @massdriver-cloud/backstage-plugin-massdriver test            # frontend plugin only
-yarn workspace @massdriver-cloud/backstage-plugin-massdriver-backend test    # backend only
-yarn workspace @massdriver-cloud/backstage-plugin-massdriver-common test     # common only
+yarn workspace @massdriver/backstage-plugin test            # frontend plugin only
+yarn workspace @massdriver/backstage-plugin-backend test    # backend only
+yarn workspace @massdriver/backstage-plugin-common test     # common only
 yarn test:e2e                     # Playwright (needs a running app)
 ```
 

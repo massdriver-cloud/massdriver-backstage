@@ -1,9 +1,9 @@
-# @massdriver-cloud/backstage-plugin-massdriver-common
+# @massdriver/backstage-plugin-common
 
 Shared isomorphic library for the
-[Massdriver Backstage plugin](https://www.npmjs.com/package/@massdriver-cloud/backstage-plugin-massdriver)
+[Massdriver Backstage plugin](https://www.npmjs.com/package/@massdriver/backstage-plugin)
 and its
-[backend relay](https://www.npmjs.com/package/@massdriver-cloud/backstage-plugin-massdriver-backend).
+[backend relay](https://www.npmjs.com/package/@massdriver/backstage-plugin-backend).
 You normally don't install this directly — it comes in as a dependency of the
 other two packages.
 

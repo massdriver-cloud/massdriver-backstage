@@ -1,5 +1,5 @@
 import { useApi } from '@backstage/frontend-plugin-api';
-import { resourceUrl } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { resourceUrl } from '@massdriver/backstage-plugin-common';
 import Box from '@massdriver/ui/Box';
 import IconButton from '@massdriver/ui/IconButton';
 import IconTile from '@massdriver/ui/IconTile';

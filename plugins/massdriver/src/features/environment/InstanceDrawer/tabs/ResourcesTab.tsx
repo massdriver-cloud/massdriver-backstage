@@ -5,7 +5,7 @@ import {
   parseEnvironmentId,
   parseInstanceId,
   resourceUrl,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+} from '@massdriver/backstage-plugin-common';
 import Box from '@massdriver/ui/Box';
 import Typography from '@massdriver/ui/Typography';
 import Tooltip from '@massdriver/ui/Tooltip';

@@ -2,7 +2,7 @@ import type { Edge, Node } from '@xyflow/react';
 import {
   parseComponentId,
   parseInstanceId,
-} from '@massdriver-cloud/backstage-plugin-massdriver-common';
+} from '@massdriver/backstage-plugin-common';
 import { NODE_WIDTH, NODE_HEIGHT } from './DiagramNode.constants';
 
 // Ported from apps/web/features/environments/utils/diagramFactory.js. Read-only:

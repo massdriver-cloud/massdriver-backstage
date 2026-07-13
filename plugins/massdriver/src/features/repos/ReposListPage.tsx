@@ -1,5 +1,5 @@
 import { useApi } from '@backstage/frontend-plugin-api';
-import { reposUrl } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { reposUrl } from '@massdriver/backstage-plugin-common';
 import Alert from '@massdriver/ui/Alert';
 import DataList from '@massdriver/ui/DataList';
 import { massdriverApiRef } from '../../api';

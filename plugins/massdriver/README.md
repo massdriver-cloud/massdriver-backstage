@@ -1,23 +1,18 @@
 # Massdriver Backstage plugin
 
 Surface your [Massdriver](https://www.massdriver.cloud/) infrastructure inside
-Backstage: a read-only mirror of the Massdriver web app — projects, environment
-graphs, instance details, repositories, and resources — plus a status card and
-tab for any catalog entity you link to a Massdriver project, environment, or
-instance. Every mutating action deep-links back into the Massdriver app.
-
-Integration is **API-only**: the frontend talks to a backend relay, and the
-relay calls the Massdriver v2 GraphQL API with a service-account token that
-never leaves your Backstage backend. Nothing is iframed and no changes to the
-Massdriver app are required.
+Backstage: projects, environment graphs, instance details, repositories, and
+resources — plus a status card and tab for any catalog entity you link to a
+Massdriver project, environment, or instance. Everything is read-only and
+updates live; actions deep-link into the Massdriver app.
 
 ## Packages
 
-| Package                                                 | Role                                                       |
-| ------------------------------------------------------- | ---------------------------------------------------------- |
-| `@massdriver-cloud/backstage-plugin-massdriver`         | Frontend: Massdriver pages, entity card, entity tab        |
-| `@massdriver-cloud/backstage-plugin-massdriver-backend` | Backend: authenticated GraphQL relay + realtime SSE bridge |
-| `@massdriver-cloud/backstage-plugin-massdriver-common`  | Shared types, annotations, deep-link builders              |
+| Package                                | Role                                                       |
+| -------------------------------------- | ---------------------------------------------------------- |
+| `@massdriver/backstage-plugin`         | Frontend: Massdriver pages, entity card, entity tab        |
+| `@massdriver/backstage-plugin-backend` | Backend: authenticated GraphQL relay + realtime SSE bridge |
+| `@massdriver/backstage-plugin-common`  | Shared types, annotations, deep-link builders              |
 
 ## Requirements
 
@@ -35,17 +30,17 @@ From your Backstage repo root:
 
 ```bash
 # Frontend
-yarn --cwd packages/app add @massdriver-cloud/backstage-plugin-massdriver
+yarn --cwd packages/app add @massdriver/backstage-plugin
 
 # Backend relay
 yarn --cwd packages/backend add \
-  @massdriver-cloud/backstage-plugin-massdriver-backend
+  @massdriver/backstage-plugin-backend
 ```
 
 Add the backend plugin in `packages/backend/src/index.ts`:
 
 ```ts
-backend.add(import('@massdriver-cloud/backstage-plugin-massdriver-backend'));
+backend.add(import('@massdriver/backstage-plugin-backend'));
 ```
 
 The frontend registers itself automatically if your app uses package discovery
@@ -53,7 +48,7 @@ The frontend registers itself automatically if your app uses package discovery
 an explicit feature in `packages/app/src/App.tsx`:
 
 ```ts
-import massdriverPlugin from '@massdriver-cloud/backstage-plugin-massdriver';
+import massdriverPlugin from '@massdriver/backstage-plugin';
 
 export default createApp({
   features: [
@@ -104,9 +99,6 @@ variable, or your secret store, like any other Backstage secret.
 
 ## What you get
 
-All read-only, live-updating (the relay bridges Massdriver's realtime events to
-the browser over SSE), and styled to match the Massdriver app:
-
 - **`/massdriver/projects`** — organization-wide projects list, and per-project
   details with tabs.
 - **`/massdriver/projects/:project/environments/:environment`** — the
@@ -119,9 +111,9 @@ the browser over SSE), and styled to match the Massdriver app:
   annotated with a `massdriver.cloud/*` ID (below), showing instance status,
   versions, and "Open in Massdriver" deep-links.
 
-Actions that would change infrastructure (deploy, decommission, configuration
-edits, …) are intentionally disabled or deep-link into the Massdriver app —
-this plugin never mutates anything.
+All views are read-only and update live. Actions that change infrastructure
+(deploy, decommission, configuration edits, …) deep-link into the Massdriver
+app.
 
 The plugin does **not** mirror infrastructure into the Backstage catalog; you
 link your existing catalog entities to Massdriver via annotations.
@@ -137,7 +129,7 @@ list, with a **Projects / Resources / Repositories** submenu matching the
 Massdriver web app:
 
 ```tsx
-import { MassdriverSidebarItem } from '@massdriver-cloud/backstage-plugin-massdriver';
+import { MassdriverSidebarItem } from '@massdriver/backstage-plugin';
 
 // Inside your NavContentBlueprint component: swap the plugin's default flat
 // item for the submenu entry, and render everything else as usual.

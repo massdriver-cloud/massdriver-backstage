@@ -5,7 +5,7 @@ import DeleteOutlineIcon from '@massdriver/ui/icons/DeleteOutlineIcon';
 import EditIcon from '@massdriver/ui/icons/EditIcon';
 import ExtensionIcon from '@massdriver/ui/icons/ExtensionIcon';
 import OpenInNewIcon from '@massdriver/ui/icons/OpenInNewIcon';
-import { reposUrl } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { reposUrl } from '@massdriver/backstage-plugin-common';
 import AuthedIcon from '../../components/AuthedIcon';
 import { buildAttributesColumn, Code } from '../../components/AttributesColumn';
 import { RouterLinkAdapter } from '../../components/RouterLinkAdapter';

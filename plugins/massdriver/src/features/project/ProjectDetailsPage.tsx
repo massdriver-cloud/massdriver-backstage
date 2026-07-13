@@ -1,5 +1,5 @@
 import { useApi } from '@backstage/frontend-plugin-api';
-import { projectUrl } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { projectUrl } from '@massdriver/backstage-plugin-common';
 import Box from '@massdriver/ui/Box';
 import PageTabs from '@massdriver/ui/PageTabs';
 import stylin from '@massdriver/ui/stylin';

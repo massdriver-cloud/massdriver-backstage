@@ -1,5 +1,5 @@
 import { useApi } from '@backstage/frontend-plugin-api';
-import { resourceTabUrl } from '@massdriver-cloud/backstage-plugin-massdriver-common';
+import { resourceTabUrl } from '@massdriver/backstage-plugin-common';
 import Alert from '@massdriver/ui/Alert';
 import DataList from '@massdriver/ui/DataList';
 import useAsync from 'react-use/esm/useAsync';
