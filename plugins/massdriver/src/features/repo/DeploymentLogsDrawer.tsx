@@ -141,7 +141,7 @@ const DeploymentLogsContent = ({
 
 /**
  * In-place deployment logs drawer for the repo Deployments tab. Faithful port of
- * apps/web/shared/components/DeploymentLogsDrawer — a dark, right-anchored,
+ * the Massdriver web app — a dark, right-anchored,
  * resizable Drawer driven by the same `logs` URL param the web reads via
  * useDialogParam (mirrored here with react-router's useSearchParams). Rendered
  * above MUI Dialog (zIndex.modal + 100) with an invisible backdrop, so it

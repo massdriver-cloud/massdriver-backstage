@@ -1,4 +1,4 @@
-// Ported from apps/web/features/repos/sections/InstancesTab/InstancesTab.helpers.js.
+// Ported from the Massdriver web app
 
 export const STATUS_OPTIONS = [
   { value: 'ALL', label: 'All statuses' },

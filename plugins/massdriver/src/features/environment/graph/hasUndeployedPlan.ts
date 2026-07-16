@@ -1,4 +1,4 @@
-// Ported from apps/web/features/environments/utils/hasUndeployedPlan.js.
+// Ported from the Massdriver web app
 // Compares an instance's current params against the params of its last
 // successful PROVISION deployment; drift means there is an undeployed plan.
 

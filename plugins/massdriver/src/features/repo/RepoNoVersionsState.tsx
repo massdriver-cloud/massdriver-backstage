@@ -2,7 +2,7 @@ import Button from '@massdriver/ui/Button';
 import RocketLaunchOutlinedIcon from '@massdriver/ui/icons/RocketLaunchOutlinedIcon';
 import { RepoEmptyState } from './RepoEmptyState';
 
-// Ported from apps/web/features/repos/components/RepoNoVersionsState/ — the same
+// Ported from the Massdriver web app — the same
 // empty state (via the shared RepoEmptyState), copy, and publishing-docs link.
 const PUBLISH_DOCS_URL =
   'https://docs.massdriver.cloud/bundle-development/publishing/versioning';

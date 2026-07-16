@@ -1,4 +1,4 @@
-// Ported from apps/web/features/resources/utils/resourceConstants.js
+// Ported from the Massdriver web app
 
 export const PROVISIONED_EDIT_TOOLTIP =
   "You can't rename a provisioned resource. Edit its instance configuration instead.";

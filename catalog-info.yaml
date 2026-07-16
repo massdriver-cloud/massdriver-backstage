@@ -2,12 +2,10 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: massdriver-backstage
-  description: An example of a Backstage application.
-  # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage
-  #   backstage.io/techdocs-ref: dir:.
+  description: Local dev host for the Massdriver Backstage plugin.
+  annotations:
+    github.com/project-slug: massdriver-cloud/massdriver-backstage
 spec:
   type: website
-  owner: john@example.com
+  owner: guests
   lifecycle: experimental

@@ -7,7 +7,7 @@ import type { RepoTabProps } from '../RepoDetailsPage';
 import { RepoEmptyState } from '../RepoEmptyState';
 import { RepoNoVersionsState } from '../RepoNoVersionsState';
 
-// Ported from apps/web/features/repos/sections/VersionsTab/. Pure presentation
+// Ported from the Massdriver web app. Pure presentation
 // from the repo header's tags + releaseChannels.
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
   year: 'numeric',

@@ -3,7 +3,7 @@ import Typography from '@massdriver/ui/Typography';
 import stylin from '@massdriver/ui/stylin';
 import { denormalizeConditionsFromWire } from '../utils/conditions';
 
-// Ported from apps/web/shared/components/ConditionsCell.js
+// Ported from the Massdriver web app
 
 /** Renders a grant's recipient conditions as `key = value` / `key ∈ [..]` rows. */
 export const ConditionsCell = ({

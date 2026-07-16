@@ -1,7 +1,7 @@
 import { parseInstanceId } from '@massdriver/backstage-plugin-common';
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
 
-// Ported from apps/web/features/resources/utils/resourceColumns.js
+// Ported from the Massdriver web app
 // (transformResourcesResponse + buildLocation).
 
 const ORIGIN_LABELS: Record<string, string> = {

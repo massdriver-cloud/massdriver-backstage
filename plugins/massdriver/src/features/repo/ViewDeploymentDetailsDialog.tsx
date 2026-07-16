@@ -115,7 +115,7 @@ const buildHeading = (
 
 /**
  * In-place deployment details dialog for the repo Deployments tab. Faithful port
- * of apps/web/shared/components/ViewDeploymentDetailsDialog — driven by the same
+ * of the Massdriver web app — driven by the same
  * `deployment` URL param the web reads via useDialogParam (mirrored here with
  * react-router's useSearchParams). The web repo page passes
  * `canApprove={false} canPlan={false}` (and no canRollback), under which the web

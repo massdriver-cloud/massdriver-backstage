@@ -186,7 +186,7 @@ const Header = stylin(Box)(({ theme }: { theme: any }) => ({
   minHeight: theme.spacing(5.5),
 }));
 
-// Ported from apps/web/features/environments/sections/InstancePanel/tabs/ConfigTab/ConfigTab.view.js
+// Ported from the Massdriver web app
 const ViewToggle = stylin(ToggleButtonGroup)(({ theme }: { theme: any }) => ({
   width: theme.spacing(16),
   height: theme.spacing(3.5),

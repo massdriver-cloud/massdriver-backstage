@@ -34,7 +34,7 @@ interface FilesQueryResult {
   } | null;
 }
 
-// Ported from apps/web/features/repos/sections/FilesTab/ + components/FileViewer.
+// Ported from the Massdriver web app.
 //
 // DIVERGENCE: the web app stores the selected file path in a URL catch-all
 // segment (`/files/<path>`). This plugin's route is

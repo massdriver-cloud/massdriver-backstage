@@ -1,4 +1,4 @@
-// Ported from apps/web/features/repos/utils/repoTabs.js + repoTabIds.js.
+// Ported from the Massdriver web app.
 // The web app's Alarms tab is intentionally hidden; we keep the same visible
 // tab set and order here.
 export const TAB_IDS = {

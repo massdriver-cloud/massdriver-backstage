@@ -1,6 +1,6 @@
 import type { RepoFile } from './types';
 
-// Ported from apps/web/features/repos/components/FileTree/FileTree.helpers.js.
+// Ported from the Massdriver web app
 
 export interface FileNode {
   name: string;

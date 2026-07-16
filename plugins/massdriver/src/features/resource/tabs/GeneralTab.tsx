@@ -20,7 +20,7 @@ import { OriginChip } from '../OriginChip';
 import { RESOURCE_HEADER_QUERY } from '../queries';
 import { GeneralTabLoading } from './GeneralTab.loading';
 
-// Ported from apps/web/features/resources/sections/GeneralTab/GeneralTab.view.js.
+// Ported from the Massdriver web app
 // The web app's payload download runs an `exportResource` mutation, which is
 // off-limits in this read-only mirror — the download button deep-links out to
 // the resource in Massdriver instead.

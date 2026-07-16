@@ -1,4 +1,4 @@
-// Ported from apps/web/features/resources/hooks/useResourcesQuery.js
+// Ported from the Massdriver web app
 
 /** Paginated resources list. `$organizationId` is injected by the relay. */
 export const RESOURCES_QUERY = `

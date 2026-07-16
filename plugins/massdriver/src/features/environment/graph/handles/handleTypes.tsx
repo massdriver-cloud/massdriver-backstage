@@ -4,7 +4,7 @@ import Box from '@massdriver/ui/Box';
 import BluetoothIcon from '@massdriver/ui/icons/BluetoothIcon';
 import stylin from '@massdriver/ui/stylin';
 
-// Read-only ports of apps/web/.../NodeHandle/handle-types/*. The connect-state
+// Read-only ports of the Massdriver web app's graph node handles. The connect-state
 // styling (`isValidConnectionTarget`) is kept for visual parity even though
 // connections cannot be started in the read-only graph.
 

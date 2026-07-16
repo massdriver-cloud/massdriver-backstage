@@ -15,8 +15,7 @@ import { buildResourceColumns } from './resourceColumns';
 import { ResourcesEmptyState } from './ResourcesEmptyState';
 import { ResourceListItem, toResourceRow } from './toResourceRow';
 
-// Ported from apps/web/features/resources/pages/ResourcesPage.js and
-// sections/ResourcesList/. The web app's "Import Resource" opens a dialog; here
+// Ported from the Massdriver web app. The web app's "Import Resource" opens a dialog; here
 // it deep-links into Massdriver (read-only parity).
 
 type Origin = 'all' | 'IMPORTED' | 'PROVISIONED';

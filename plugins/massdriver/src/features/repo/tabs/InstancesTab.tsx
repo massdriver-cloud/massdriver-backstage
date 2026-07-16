@@ -30,7 +30,7 @@ import {
 } from './InstancesTab.helpers';
 import { selectClasses } from '../../../theme/muiClasses';
 
-// Ported from apps/web/features/repos/sections/InstancesTab/ (container + view
+// Ported from the Massdriver web app (container + view
 // merged into one component, matching this plugin's single-file tab style). The
 // web app's infinite-scroll card list is reproduced here over the relay via
 // useInfiniteRelayList + an IntersectionObserver sentinel.

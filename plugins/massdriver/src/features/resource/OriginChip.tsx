@@ -2,7 +2,7 @@ import Chip from '@massdriver/ui/Chip';
 import stylin from '@massdriver/ui/stylin';
 import { chipClasses } from '../../theme/muiClasses';
 
-// Ported from apps/web/features/resources/sections/GeneralTab/GeneralTab.view.js
+// Ported from the Massdriver web app
 // (the OriginChip styled component + ORIGIN_LABELS).
 
 const ORIGIN_LABELS: Record<string, string> = {

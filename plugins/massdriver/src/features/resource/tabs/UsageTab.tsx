@@ -14,7 +14,7 @@ import {
   UsageType,
 } from './UsageTab.helpers';
 
-// Ported from apps/web/features/resources/sections/UsageTab/UsageTab.{container,view}.js.
+// Ported from the Massdriver web app,view}.js.
 // Imported resources have no connections, so that toggle is dropped for them.
 
 const TOOLTIP_SLOT_PROPS = {

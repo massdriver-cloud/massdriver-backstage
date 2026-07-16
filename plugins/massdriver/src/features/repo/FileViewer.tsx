@@ -13,7 +13,7 @@ import { RepoEmptyState } from './RepoEmptyState';
 import { isMarkdownFile, languageFromExtension } from './FileViewer.helpers';
 import type { RepoFile } from './types';
 
-// Ported from apps/web/features/repos/components/FileViewer/ (container + view
+// Ported from the Massdriver web app (container + view
 // merged). The web app fetches file contents directly with the browser's
 // Massdriver token; here the fetch goes through the backend content proxy
 // (api.fetchText), so the real contents render inline (markdown via

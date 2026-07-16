@@ -16,7 +16,7 @@ import {
 } from '../deploymentHelpers';
 import type { RepoDeployment } from '../types';
 
-// Ported from apps/web/features/repos/sections/DeploymentsTab/DeploymentRow.js.
+// Ported from the Massdriver web app
 //
 // "Details" opens the in-place ViewDeploymentDetailsDialog (the `deployment`
 // URL param), "Logs" and the clickable status pill open the DeploymentLogsDrawer

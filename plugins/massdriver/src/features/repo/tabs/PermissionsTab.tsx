@@ -15,7 +15,7 @@ import { RepoTabLayout } from '../RepoTabLayout';
 import type { RepoTabProps } from '../RepoDetailsPage';
 import { REPO_GRANTS_QUERY } from '../queries';
 
-// Ported from apps/web/features/repos/sections/PermissionsTab/. Uses the shared
+// Ported from the Massdriver web app. Uses the shared
 // tab layout + header, matching the web. The web app's "Add permission" and
 // per-row "Remove" both mutate — here they deep-link out to this repo's
 // Permissions tab in the Massdriver web app (read-only parity).

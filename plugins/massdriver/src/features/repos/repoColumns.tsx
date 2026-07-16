@@ -13,7 +13,7 @@ import { formatAbsoluteTime } from '../../utils/formatRelativeTime';
 import { internalRoutes } from '../../internalRoutes';
 import type { RepoRow } from './useRepos';
 
-// Ported from apps/web/features/repos/utils/repoColumns.js (buildRepoColumns).
+// Ported from the Massdriver web app (buildRepoColumns).
 // The repo's brand icon (`repo.icon`, an auth-guarded SVG URL) is fetched
 // through the backend content proxy by AuthedIcon, exactly like the web app.
 // Edit/Delete mutate, so they deep-link into the web app's dialogs via the

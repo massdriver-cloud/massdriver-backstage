@@ -1,7 +1,6 @@
 const config = require('@backstage/cli/config/eslint-factory')(__dirname);
 
-// Adjust the Backstage preset to the massdriver-ui house style this plugin
-// ports (see CLAUDE.md / .claude/rules/styling-and-theme.md):
+// Adjust the Backstage preset to this repo's house style (see CLAUDE.md):
 // - `stylin(...)` styled components are declared BELOW the component that
 //   uses them → allow forward references for variables only.
 // - Chained ternaries (`loading ? … : error ? … : …`) are the standard

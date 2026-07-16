@@ -19,7 +19,7 @@ import {
 } from './resourceConstants';
 import type { ResourceRow } from './toResourceRow';
 
-// Ported from apps/web/features/resources/hooks/useResourceColumns.js. The web
+// Ported from the Massdriver web app. The web
 // app's Edit/Delete row actions mutate: for imported resources they deep-link
 // out to the resource in the Massdriver web app; for provisioned resources they
 // stay disabled with the same tooltips the web app shows (it disables them too).

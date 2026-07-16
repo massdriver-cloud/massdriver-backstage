@@ -9,7 +9,7 @@ import ExpandMoreIcon from '@massdriver/ui/icons/ExpandMoreIcon';
 import stylin from '@massdriver/ui/stylin';
 import { ALL_VERSIONS } from './resolveVersion';
 
-// Ported from apps/web/features/repos/components/RepoVersionSelect/ (container +
+// Ported from the Massdriver web app (container +
 // view merged into one component, matching this plugin's single-file style).
 // Selecting a version calls `onChange`; the page navigates.
 

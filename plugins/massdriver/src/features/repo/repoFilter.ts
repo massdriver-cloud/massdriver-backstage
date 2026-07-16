@@ -1,6 +1,6 @@
 import { ALL_VERSIONS } from './resolveVersion';
 
-// Ported from apps/web/features/repos/utils/repoFilter.js.
+// Ported from the Massdriver web app
 //
 // Builds the filter shape shared by the instances / deployments queries on the
 // repo details page. When scoped to "all versions" we filter by the OCI repo

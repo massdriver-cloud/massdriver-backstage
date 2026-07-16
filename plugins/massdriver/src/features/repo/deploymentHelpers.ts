@@ -1,4 +1,4 @@
-// Ported from apps/web/shared/utils/historyHelpers.js and the web app's
+// Ported from the Massdriver web app's
 // ViewDeploymentDetailsDialog / DeploymentLogsDrawer components — the pieces the
 // deployments list, the in-place details dialog, and the logs drawer need.
 import {
@@ -35,7 +35,7 @@ export const parsePlanMessage = (
 };
 
 /**
- * Ported from apps/web/shared/utils/historyHelpers.js — a deployment's elapsed
+ * Ported from the Massdriver web app — a deployment's elapsed
  * run time as "Xm Ys". Returns null for missing / non-positive durations so the
  * row can omit the segment entirely.
  */

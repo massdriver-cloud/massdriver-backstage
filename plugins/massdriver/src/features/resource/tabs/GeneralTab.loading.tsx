@@ -3,7 +3,7 @@ import Skeleton from '@massdriver/ui/Skeleton';
 import Typography from '@massdriver/ui/Typography';
 import stylin from '@massdriver/ui/stylin';
 
-// Ported from apps/web/features/resources/sections/GeneralTab/GeneralTab.loading.js.
+// Ported from the Massdriver web app
 // Mirrors the view's card grid + payload block so the loading-to-content
 // transition stays seamless.
 

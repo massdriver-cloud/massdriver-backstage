@@ -2,7 +2,7 @@ import Box from '@massdriver/ui/Box';
 import Skeleton from '@massdriver/ui/Skeleton';
 import stylin from '@massdriver/ui/stylin';
 
-// Ported from apps/web/features/repos/sections/DeploymentsTab/DeploymentsTab.loading.js.
+// Ported from the Massdriver web app
 const ROW_COUNT = 4;
 
 export const DeploymentsTabLoading = () => (

@@ -51,7 +51,7 @@ const buildTitle = (
   return version && version !== ALL_VERSIONS ? `${name}@${version}` : name;
 };
 
-// Ported from apps/web/features/repos/pages/RepoDetailsPage.js. repoId/version
+// Ported from the Massdriver web app. repoId/version
 // arrive percent-encoded in the URL — decode before using as API values.
 export const RepoDetailsPage = () => {
   const api = useApi(massdriverApiRef);
