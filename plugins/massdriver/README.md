@@ -149,16 +149,34 @@ default Massdriver nav item isn't also rendered, or it will appear twice.)
 ## Annotations
 
 Add one of these to an entity's `catalog-info.yaml` to attach the Massdriver
-card + tab, pointing at the most specific matching Massdriver resource:
+card + tab, pointing at the most specific matching Massdriver resource. For
+example, for a checkout service deployed as the `checkout` component in the
+`prod` environment of a project named `ecommerce`:
 
 ```yaml
 metadata:
   annotations:
-    massdriver.cloud/project-id: my-project
-    # or the more specific scopes:
-    # massdriver.cloud/environment-id: my-project-prod
-    # massdriver.cloud/instance-id: my-project-prod-cache
+    # The whole project:
+    massdriver.cloud/project-id: ecommerce
+    # …or one environment in it:
+    # massdriver.cloud/environment-id: ecommerce-prod
+    # …or one deployed instance in that environment:
+    # massdriver.cloud/instance-id: ecommerce-prod-checkout
 ```
+
+The IDs are the slugs from the Massdriver app's URLs, and hyphens are the
+separators between them:
+
+- **Project ID** — a single slug with no hyphens in it (`ecommerce`, from
+  `…/orgs/<org-id>/projects/ecommerce`).
+- **Environment ID** — `{project}-{environment}` (`ecommerce-prod`, from
+  `…/projects/ecommerce/environments/prod`).
+- **Instance ID** — `{project}-{environment}-{component}`
+  (`ecommerce-prod-checkout`).
+
+Because the hyphen is the separator, the individual slugs never contain
+hyphens themselves — `my-project` is not a valid project ID, but
+`myproject-prod` is a valid environment ID.
 
 If an entity carries more than one, the most specific wins: `instance-id` >
 `environment-id` > `project-id`. An optional `massdriver.cloud/org-id`

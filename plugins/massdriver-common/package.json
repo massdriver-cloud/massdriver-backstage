@@ -3,7 +3,17 @@
   "version": "1.0.1",
   "license": "Apache-2.0",
   "homepage": "https://www.massdriver.cloud/",
-  "description": "Common functionalities for the massdriver plugin",
+  "description": "Shared config schema, annotations, and deep-link builders for the Massdriver Backstage plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/massdriver-cloud/massdriver-backstage",
+    "directory": "plugins/massdriver-common"
+  },
+  "keywords": [
+    "backstage",
+    "backstage-plugin",
+    "massdriver"
+  ],
   "main": "src/index.ts",
   "types": "src/index.ts",
   "publishConfig": {

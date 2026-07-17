@@ -26,8 +26,7 @@ import { GeneralTab } from './tabs/GeneralTab';
 import { PermissionsTab } from './tabs/PermissionsTab';
 import { UsageTab } from './tabs/UsageTab';
 
-// Ported from apps/web/features/resources/pages/ResourceDetailsPage.js and
-// utils/resourceTabs.js. The web app's Edit/Delete mutate: for imported
+// Ported from the Massdriver web app. The web app's Edit/Delete mutate: for imported
 // resources they deep-link out to the resource in Massdriver; for provisioned
 // resources they stay disabled with the web app's own tooltips (it disables
 // them too).

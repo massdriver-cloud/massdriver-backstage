@@ -6,7 +6,7 @@ import stylin from '@massdriver/ui/stylin';
 import { ReactNode } from 'react';
 import { OpenInMassdriverButton } from '../../components/OpenInMassdriverButton';
 
-// Ported from apps/web/features/resources/components/ResourcesEmptyState.js.
+// Ported from the Massdriver web app
 // The web app's "Import a Resource" opens a dialog; in this read-only mirror it
 // deep-links into Massdriver instead.
 

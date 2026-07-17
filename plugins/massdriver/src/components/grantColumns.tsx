@@ -2,7 +2,7 @@ import { col } from '@massdriver/ui/DataList';
 import DeleteOutlineIcon from '@massdriver/ui/icons/DeleteOutlineIcon';
 import { ConditionsCell } from './ConditionsCell';
 
-// Ported from apps/web/shared/grants/permissionColumns.js. The web app's
+// Ported from the Massdriver web app. The web app's
 // Remove action mutates, so here it deep-links out to the entity's Permissions
 // tab in the Massdriver web app instead (read-only parity: clear mutation
 // buttons link out rather than rendering disabled).

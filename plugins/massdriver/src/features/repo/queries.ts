@@ -1,7 +1,6 @@
-// Ported from apps/web/features/repos/ hooks. Operation names prefixed
+// Ported from the Massdriver web app. Operation names prefixed
 // `Massdriver`; `$organizationId` is declared but never passed (relay injects).
 
-// apps/web/features/repos/hooks/useOciRepoQuery.js
 export const OCI_REPO_HEADER_QUERY = `
   query MassdriverOciRepoHeader($organizationId: ID!, $id: ID!) {
     ociRepo(organizationId: $organizationId, id: $id) {
@@ -32,7 +31,6 @@ export const OCI_REPO_HEADER_QUERY = `
   }
 `;
 
-// apps/web/features/repos/hooks/useBundleQuery.js
 export const BUNDLE_QUERY = `
   query MassdriverBundle($organizationId: ID!, $id: BundleId!) {
     bundle(organizationId: $organizationId, id: $id) {
@@ -49,7 +47,6 @@ export const BUNDLE_QUERY = `
   }
 `;
 
-// apps/web/features/repos/hooks/queries/useRepoInstancesQuery.js
 export const REPO_INSTANCES_QUERY = `
   query MassdriverRepoInstances(
     $organizationId: ID!
@@ -96,7 +93,6 @@ export const REPO_INSTANCES_QUERY = `
   }
 `;
 
-// apps/web/features/repos/hooks/queries/useRepoDeploymentsQuery.js
 export const REPO_DEPLOYMENTS_QUERY = `
   query MassdriverRepoDeployments(
     $organizationId: ID!
@@ -208,7 +204,6 @@ export const DEPLOYMENT_LOGS_SUBSCRIPTION = `
   }
 `;
 
-// apps/web/features/repos/hooks/useRepoTagFilesQuery.js
 export const REPO_TAG_FILES_QUERY = `
   query MassdriverRepoTagFiles(
     $organizationId: ID!
@@ -240,7 +235,6 @@ export const REPO_TAG_FILES_QUERY = `
   }
 `;
 
-// apps/web/features/repos/hooks/useRepoGrantsQuery.js
 export const REPO_GRANTS_QUERY = `
   query MassdriverRepoGrants($organizationId: ID!, $id: ID!, $cursor: Cursor) {
     ociRepo(organizationId: $organizationId, id: $id) {

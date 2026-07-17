@@ -4,7 +4,7 @@ import Typography from '@massdriver/ui/Typography';
 import stylin from '@massdriver/ui/stylin';
 import { ReactNode } from 'react';
 
-// Ported from apps/web/shared/components/TabHeader.js. The plugin can't import
+// Ported from the Massdriver web app. The plugin can't import
 // the web app's shared components, so this is a local, faithful copy: a stacked
 // title + description, with any actions rendered in a row below the heading.
 export const TabHeader = ({

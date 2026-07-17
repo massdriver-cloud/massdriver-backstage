@@ -44,7 +44,7 @@ export const socketUrl = (baseUrl: string = DEFAULT_API_URL): string => {
  * - instance id:    `{projectId}-{scopedEnvironmentId}-{scopedComponentId}`
  *
  * The web app's URLs are keyed by the scoped segments, so deep-links are built
- * by splitting the composite id. Mirrors `apps/web/shared/utils/ids.js`.
+ * by splitting the composite id.
  *
  * @public
  */
@@ -79,8 +79,7 @@ export const parseInstanceId = (
 };
 
 /**
- * Component ids are project-scoped: `{projectId}-{scopedComponentId}`. Mirrors
- * `apps/web/shared/utils/ids.js` `parseComponentId`.
+ * Component ids are project-scoped: `{projectId}-{scopedComponentId}`.
  *
  * @public
  */
@@ -93,8 +92,7 @@ export const parseComponentId = (
 
 /**
  * Compose a full instance id from its parts:
- * `{projectId}-{scopedEnvironmentId}-{scopedComponentId}`. Mirrors
- * `apps/web/shared/utils/ids.js` `composeInstanceId`.
+ * `{projectId}-{scopedEnvironmentId}-{scopedComponentId}`.
  *
  * @public
  */

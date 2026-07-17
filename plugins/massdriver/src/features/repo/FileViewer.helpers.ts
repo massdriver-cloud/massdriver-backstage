@@ -1,4 +1,4 @@
-// Ported from apps/web/features/repos/components/FileViewer/FileViewer.helpers.js.
+// Ported from the Massdriver web app
 const EXTENSION_LANGUAGE_MAP: Record<string, string> = {
   md: 'markdown',
   markdown: 'markdown',

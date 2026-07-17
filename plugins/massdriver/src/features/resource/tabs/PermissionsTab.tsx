@@ -14,7 +14,7 @@ import { RESOURCE_GRANTS_QUERY } from '../queries';
 import { SettingsTabLayout } from './SettingsTabLayout';
 import { TabHeader } from './TabHeader';
 
-// Ported from apps/web/features/resources/sections/PermissionsTab/. The web
+// Ported from the Massdriver web app. The web
 // app's Add/Remove grant actions mutate; here they deep-link out to this
 // resource's Permissions tab in the Massdriver web app (read-only parity).
 

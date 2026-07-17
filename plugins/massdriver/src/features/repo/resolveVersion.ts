@@ -1,4 +1,4 @@
-// Ported from apps/web/features/repos/utils/resolveVersion.js.
+// Ported from the Massdriver web app
 export const ALL_VERSIONS = 'all';
 
 interface RepoVersions {

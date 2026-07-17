@@ -5,7 +5,7 @@ import {
 } from '@massdriver/backstage-plugin-common';
 import { NODE_WIDTH, NODE_HEIGHT } from './DiagramNode.constants';
 
-// Ported from apps/web/features/environments/utils/diagramFactory.js. Read-only:
+// Ported from the Massdriver web app. Read-only:
 // edges use the default React Flow edge type (the app's `deletable` edge type
 // is dropped since links cannot be removed here).
 

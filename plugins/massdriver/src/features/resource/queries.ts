@@ -1,4 +1,4 @@
-// Ported from apps/web/features/resources/hooks/{useResourceQuery,useResourceGrantsQuery}.js
+// Ported from the Massdriver web app,useResourceGrantsQuery}.js
 // and sections/UsageTab/UsageTab.helpers.js. `$organizationId` is injected by
 // the relay; documents declare it but never pass it.
 

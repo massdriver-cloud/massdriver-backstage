@@ -19,7 +19,7 @@ import {
   RESOURCE_REMOTE_REFERENCES_QUERY,
 } from '../queries';
 
-// Ported from apps/web/features/resources/sections/UsageTab/UsageTab.helpers.js.
+// Ported from the Massdriver web app
 // Instance/project/environment links are internal (react-router). The status
 // column uses InstanceStatusPill — the faithful equivalent of the web helper's
 // tinted lowercase StatusChip (renderInstanceStatus).

@@ -1,8 +1,19 @@
 {
   "name": "@massdriver/backstage-plugin-backend",
   "version": "1.0.1",
+  "description": "Backstage backend plugin for Massdriver: authenticated GraphQL relay and realtime SSE bridge — the browser never holds a Massdriver token",
   "license": "Apache-2.0",
   "homepage": "https://www.massdriver.cloud/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/massdriver-cloud/massdriver-backstage",
+    "directory": "plugins/massdriver-backend"
+  },
+  "keywords": [
+    "backstage",
+    "backstage-plugin",
+    "massdriver"
+  ],
   "main": "src/index.ts",
   "types": "src/index.ts",
   "publishConfig": {

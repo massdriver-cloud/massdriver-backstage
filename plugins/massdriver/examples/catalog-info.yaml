@@ -2,16 +2,24 @@
 #
 # Annotate your own catalog entities to get the Massdriver card + tab. Point at
 # the most specific Massdriver resource the entity maps to.
+#
+# Here the checkout service is deployed as the `checkout` component in the
+# `prod` environment of the `ecommerce` project, so it points at that instance
+# (`{project}-{environment}-{component}` — the slugs from the Massdriver app's
+# URLs, which never contain hyphens themselves).
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: checkout-service
   description: Checkout service backed by Massdriver infrastructure
   annotations:
-    massdriver.cloud/org-id: my-org
-    # Point at the most specific Massdriver resource this component maps to.
     # Use exactly one of project-id / environment-id / instance-id.
-    massdriver.cloud/environment-id: my-project-prod
+    massdriver.cloud/instance-id: ecommerce-prod-checkout
+    # massdriver.cloud/environment-id: ecommerce-prod
+    # massdriver.cloud/project-id: ecommerce
+    # Optional — pins the organization in multi-org setups; defaults to the
+    # configured massdriver.organizationId:
+    # massdriver.cloud/org-id: <your-org-id>
 spec:
   type: service
   lifecycle: production

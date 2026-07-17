@@ -2,7 +2,7 @@ import { useApi } from '@backstage/frontend-plugin-api';
 import { useEffect, useState } from 'react';
 import { massdriverApiRef } from '../api';
 
-// Ported from apps/web/shared/hooks/useAuthedSvg.js. The web app fetches the
+// Ported from the Massdriver web app. The web app fetches the
 // SVG directly with the browser's bearer token; here the fetch goes through
 // the backend content proxy (api.fetchText) since the browser holds no token.
 export const useAuthedSvg = (url?: string | null) => {

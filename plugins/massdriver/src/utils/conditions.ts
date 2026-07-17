@@ -1,4 +1,4 @@
-// Ported from apps/web/shared/utils/conditions.js (read path only — the
+// Ported from the Massdriver web app (read path only — the
 // normalize-for-wire half backs mutation forms the read-only plugin doesn't
 // have).
 
