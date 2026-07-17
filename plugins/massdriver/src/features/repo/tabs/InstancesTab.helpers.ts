@@ -1,5 +1,3 @@
-// Ported from the Massdriver web app
-
 export const STATUS_OPTIONS = [
   { value: 'ALL', label: 'All statuses' },
   { value: 'PROVISIONED', label: 'Provisioned' },

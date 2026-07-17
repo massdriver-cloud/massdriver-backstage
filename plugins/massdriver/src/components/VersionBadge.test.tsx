@@ -3,8 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { MassdriverThemeScope } from '../theme/MassdriverThemeScope';
 import VersionBadge from './VersionBadge';
 
-// The badge reads Massdriver theme keys (warning palette, background.field), so
-// render it in the app's theme scope.
 const renderBadge = (element: React.ReactElement) =>
   render(<MassdriverThemeScope>{element}</MassdriverThemeScope>);
 

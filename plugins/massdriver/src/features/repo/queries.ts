@@ -1,6 +1,3 @@
-// Ported from the Massdriver web app. Operation names prefixed
-// `Massdriver`; `$organizationId` is declared but never passed (relay injects).
-
 export const OCI_REPO_HEADER_QUERY = `
   query MassdriverOciRepoHeader($organizationId: ID!, $id: ID!) {
     ociRepo(organizationId: $organizationId, id: $id) {
@@ -139,9 +136,6 @@ export const REPO_DEPLOYMENTS_QUERY = `
   }
 `;
 
-// Full deployment snapshot for the in-place details dialog (mirrors the web
-// app's useDeploymentQuery / features/environment's DEPLOYMENT_QUERY). `id` is a
-// `UUID!` here, matching `deployment(id:)`.
 export const DEPLOYMENT_DETAIL_QUERY = `
   query MassdriverDeployment($organizationId: ID!, $id: UUID!) {
     deployment(organizationId: $organizationId, id: $id) {
@@ -164,9 +158,6 @@ export const DEPLOYMENT_DETAIL_QUERY = `
   }
 `;
 
-// Initial log backfill for the logs drawer. The live tail is streamed
-// separately via the `deploymentLogs` subscription below. `id` is a `UUID!`,
-// matching `deployment(id:)`.
 export const DEPLOYMENT_LOGS_QUERY = `
   query MassdriverDeploymentLogs($organizationId: ID!, $id: UUID!) {
     deployment(organizationId: $organizationId, id: $id) {
@@ -186,9 +177,6 @@ export const DEPLOYMENT_LOGS_QUERY = `
   }
 `;
 
-// Live log tail for the logs drawer. Relayed over SSE via
-// useMassdriverSubscription. `$deploymentId` is an `ID!` on the subscription
-// (distinct from the `UUID!` on the deployment query above).
 export const DEPLOYMENT_LOGS_SUBSCRIPTION = `
   subscription MassdriverDeploymentLogs(
     $organizationId: ID!

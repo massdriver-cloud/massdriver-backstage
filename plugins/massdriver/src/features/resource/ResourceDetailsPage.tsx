@@ -26,11 +26,6 @@ import { GeneralTab } from './tabs/GeneralTab';
 import { PermissionsTab } from './tabs/PermissionsTab';
 import { UsageTab } from './tabs/UsageTab';
 
-// Ported from the Massdriver web app. The web app's Edit/Delete mutate: for imported
-// resources they deep-link out to the resource in Massdriver; for provisioned
-// resources they stay disabled with the web app's own tooltips (it disables
-// them too).
-
 const DELETE_TOOLTIP = 'Delete in Massdriver';
 
 const TABS = [
@@ -62,7 +57,6 @@ interface ResourceHeader {
   } | null;
 }
 
-/** Read-only resource details: vertical side-tabs mirroring the web app. */
 export const ResourceDetailsPage = () => {
   const api = useApi(massdriverApiRef);
   const { resourceId: rawResourceId = '', tab } = useParams();
@@ -133,8 +127,6 @@ export const ResourceDetailsPage = () => {
                 Edit
               </OpenInMassdriverButton>
             )}
-            {/* Web renders Delete as a danger icon button; imported resources
-                deep-link out, provisioned stay disabled like the web app. */}
             <Tooltip
               title={
                 isProvisioned ? PROVISIONED_DELETE_TOOLTIP : DELETE_TOOLTIP

@@ -1,5 +1,3 @@
-// Pure helpers ported from the web app's InstancePanel. Kept read-only and
-// dependency-free so the drawer can render every tab without app internals.
 import {
   composeInstanceStatus,
   formatInstanceStatus,
@@ -11,8 +9,6 @@ import type {
   InstanceResourceEntry,
   ResourceType,
 } from './types';
-
-// --- Attributes --------------------------------------------------------------
 
 export const parseMap = (value: unknown): Record<string, unknown> | null => {
   if (value == null) return null;
@@ -30,8 +26,6 @@ export const formatAttributeValue = (value: unknown): string => {
     return value.length === 0 ? 'any' : value.join(', ');
   return String(value);
 };
-
-// --- Overview: version + properties ------------------------------------------
 
 export const getReleaseChannel = (
   version?: string | null,
@@ -88,8 +82,6 @@ export const filterAndPaginateProperties = (
     page: safePage,
   };
 };
-
-// --- Alarms ------------------------------------------------------------------
 
 export const ALARMS_DOCS_URL =
   'https://docs.massdriver.cloud/platform-operations/monitoring-and-alarms';
@@ -185,8 +177,6 @@ export const bucketAlarms = (items?: (Alarm | null)[] | null): AlarmBuckets => {
     total: sorted.length,
   };
 };
-
-// --- Resources ---------------------------------------------------------------
 
 export const RESOURCE_STATE = {
   CREATED: 'CREATED',
@@ -284,8 +274,6 @@ export const formatPayload = (payload: unknown): string => {
   }
 };
 
-// --- Dependencies ------------------------------------------------------------
-
 export const DEPENDENCY_STATE = {
   REMOTE_REFERENCE: 'REMOTE_REFERENCE',
   CONNECTION: 'CONNECTION',
@@ -301,8 +289,6 @@ const FULFILLED_STATES = new Set<DependencyState>([
   DEPENDENCY_STATE.ENV_DEFAULT,
 ]);
 
-// Shapes matching DEPENDENCIES_QUERY's selections. Typed (rather than `any`)
-// so a schema field rename is a compile error here instead of a silent `—`.
 export interface BundleDependency {
   name: string;
   required?: boolean | null;
@@ -312,7 +298,6 @@ export interface BundleDependency {
 export interface DependencySource {
   __typename?: string;
   id?: string;
-  // Connection members
   fromField?: string | null;
   fromInstance?: {
     id: string;
@@ -324,7 +309,6 @@ export interface DependencySource {
     id: string;
     fromComponent?: { id: string; name?: string | null } | null;
   } | null;
-  // RemoteReference / EnvironmentDefault members
   resource?: {
     id: string;
     name?: string | null;
@@ -348,9 +332,6 @@ export interface DependencyRow {
   source: DependencySource | null;
 }
 
-// The web app overlays a second `inbound links` query to distinguish
-// pending/link-and-default states; that overlay is dropped here (read-only,
-// single fetch), so state is derived purely from the dependency source type.
 export const buildDependencyRows = (
   bundleDependencies?: (BundleDependency | null)[] | null,
   instanceDependencies?: (InstanceDependency | null)[] | null,
@@ -397,8 +378,6 @@ export const groupDependenciesBySection = (rows: DependencyRow[]) => ({
   unfulfilled: rows.filter(row => !FULFILLED_STATES.has(row.state)),
 });
 
-// --- History / deployment status ---------------------------------------------
-
 export const formatElapsed = (seconds?: number | null): string | null => {
   if (!seconds || seconds <= 0) return null;
   const minutes = Math.floor(seconds / 60);
@@ -416,19 +395,12 @@ const PLAN_SOURCE_REGEX =
 const ROLLBACK_SOURCE_REGEX =
   /^Rollback to deployment ([0-9a-fA-F-]{36}) \(v([^)]*)\)(?:\n([\s\S]*))?$/;
 
-// Plan proposals encode their source deployment in the message ("Planning
-// deployment <uuid>\n<source-message>"). Keep `sourceId` so the History tab can
-// link the plan back to the deployment it previews (mirrors the web app's
-// historyHelpers.js).
 export const parsePlanMessage = (message?: string | null) => {
   if (!message) return null;
   const match = PLAN_SOURCE_REGEX.exec(message);
   return match ? { sourceId: match[1], sourceMessage: match[2] ?? '' } : null;
 };
 
-// Rollback proposals encode their source deployment + version in the message
-// ("Rollback to deployment <uuid> (v<version>)\n<source-message>"). Keep
-// `sourceId`/`version` so the row can link back to the restored deployment.
 export const parseRollbackMessage = (message?: string | null) => {
   if (!message) return null;
   const match = ROLLBACK_SOURCE_REGEX.exec(message);
@@ -450,28 +422,18 @@ export const stripMessageContext = (message?: string | null): string => {
   return current;
 };
 
-// Compound label for a single deployment row (action + deployment status).
-// The taxonomy lives in ../instanceStatuses — this is the text-only shorthand
-// for callers that hold the two primitives instead of a compound string.
 export const formatDeploymentStatus = (
   action?: string | null,
   status?: string | null,
 ): string => formatInstanceStatus(composeInstanceStatus(action, status));
 
-// Re-exported for the logs panel / history rows, which decide off deployment
-// liveness whether to keep the log subscription open.
 export { isDeploymentActive } from '../../../utils/instanceStatuses';
 
-// Statuses that never produce a deployment log stream. Everything else has (or
-// will have) logs to view in-app.
 export const STATUSES_WITHOUT_LOGS = ['PROPOSED', 'APPROVED', 'REJECTED'];
 
 export const deploymentHasLogs = (status?: string | null): boolean =>
   Boolean(status) && !STATUSES_WITHOUT_LOGS.includes(status as string);
 
-// Join a deployment's log batches into a single string for LogViewer, matching
-// the web app's `composeText`: each batch may already carry its own newlines, so
-// we concatenate without inserting extra separators and guarantee a trailing \n.
 export const composeLogsText = (
   logs?: ({ message?: string | null } | null)[] | null,
 ): string => {
@@ -479,8 +441,6 @@ export const composeLogsText = (
   const joined = logs.map(line => line?.message ?? '').join('');
   return `\n${joined}${joined.endsWith('\n') ? '' : '\n'}`;
 };
-
-// --- Relative / absolute time (local, avoids app util) -----------------------
 
 const RELATIVE_UNITS: Array<{
   unit: Intl.RelativeTimeFormatUnit;

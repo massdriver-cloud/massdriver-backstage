@@ -29,11 +29,6 @@ const mapSort = (
   return { field, order: sort.direction === 'asc' ? 'ASC' : 'DESC' };
 };
 
-/**
- * Cursor pagination bridge for DataList's page-index model, ported from the web
- * app. Tracks the next-cursor for each page and resets when sort/pageSize
- * change.
- */
 export const useCursorPagination = ({
   state,
   sortFieldMap = {},
@@ -46,9 +41,6 @@ export const useCursorPagination = ({
 
   const sort = mapSort(state.sort, sortFieldMap);
 
-  // Cursors are only valid for the exact query shape that produced them —
-  // reset the map when sort, pageSize, or search change (a cursor from one
-  // filter set is meaningless in another).
   const sortKey = `${sort?.field}-${sort?.order}-${state.pageSize}-${state.search}`;
   if (sortKey !== prevSortKeyRef.current) {
     cursorsRef.current = new Map();

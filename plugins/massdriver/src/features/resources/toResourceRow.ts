@@ -1,24 +1,18 @@
 import { parseInstanceId } from '@massdriver/backstage-plugin-common';
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
 
-// Ported from the Massdriver web app
-// (transformResourcesResponse + buildLocation).
-
 const ORIGIN_LABELS: Record<string, string> = {
   IMPORTED: 'Imported',
   PROVISIONED: 'Provisioned',
 };
 
-/** Where a provisioned resource lives, resolved for the Project : Environment cell. */
 export interface ResourceLocation {
   projectId: string;
-  /** Full composite environment id, for `internalRoutes.environment`. */
   environmentId: string | null;
   projectName: string;
   environmentName: string;
 }
 
-/** A resource as returned by the list query. */
 export interface ResourceListItem {
   id: string;
   name: string;
@@ -44,7 +38,6 @@ export interface ResourceListItem {
   } | null;
 }
 
-/** A resource row as rendered in the DataList. */
 export interface ResourceRow extends ResourceListItem {
   resourceTypeName: string;
   resourceTypeIcon: string | null;
@@ -67,7 +60,6 @@ const buildLocation = (
   };
 };
 
-/** Transform a raw resource into a display row (mirrors `transformResourcesResponse`). */
 export const toResourceRow = (resource: ResourceListItem): ResourceRow => ({
   ...resource,
   resourceTypeName: resource.resourceType?.name ?? '—',

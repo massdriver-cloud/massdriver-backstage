@@ -1,6 +1,3 @@
-// Shared shapes for the instance drawer's read-only queries. These mirror the
-// selections in queries.ts; fields the drawer never reads are omitted.
-
 export interface Money {
   amount?: number | null;
   currency?: string | null;
@@ -127,7 +124,6 @@ export interface DeploymentLogLine {
   message?: string | null;
 }
 
-// Deployment shape for the read-only logs viewer (backfill query + live tail).
 export interface DeploymentLogs {
   id: string;
   status?: string | null;
@@ -140,14 +136,12 @@ export interface DeploymentLogs {
   logs?: (DeploymentLogLine | null)[] | null;
 }
 
-// Minimal instance shape sourcing the History tab's "Initialized" footer row.
 export interface HistoryInstance {
   id: string;
   createdAt?: string | null;
   environment?: { id: string; name?: string | null } | null;
 }
 
-// Full single-deployment snapshot for the read-only detail panel.
 export interface DeploymentDetail {
   id: string;
   status?: string | null;

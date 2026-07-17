@@ -65,8 +65,6 @@ export const buildCompareColumns = ({
 
 export default buildCompareColumns;
 
-// Left status stripe: different → warning, source/target-only → info, equal →
-// transparent. Colors resolve from the theme palette (raw CSS, not sx tokens).
 const stripeColor = (theme: any, status: ComparisonStatus): string => {
   if (status === 'different') return theme.palette.warning.main;
   if (status === 'sourceOnly' || status === 'targetOnly') {

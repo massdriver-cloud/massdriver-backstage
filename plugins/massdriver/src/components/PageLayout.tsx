@@ -5,10 +5,6 @@ import Typography from '@massdriver/ui/Typography';
 import stylin from '@massdriver/ui/stylin';
 import { ReactNode } from 'react';
 
-/**
- * Page frame mirroring the web app's `shared/components/PageLayout` — title +
- * description header, a divider, an optional actions toolbar, and content.
- */
 export const PageLayout = ({
   title,
   description,

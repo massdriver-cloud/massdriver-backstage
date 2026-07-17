@@ -4,7 +4,6 @@ import {
 } from '../../hooks/usePaginatedRelayQuery';
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
 
-/** A project as returned by the API. */
 export interface ProjectListItem {
   id: string;
   name: string;
@@ -15,13 +14,11 @@ export interface ProjectListItem {
   updatedAt?: string | null;
 }
 
-/** A project row as rendered in the DataList (mirrors the app's transform). */
 export interface ProjectRow extends ProjectListItem {
   updatedAt: string;
   updatedAtRaw?: string | null;
 }
 
-/** Transform a raw project into a display row (mirrors `toProjectRow`). */
 export const toProjectRow = (project: ProjectListItem): ProjectRow => ({
   ...project,
   name: project.name || '',
@@ -30,8 +27,6 @@ export const toProjectRow = (project: ProjectListItem): ProjectRow => ({
   updatedAt: formatRelativeTime(project.updatedAt),
 });
 
-// Mirrors the web app's `getProjects` field selection, with server-side
-// sort + cursor pagination.
 const PROJECTS_QUERY = `
   query MassdriverProjectsList(
     $organizationId: ID!
@@ -62,7 +57,6 @@ const PROJECTS_QUERY = `
   }
 `;
 
-/** Server-side, cursor-paginated projects list (matches the web app). */
 export const useProjectsPaginated = (): PaginatedResult<ProjectListItem> =>
   usePaginatedRelayQuery<ProjectListItem>(PROJECTS_QUERY, {
     responseKey: 'projects',

@@ -1,7 +1,6 @@
 import { useCallback, useState, type RefObject } from 'react';
 import { toPng } from 'html-to-image';
 
-// React Flow chrome we don't want baked into the exported image.
 const EXCLUDED_CLASSES = [
   'react-flow__controls',
   'react-flow__minimap',
@@ -11,11 +10,6 @@ const EXCLUDED_CLASSES = [
 const excludeChrome = (node: HTMLElement) =>
   !EXCLUDED_CLASSES.some(name => node?.classList?.contains(name));
 
-/**
- * Captures the diagram wrapper to a PNG and triggers a download. Ported from the
- * web app's `useDiagramSnapshot`; errors are logged rather than surfaced through
- * a snackbar (the plugin has no notice system).
- */
 export const useDiagramSnapshot = ({
   wrapperRef,
   fileNameBase,

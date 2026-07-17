@@ -25,11 +25,6 @@ import {
   type ProjectBlueprintResult,
 } from './graph/queries';
 
-/**
- * Read-only environment graph. Wraps the content in `RealtimeProvider` so the
- * graph and instance drawer refetch when the environment emits live events
- * (deploys, status changes, blueprint edits) originating in the web app.
- */
 export const EnvironmentGraphPage = () => {
   const { projectId = '', scopedEnvironmentId = '' } = useParams();
   const environmentId = composeEnvironmentId(projectId, scopedEnvironmentId);
@@ -40,7 +35,6 @@ export const EnvironmentGraphPage = () => {
   );
 };
 
-/** Instances as nodes, connections/links as edges. */
 const EnvironmentGraphContent = () => {
   const navigate = useNavigate();
   const {
@@ -55,20 +49,15 @@ const EnvironmentGraphContent = () => {
   const closeInstance = () =>
     navigate(internalRoutes.environment(projectId, environmentId));
 
-  // Page-level logs overlay, mirroring the web app's DeploymentLogsDrawer:
-  // status pills on the graph and the drawer tabs all open it via useOpenLogs.
   const [logsDeploymentId, setLogsDeploymentId] = useState<string | null>(null);
   useEffect(() => setLogsDeploymentId(null), [environmentId]);
 
-  // Pane click closes the topmost overlay: logs first, then the drawer.
   const onPaneClick = logsDeploymentId
     ? () => setLogsDeploymentId(null)
     : scopedComponentId
     ? closeInstance
     : undefined;
 
-  // Two live queries (blueprint + environment). Revision refetches keep the
-  // rendered diagram mounted — see useLiveRelayQuery for the no-flash contract.
   const projectQuery = useLiveRelayQuery<ProjectBlueprintResult>(
     PROJECT_BLUEPRINT_QUERY,
     projectId ? { projectId } : null,

@@ -23,12 +23,8 @@ import {
 } from '../helpers';
 import type { DeploymentLogLine, DeploymentLogs } from '../types';
 
-// Lets graph nodes and drawer tabs open the read-only logs drawer. Hosted at
-// the environment-graph page level, matching the web app's page-level
-// DeploymentLogsDrawer. No-op default when rendered outside the graph page.
 const OpenLogsContext = createContext<(deploymentId: string) => void>(() => {});
 
-/** Open the read-only deployment logs overlay for a deployment id. */
 export const useOpenLogs = (): ((deploymentId: string) => void) =>
   useContext(OpenLogsContext);
 
@@ -44,15 +40,6 @@ const downloadLogs = (text: string, deploymentId: string) => {
   URL.revokeObjectURL(url);
 };
 
-/**
- * Read-only deployment logs drawer. Ported from the web app's
- * `DeploymentLogsDrawer`: fetch the transcript once (`network-only`), then — if
- * the deployment is still active — stream new batches via the `deploymentLogs`
- * subscription and append them. Rendered as a dark, right-anchored, resizable
- * panel over the graph area — same 720px default / 575px minimum as the web
- * app's drawer (Backstage's hybrid runtime doesn't paint MUI Drawer/Modal
- * reliably, so we use a plain Box, as the instance drawer does).
- */
 export const DeploymentLogsPanel = ({
   deploymentId,
   onClose,
@@ -61,10 +48,6 @@ export const DeploymentLogsPanel = ({
   onClose: () => void;
 }) => {
   const { width, panelRef, onResizeStart } = useResizableWidth();
-  // Live query: a deployment finishing while the panel is open bumps the
-  // environment revision → refetch → `active` flips false, which both fixes
-  // the status pill and tears down the log subscription (otherwise the
-  // upstream Absinthe socket would stay open until the panel closes).
   const { value, loading, error } = useLiveRelayQuery<{
     deployment: DeploymentLogs | null;
   }>(DEPLOYMENT_LOGS_QUERY, { id: deploymentId });
@@ -73,9 +56,6 @@ export const DeploymentLogsPanel = ({
   const status = deployment?.status;
   const active = isDeploymentActive(status);
 
-  // Log batches streamed after the initial backfill. Each refetched backfill
-  // already contains everything streamed so far — reset the tail so lines
-  // aren't duplicated.
   const [streamed, setStreamed] = useState<DeploymentLogLine[]>([]);
   useEffect(() => {
     setStreamed([]);

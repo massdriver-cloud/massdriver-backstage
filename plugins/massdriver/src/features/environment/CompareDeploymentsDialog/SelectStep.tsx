@@ -14,8 +14,6 @@ import {
 } from '../InstanceDrawer/helpers';
 import type { Deployment } from '../InstanceDrawer/types';
 
-// `deployment` can be null when a held selection is no longer in the list
-// (e.g. the deployment aged out of the capped fetch) — fall back to the raw id.
 const optionLabel = (
   deployment: Deployment | null,
   fallbackId: string,
@@ -25,11 +23,6 @@ const optionLabel = (
   return position != null ? `#${position} · ${short}` : short;
 };
 
-/**
- * Step 1 of the deployment compare flow: pick two deployments. Simplified from
- * the web app's infinite-scroll pickers to plain Selects — the dialog already
- * fetches the instance's (capped) deployment list into memory.
- */
 export const SelectStep = ({
   source,
   target,

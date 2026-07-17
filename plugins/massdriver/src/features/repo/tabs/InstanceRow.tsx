@@ -10,11 +10,6 @@ import { internalRoutes } from '../../../internalRoutes';
 import type { RepoInstance } from '../types';
 import { formatCost } from './InstancesTab.helpers';
 
-// Ported from the Massdriver web app. The
-// whole card is a link to the instance drawer. The web renders the plain
-// (static) InstanceStatusPill here too — the live, latest-deployment-aware pill
-// is only used inside the environment graph — so `status={instance.status}` is
-// the faithful equivalent (differs only while a deployment is actively running).
 export const InstanceRow = ({ instance }: { instance: RepoInstance }) => {
   const { projectId, scopedEnvironmentId, scopedComponentId } = parseInstanceId(
     instance.id,

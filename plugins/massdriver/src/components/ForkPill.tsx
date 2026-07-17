@@ -10,7 +10,6 @@ const TOOLTIP_SLOT_PROPS = {
   tooltip: { sx: { maxWidth: 280, px: 1.25, py: 1 } },
 };
 
-/** "Fork" pill shown on forked environments (mirrors the web app). */
 export const ForkPill = ({
   parent,
   createdAt,

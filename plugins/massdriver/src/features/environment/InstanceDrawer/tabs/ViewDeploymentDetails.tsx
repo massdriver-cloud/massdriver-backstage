@@ -80,13 +80,6 @@ const buildHeading = (
   return componentName ? `${componentName} · ${verb}` : verb;
 };
 
-/**
- * Read-only deployment detail panel. Fetches the full deployment snapshot and
- * renders a summary def-list, attributes, and a flattened params DataList. All
- * mutating actions are disabled (tooltip → Massdriver); "View logs" opens the
- * in-app read-only logs overlay (closing this dialog first, since the logs
- * overlay lives inside the drawer beneath this dialog's portal).
- */
 export const ViewDeploymentDetails = ({
   deploymentId,
   onClose,

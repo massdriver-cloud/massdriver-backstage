@@ -19,7 +19,6 @@ describe('buildRepoColumns', () => {
     const rendered = nameColumn.render('aws-s3', {
       id: 'aws-s3',
     } as RepoRow) as any;
-    // The IconTile + link live in a NameCell; the second child is the link.
     const link = rendered.props.children[1];
     expect(link.props.href).toBe('/massdriver/repositories/aws-s3/all');
     expect(link.props.children).toBe('aws-s3');

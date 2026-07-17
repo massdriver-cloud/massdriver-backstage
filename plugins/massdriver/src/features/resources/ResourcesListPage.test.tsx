@@ -82,7 +82,6 @@ describe('ResourcesListPage', () => {
         screen.getByText('Set Up Your Massdriver Catalog'),
       ).toBeInTheDocument(),
     );
-    // The empty-state import affordance deep-links into Massdriver.
     const importLink = screen.getByRole('link', { name: 'Import a Resource' });
     expect(importLink).toHaveAttribute(
       'href',

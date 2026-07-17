@@ -1,6 +1,3 @@
-// Ported from the Massdriver web app.
-// The web app's Alarms tab is intentionally hidden; we keep the same visible
-// tab set and order here.
 export const TAB_IDS = {
   OVERVIEW: 'overview',
   INSTANCES: 'instances',
@@ -23,6 +20,5 @@ export const REPO_TABS = [
 
 const TAB_VALUES = REPO_TABS.map(tab => tab.id) as string[];
 
-/** Resolve a requested tab segment to a valid tab id, defaulting to Overview. */
 export const resolveActiveRepoTab = (tab?: string | null): string =>
   tab && TAB_VALUES.includes(tab) ? tab : DEFAULT_REPO_TAB;

@@ -40,11 +40,6 @@ const ResourceTooltipRow = ({ item }: { item: EnvironmentDefaultItem }) => (
   </TooltipRow>
 );
 
-/**
- * Read-only environment defaults: an avatar group of resource-type icons that
- * opens a menu listing each default. All edit/remove/select actions from the
- * web app are dropped — this is display-only.
- */
 export const EnvironmentDefaults = ({
   environmentId,
 }: {
@@ -53,9 +48,6 @@ export const EnvironmentDefaults = ({
   const rootRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Live query: defaults set/removed in the web app show up on the next
-  // realtime event. Identity resets on environment switch, so a previous
-  // environment's defaults never flash while the next one loads.
   const { value, loading, error } =
     useLiveRelayQuery<EnvironmentDefaultsResult>(
       ENVIRONMENT_DEFAULTS_QUERY,

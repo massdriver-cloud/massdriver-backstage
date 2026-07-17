@@ -28,8 +28,6 @@ import type { PanelInstance, SecretField } from './types';
 
 const DEFAULT_TAB = 'overview';
 
-// App tab order. Secrets is spliced in (after History) only when the instance
-// declares secret fields (see below).
 const BASE_TABS = [
   { id: 'overview', label: 'Overview' },
   { id: 'config', label: 'Config' },
@@ -40,12 +38,6 @@ const BASE_TABS = [
   { id: 'resources', label: 'Resources' },
 ];
 
-/**
- * Read-only instance drawer rendered over the environment graph. Opens when the
- * `scopedComponentId` route param is present (the `.../instances/:scopedComponentId`
- * sub-route, mirroring the web app); closing navigates back to the environment
- * route. The active tab is carried in the `?tab=` query param.
- */
 export const InstanceDrawer = ({
   projectId,
   environmentId,
@@ -170,13 +162,6 @@ export const InstanceDrawer = ({
 
 export default InstanceDrawer;
 
-// Read-only panel pinned to the right edge of the environment graph. Uses a
-// plain absolutely-positioned Box rather than @massdriver/ui/Drawer: MUI v5's
-// Drawer relies on its Slide transition (and a Modal/portal for the temporary
-// variant), which does not paint reliably inside Backstage's hybrid runtime
-// (its own MUI v4 layer + the scoped `mdui` Emotion cache). Fixed width for now;
-// a drag-to-resize handle can be reintroduced later. GraphArea is `position:
-// relative`, so this anchors to it.
 const Panel = stylin(Box)(({ theme }: { theme: any }) => ({
   position: 'absolute',
   top: 0,

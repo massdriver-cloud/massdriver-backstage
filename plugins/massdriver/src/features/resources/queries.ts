@@ -1,6 +1,3 @@
-// Ported from the Massdriver web app
-
-/** Paginated resources list. `$organizationId` is injected by the relay. */
 export const RESOURCES_QUERY = `
   query MassdriverResourcesList(
     $organizationId: ID!

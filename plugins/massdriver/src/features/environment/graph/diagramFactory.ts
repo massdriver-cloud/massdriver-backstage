@@ -5,10 +5,6 @@ import {
 } from '@massdriver/backstage-plugin-common';
 import { NODE_WIDTH, NODE_HEIGHT } from './DiagramNode.constants';
 
-// Ported from the Massdriver web app. Read-only:
-// edges use the default React Flow edge type (the app's `deletable` edge type
-// is dropped since links cannot be removed here).
-
 const BASE_EDGE_STYLE = {
   strokeWidth: '3',
   stroke: '#b7b7b7',

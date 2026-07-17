@@ -1,7 +1,5 @@
 import type { Comparison } from './flattenComparison';
 
-// Field-by-field diff of two environments. `organizationId` is injected by the
-// relay; callers pass sourceId + targetId only.
 export const COMPARE_ENVIRONMENTS_QUERY = `
   query MassdriverCompareEnvironments(
     $organizationId: ID!

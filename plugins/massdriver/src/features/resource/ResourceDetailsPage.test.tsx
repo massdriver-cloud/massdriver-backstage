@@ -7,8 +7,6 @@ import { massdriverApiRef, MassdriverApi } from '../../api';
 import { MassdriverThemeScope } from '../../theme/MassdriverThemeScope';
 import { ResourceDetailsPage } from './ResourceDetailsPage';
 
-// renderInTestApp already supplies a Router, so drive params via a mock rather
-// than nesting another router.
 let mockParams: Record<string, string> = {};
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

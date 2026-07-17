@@ -14,7 +14,6 @@ import {
 } from './helpers';
 import type { Alarm } from './types';
 
-/** Read-only alarm card, faithful port of the web app's AlarmCard. */
 export const AlarmCard = ({ alarm }: { alarm: Alarm }) => {
   const firing = isFiring(alarm);
   const severity = getSeverity(alarm);

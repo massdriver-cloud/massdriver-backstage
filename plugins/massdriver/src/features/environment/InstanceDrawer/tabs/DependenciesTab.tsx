@@ -33,7 +33,6 @@ import {
 import type { ResourceType } from '../types';
 import { chipClasses } from '../../../../theme/muiClasses';
 
-/** Read-only Dependencies tab: fulfilled + unfulfilled dependency cards. */
 export const DependenciesTab = ({
   instanceId,
 }: {

@@ -9,7 +9,6 @@ import stylin from '@massdriver/ui/stylin';
 import { ancestorPaths, buildFileTree, TreeNode } from './fileTreeHelpers';
 import type { RepoFile } from './types';
 
-// Ported from the Massdriver web app
 export const FileTree = ({
   files,
   selectedPath,

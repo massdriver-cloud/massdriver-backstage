@@ -1,19 +1,6 @@
 import { unstable_ClassNameGenerator } from '@mui/material/className';
 import { switchClasses } from '@mui/material/Switch';
 
-/**
- * Detects the "boot-graph freeze" (backstage#31846): MUI v5 freezes slot-class
- * constants and internal cross-slot selectors at module evaluation. If the
- * host app evaluated `@mui/material` before Backstage's UnifiedThemeProvider
- * configured its `v5-` ClassNameGenerator prefix, those frozen names disagree
- * with the names components render, and cross-slot styling silently breaks
- * (misaligned Switch thumbs, Tooltip arrows, …) for every MUI v5 plugin.
- *
- * Compares a representative frozen constant against what the generator
- * produces now. Returns a warning message on mismatch, null when consistent
- * (either regime — prefixed or unprefixed — is fine as long as both sides
- * agree).
- */
 export const auditMuiClassNameConsistency = (): string | null => {
   const frozen = switchClasses.thumb;
   const current = `${unstable_ClassNameGenerator.generate('MuiSwitch')}-thumb`;

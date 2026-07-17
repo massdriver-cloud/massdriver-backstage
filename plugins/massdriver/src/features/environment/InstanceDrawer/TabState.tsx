@@ -4,7 +4,6 @@ import Alert from '@massdriver/ui/Alert';
 import LoadingIndicator from '@massdriver/ui/LoadingIndicator';
 import stylin from '@massdriver/ui/stylin';
 
-/** Loading/error/content gate shared by the drawer tabs. */
 export const TabState = ({
   loading,
   error,

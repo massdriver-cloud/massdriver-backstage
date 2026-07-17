@@ -1,5 +1,3 @@
-// Ported from the Massdriver web app
-
 export const STATUS_OPTIONS = [
   { value: 'ALL', label: 'All statuses' },
   { value: 'RUNNING', label: 'Running' },
@@ -26,8 +24,6 @@ export const DEFAULT_ACTION_VALUE = 'ALL';
 export const filterValue = (value: string): string | null =>
   value === 'ALL' || !value ? null : value;
 
-// UPDATED_AT tracks the most recent change to a deployment record (status
-// transitions, log compaction); CREATED_AT is when the deployment was enqueued.
 export const SORT_OPTIONS = [
   { value: 'UPDATED_AT_DESC', label: 'Last activity (newest)' },
   { value: 'UPDATED_AT_ASC', label: 'Last activity (oldest)' },

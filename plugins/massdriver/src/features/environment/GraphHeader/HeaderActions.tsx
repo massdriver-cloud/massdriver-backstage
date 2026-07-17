@@ -12,10 +12,6 @@ import SettingsIcon from '@massdriver/ui/icons/SettingsIcon';
 import CompareEnvironmentsDialog from '../CompareEnvironmentsDialog';
 import type { HeaderEnvironment } from './queries';
 
-/**
- * Right-hand header actions. Fork + Settings deep-link out to the web app (this
- * plugin is read-only); Compare opens the local read-only comparison dialog.
- */
 export const HeaderActions = ({
   appUrl,
   organizationId,

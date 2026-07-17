@@ -59,12 +59,7 @@ const summaryMetadata = (
   };
 };
 
-/**
- * Entity overview card summarizing the entity's Massdriver status with a
- * deep-link into the web app.
- *
- * @public
- */
+/** @public */
 export const EntityMassdriverOverviewCard = () => {
   const { entity } = useEntity();
   const api = useApi(massdriverApiRef);

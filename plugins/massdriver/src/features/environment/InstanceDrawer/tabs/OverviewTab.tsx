@@ -48,7 +48,6 @@ interface OverviewInstance {
   alarms?: { items?: (Alarm | null)[] | null } | null;
 }
 
-/** Read-only Overview tab: firing alerts, identifiers, version, attributes, properties. */
 export const OverviewTab = ({ instanceId }: { instanceId: string | null }) => {
   const api = useApi(massdriverApiRef);
   const { value, loading, error } = useInstanceApiQuery<{
@@ -56,9 +55,6 @@ export const OverviewTab = ({ instanceId }: { instanceId: string | null }) => {
   }>(OVERVIEW_QUERY, instanceId);
   const instance = value?.instance;
 
-  // Editing the version is a mutation — link out to the instance's overview in
-  // Massdriver (where the change-version dialog lives). The bundle links to its
-  // version overview in the repository.
   const changeVersionUrl =
     instanceId && api.appUrl
       ? instanceTabUrl(api.appUrl, api.organizationId, instanceId, 'overview')

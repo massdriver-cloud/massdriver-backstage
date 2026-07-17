@@ -3,14 +3,8 @@ import Button from '@massdriver/ui/Button';
 import stylin from '@massdriver/ui/stylin';
 import DisabledAction from '../../../../components/DisabledAction';
 
-// Read-only mirrors of the web app's deployment mutations. Every mutating
-// affordance is rendered as a greyed `DisabledAction` (tooltip points the user
-// to Massdriver); viewing logs is a genuine in-app action (opens the read-only
-// logs overlay), not disabled and not a link-out.
-
 type Size = 'small' | 'medium' | 'large';
 
-/** Disabled Plan / Reject / Approve cluster shown on PROPOSED deployments. */
 export const DisabledApprovalCluster = ({
   size = 'small',
 }: {
@@ -41,7 +35,6 @@ export const DisabledApprovalCluster = ({
   </Cluster>
 );
 
-/** Disabled Rollback shown on completed PROVISION deployments. */
 export const DisabledRollbackButton = ({ size = 'small' }: { size?: Size }) => (
   <DisabledAction
     label="Rollback"
@@ -51,7 +44,6 @@ export const DisabledRollbackButton = ({ size = 'small' }: { size?: Size }) => (
   />
 );
 
-/** Opens the read-only deployment logs overlay in-app. */
 export const LogsButton = ({
   onClick,
   size = 'small',

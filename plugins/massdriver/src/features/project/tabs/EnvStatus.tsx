@@ -27,7 +27,6 @@ const labelFor = (status?: string | null) =>
 const colorFor = (status?: string | null) =>
   (status && instanceStatusColors[status]) ?? instanceStatusColors.INITIALIZED;
 
-/** Chips showing an instance's status per environment (mirrors the web app). */
 export const EnvStatusStrip = ({
   instances,
   getInstanceUrl,

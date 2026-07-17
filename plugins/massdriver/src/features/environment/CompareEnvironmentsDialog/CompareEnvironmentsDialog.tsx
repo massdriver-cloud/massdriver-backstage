@@ -22,11 +22,6 @@ import {
   type CompareEnvironmentsResult,
 } from './queries';
 
-/**
- * Read-only environment comparison dialog. Two steps: pick source + target
- * (SelectStep), then view the flattened field-by-field diff (ResultsStep). No
- * mutations — the web app's URL-param state is replaced with local `useState`.
- */
 export const CompareEnvironmentsDialog = ({
   open,
   onClose,

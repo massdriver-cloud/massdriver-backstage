@@ -34,14 +34,6 @@ interface FilesQueryResult {
   } | null;
 }
 
-// Ported from the Massdriver web app.
-//
-// DIVERGENCE: the web app stores the selected file path in a URL catch-all
-// segment (`/files/<path>`). This plugin's route is
-// `repositories/:repoId/:version/:tab` with no catch-all, so the selected file
-// lives in a `?file=` search param instead — deep-linking still works. File
-// contents are fetched through the backend content proxy (see FileViewer), so
-// the real in-app viewer is fully functional here.
 export const FilesTab = ({
   repoId,
   version,

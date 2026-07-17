@@ -14,14 +14,10 @@ import {
   UsageType,
 } from './UsageTab.helpers';
 
-// Ported from the Massdriver web app,view}.js.
-// Imported resources have no connections, so that toggle is dropped for them.
-
 const TOOLTIP_SLOT_PROPS = {
   tooltip: { sx: { maxWidth: 320, px: 1.25, py: 1 } },
 };
 
-/** Read-only Usage tab: consumption of this resource, grouped by usage type. */
 export const UsageTab = ({
   resourceId,
   resourceOrigin,
@@ -35,8 +31,6 @@ export const UsageTab = ({
     : USAGE_TYPE_ORDER;
 
   const [activeType, setActiveType] = useState<UsageType>(USAGE_TYPE_ORDER[0]);
-  // If the current selection isn't available (e.g. an imported resource can't
-  // show connections), fall back to the first available type.
   const effectiveType = types.includes(activeType) ? activeType : types[0];
   const activeInfo = USAGE_TYPE_CONFIG[effectiveType].info;
 
@@ -77,7 +71,6 @@ export const UsageTab = ({
           </InfoIconWrapper>
         </Tooltip>
       </FilterBar>
-      {/* key={type} so DataList paging state resets when the type changes. */}
       <UsagePanel
         key={effectiveType}
         type={effectiveType}

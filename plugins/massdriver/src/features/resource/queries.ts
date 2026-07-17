@@ -1,8 +1,3 @@
-// Ported from the Massdriver web app,useResourceGrantsQuery}.js
-// and sections/UsageTab/UsageTab.helpers.js. `$organizationId` is injected by
-// the relay; documents declare it but never pass it.
-
-/** Resource header — also feeds the General tab. */
 export const RESOURCE_HEADER_QUERY = `
   query MassdriverResourceHeader($organizationId: ID!, $id: ID!) {
     resource(organizationId: $organizationId, id: $id) {
@@ -26,7 +21,6 @@ export const RESOURCE_HEADER_QUERY = `
   }
 `;
 
-/** Resource permission grants (no cursor — the API returns a bare item list). */
 export const RESOURCE_GRANTS_QUERY = `
   query MassdriverResourceGrants($organizationId: ID!, $id: ID!) {
     resource(organizationId: $organizationId, id: $id) {

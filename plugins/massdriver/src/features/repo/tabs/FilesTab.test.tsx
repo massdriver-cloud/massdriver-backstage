@@ -70,7 +70,6 @@ describe('FilesTab', () => {
         'https://app.massdriver.cloud/f/readme',
       ),
     );
-    // Markdown is rendered inline via GuideMarkdown (not a metadata pane).
     await waitFor(() =>
       expect(screen.getByText(/Bundle readme body/)).toBeInTheDocument(),
     );

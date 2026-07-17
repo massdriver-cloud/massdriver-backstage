@@ -14,17 +14,12 @@ import { RESOURCE_GRANTS_QUERY } from '../queries';
 import { SettingsTabLayout } from './SettingsTabLayout';
 import { TabHeader } from './TabHeader';
 
-// Ported from the Massdriver web app. The web
-// app's Add/Remove grant actions mutate; here they deep-link out to this
-// resource's Permissions tab in the Massdriver web app (read-only parity).
-
 interface GrantsResource {
   id: string;
   name?: string | null;
   grants?: { items?: (Grant | null)[] | null } | null;
 }
 
-/** Read-only Permissions tab: resource grants shared with other environments. */
 export const PermissionsTab = ({ resourceId }: { resourceId: string }) => {
   const api = useApi(massdriverApiRef);
   const {

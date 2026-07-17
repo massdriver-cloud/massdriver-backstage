@@ -27,7 +27,9 @@ Feature folders colocate `queries.ts`, components, helpers, and an `index.ts` ba
 8. **TypeScript honesty.** `@massdriver/ui` / `@massdriver/forms` are ambient `any` (declared in `massdriver-ui.d.ts` — the one sanctioned `any` boundary). API result shapes live in feature `types.ts` files and use `(await api.query(q, v)) as T` — never `api.query<T>()`.
 9. **Never swallow query errors.** Every fetch surfaces `error` somewhere visible (inline `Alert` or an honest fallback label). A null entity field renders `NotFound` — the relay's client returns partial `data` on field-level errors so a null field can be a 404 instead of a 500.
 
-House style: no single-letter variable names (loop `i`/`j` OK), prefer ternary over `if`, prefer `const`, no data mutation (always spread/copy), minimal comments, `stylin` declarations below the component, one React component per file.
+House style: no single-letter variable names (loop `i`/`j` OK), prefer ternary over `if`, prefer `const`, no data mutation (always spread/copy), `stylin` declarations below the component, one React component per file.
+
+**No code comments.** Write code that reads without them — better names, smaller functions, extracted constants. Functional annotations (`@visibility` in `config.d.ts`, `eslint-disable`, `@ts-expect-error`, `/** @public */`) are not comments and stay. A prose comment is a last resort reserved for genuinely obscure constraints the code cannot express (external protocol quirks, upstream bugs), and adding one requires explicit approval from Joe first.
 
 ## Realtime
 
@@ -50,7 +52,7 @@ Backend SSE relay (`POST /subscribe`) speaks Phoenix v2/Absinthe over `ws` serve
 plugins/massdriver/src/plugin.tsx                     ← Frontend plugin entry (blueprints)
 plugins/massdriver/src/api.ts                         ← MassdriverApi: query + SSE subscribe
 plugins/massdriver/src/MassdriverRouter.tsx           ← Route table
-plugins/massdriver/src/theme/MassdriverThemeScope.tsx ← MUI v5 island (only @mui/material import)
+plugins/massdriver/src/theme/MassdriverThemeScope.tsx ← MUI v5 island (theme/ holds the only @mui/material imports; mode follows Backstage's active theme via useThemeMode)
 plugins/massdriver/src/features/environment/realtime/ ← RealtimeProvider + useMassdriverSubscription
 plugins/massdriver-backend/src/router.ts              ← Relay: POST /graphql + POST /subscribe (SSE)
 plugins/massdriver-backend/src/absinthe.ts            ← Headless Phoenix v2/Absinthe WS client

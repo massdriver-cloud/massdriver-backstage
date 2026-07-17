@@ -1,6 +1,3 @@
-// Ported from the Massdriver web app (OCI_REPOS_QUERY).
-// Operation renamed to MassdriverOciReposList; $organizationId is declared but
-// never passed — the relay injects it.
 export const OCI_REPOS_LIST_QUERY = `
   query MassdriverOciReposList(
     $organizationId: ID!

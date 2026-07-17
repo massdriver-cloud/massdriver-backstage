@@ -19,7 +19,6 @@ import { NODE_WIDTH, NODE_HEIGHT } from './DiagramNode.constants';
 import type { DiagramNodeData } from './diagramFactory';
 import { chipClasses } from '../../../theme/muiClasses';
 
-/** React Flow node: an instance card with live per-node metadata. */
 const DiagramNode = ({
   id: nodeId,
   data,
@@ -39,8 +38,6 @@ const DiagramNode = ({
     resourceHandles = [],
   } = data;
 
-  // Live query: cost, alarm dot, and upgrade/redeploy/drift badges refresh on
-  // realtime events (with the node kept rendered — no skeleton flash).
   const {
     value: meta,
     loading,
@@ -61,8 +58,6 @@ const DiagramNode = ({
   const loadingMeta = loading && !instance;
   const metaError = error && !instance ? error : null;
 
-  // Clicking an in-flight/failed status pill opens the page-level logs
-  // overlay for that deployment (mirrors the web app's onStatusClick).
   const openLogs = useOpenLogs();
   const onStatusClick = (deployment: { id: string } | null) => {
     if (deployment?.id) openLogs(deployment.id);

@@ -15,9 +15,6 @@ import { buildResourceColumns } from './resourceColumns';
 import { ResourcesEmptyState } from './ResourcesEmptyState';
 import { ResourceListItem, toResourceRow } from './toResourceRow';
 
-// Ported from the Massdriver web app. The web app's "Import Resource" opens a dialog; here
-// it deep-links into Massdriver (read-only parity).
-
 type Origin = 'all' | 'IMPORTED' | 'PROVISIONED';
 
 const ORIGIN_OPTIONS = [
@@ -26,7 +23,6 @@ const ORIGIN_OPTIONS = [
   { value: 'PROVISIONED', label: 'Provisioned only' },
 ];
 
-/** Read-only resources list, mirroring the web app's Resources page. */
 export const ResourcesListPage = () => {
   const api = useApi(massdriverApiRef);
   const [origin, setOrigin] = useState<Origin>('all');
@@ -45,8 +41,6 @@ export const ResourcesListPage = () => {
         </OpenInMassdriverButton>
       }
     >
-      {/* Remount on origin change so paging state resets (mirrors the web's
-          UsagePanel key pattern). */}
       <ResourcesList
         key={origin}
         origin={origin}
@@ -89,8 +83,6 @@ const ResourcesList = ({
   const showEmptyState =
     !loading && !error && !filtersActive && rows.length === 0;
 
-  // With no resources and no active filters, the web shows a catalog-onboarding
-  // card in place of the toolbar + table.
   if (showEmptyState) {
     return <ResourcesEmptyState importUrl={importUrl} />;
   }

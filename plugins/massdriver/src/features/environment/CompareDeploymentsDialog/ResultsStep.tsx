@@ -21,7 +21,6 @@ const labelFor = (
   return position != null ? `#${position} · ${id}` : id;
 };
 
-/** Step 2 of the deployment compare flow: the flattened diff as a DataList. */
 export const ResultsStep = ({
   rows,
   source,

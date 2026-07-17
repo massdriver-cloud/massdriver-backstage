@@ -5,10 +5,6 @@ import {
   type ComparisonStatus,
 } from '../CompareEnvironmentsDialog/flattenComparison';
 
-// Deployment comparison rows are un-grouped (no component dimension): a single
-// version row plus one row per param. Ported from the web app's
-// flattenDeploymentComparison.js. `computeStatus` / `VERSION_PATH` are reused
-// unchanged from the environment-compare flatten module.
 export interface DeploymentComparisonRow {
   id: string;
   kind: 'version' | 'param';

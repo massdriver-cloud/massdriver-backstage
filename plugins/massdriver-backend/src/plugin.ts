@@ -4,16 +4,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
 
-/**
- * Massdriver backend plugin.
- *
- * Exposes an authenticated GraphQL relay at `/api/massdriver/graphql` that
- * forwards queries to the Massdriver v2 API with a service-account bearer token
- * injected server-side. The token is read from config and never reaches the
- * browser.
- *
- * @public
- */
+/** @public */
 export const massdriverPlugin = createBackendPlugin({
   pluginId: 'massdriver',
   register(env) {

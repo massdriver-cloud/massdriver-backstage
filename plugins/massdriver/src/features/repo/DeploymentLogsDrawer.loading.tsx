@@ -2,7 +2,6 @@ import Box from '@massdriver/ui/Box';
 import Skeleton from '@massdriver/ui/Skeleton';
 import stylin from '@massdriver/ui/stylin';
 
-// Ported from the Massdriver web app
 export const DeploymentLogsDrawerLoading = () => (
   <Root>
     <Header>

@@ -2,8 +2,6 @@ import Box from '@massdriver/ui/Box';
 import stylin from '@massdriver/ui/stylin';
 import { ReactNode } from 'react';
 
-// Ported from the Massdriver web app — the padded,
-// max-width, vertically-stacked wrapper every repo tab section renders inside.
 export const RepoTabLayout = ({ children }: { children: ReactNode }) => (
   <Wrapper>{children}</Wrapper>
 );

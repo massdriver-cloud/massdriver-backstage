@@ -8,7 +8,6 @@ import { PageLayout } from '../../components/PageLayout';
 import { buildProjectColumns } from './projectColumns';
 import { toProjectRow, useProjectsPaginated } from './useProjects';
 
-/** Read-only projects list, rebuilt with `@massdriver/ui` to match the app. */
 export const ProjectsListPage = () => {
   const api = useApi(massdriverApiRef);
   const { items, loading, error, hasMore, dataListParams } =

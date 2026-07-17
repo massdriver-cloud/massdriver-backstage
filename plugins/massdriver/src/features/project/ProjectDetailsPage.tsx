@@ -37,7 +37,6 @@ const HEADER_QUERY = `
   }
 `;
 
-/** Read-only project details: vertical side-tabs mirroring the web app. */
 export const ProjectDetailsPage = () => {
   const api = useApi(massdriverApiRef);
   const { projectId = '', tab } = useParams();

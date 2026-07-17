@@ -25,7 +25,6 @@ const FIT_VIEW_OPTIONS = {
   maxZoom: 1,
 };
 
-/** Read-only React Flow canvas for an environment's instances and links. */
 const Diagram = ({
   nodes: initialNodes,
   edges: initialEdges,
@@ -46,8 +45,6 @@ const Diagram = ({
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // Reseed when the fetched blueprint changes, marking the open instance's node
-  // selected (the node styles its own border off `data.isSelected`).
   useEffect(() => {
     setNodes(
       initialNodes.map(node => ({

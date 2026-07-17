@@ -54,7 +54,6 @@ describe('UsageTab', () => {
 
     await renderTab(api);
 
-    // The Connections toggle is available for a provisioned resource.
     expect(
       screen.getByRole('button', { name: 'Connections' }),
     ).toBeInTheDocument();
@@ -62,8 +61,6 @@ describe('UsageTab', () => {
     await waitFor(() =>
       expect(screen.getByText('proj-env-cache')).toBeInTheDocument(),
     );
-    // Status renders as the Massdriver status pill (formatInstanceStatus label),
-    // not a Backstage status indicator.
     expect(screen.getByText('Provisioned')).toBeInTheDocument();
     expect(screen.getByText('aws-sns')).toBeInTheDocument();
   });

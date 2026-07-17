@@ -53,12 +53,7 @@ const scopeDeepLink = (
   }
 };
 
-/**
- * Entity content tab that lists the Massdriver instances for the entity's
- * scope (project or environment) or the details of a single instance.
- *
- * @public
- */
+/** @public */
 export const EntityMassdriverContent = () => {
   const { entity } = useEntity();
   const api = useApi(massdriverApiRef);

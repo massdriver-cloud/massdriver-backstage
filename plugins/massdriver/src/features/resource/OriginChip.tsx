@@ -2,15 +2,11 @@ import Chip from '@massdriver/ui/Chip';
 import stylin from '@massdriver/ui/stylin';
 import { chipClasses } from '../../theme/muiClasses';
 
-// Ported from the Massdriver web app
-// (the OriginChip styled component + ORIGIN_LABELS).
-
 const ORIGIN_LABELS: Record<string, string> = {
   IMPORTED: 'Imported',
   PROVISIONED: 'Provisioned',
 };
 
-/** Small uppercase status chip: provisioned reads info, imported reads success. */
 export const OriginChip = ({ origin }: { origin?: string | null }) => {
   const provisioned = origin === 'PROVISIONED';
   return (

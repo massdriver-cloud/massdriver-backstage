@@ -20,10 +20,6 @@ import { OriginChip } from '../OriginChip';
 import { RESOURCE_HEADER_QUERY } from '../queries';
 import { GeneralTabLoading } from './GeneralTab.loading';
 
-// Ported from the Massdriver web app
-// The web app's payload download runs an `exportResource` mutation, which is
-// off-limits in this read-only mirror — the download button deep-links out to
-// the resource in Massdriver instead.
 const PAYLOAD_EXPORT_TOOLTIP = 'Download in Massdriver';
 
 interface GeneralResource {
@@ -37,8 +33,6 @@ interface GeneralResource {
   instance?: { id: string } | null;
 }
 
-// payload comes back as a JSON-encoded string (or a pre-parsed object); mirror
-// the web app's parseMap — return null on missing or unparseable input.
 const parseMap = (value: unknown): any => {
   if (value == null) return null;
   if (typeof value === 'object') return value;
@@ -58,7 +52,6 @@ const buildLocation = (
   return `${projectId} : ${scopedEnvironmentId}`;
 };
 
-/** Read-only General tab: identifiers, origin, timeline, and payload cards. */
 export const GeneralTab = ({ resourceId }: { resourceId: string }) => {
   const api = useApi(massdriverApiRef);
   const {

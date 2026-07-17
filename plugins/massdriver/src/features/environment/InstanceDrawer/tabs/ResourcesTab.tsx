@@ -40,7 +40,6 @@ import type {
 } from '../types';
 import { chipClasses } from '../../../../theme/muiClasses';
 
-/** Read-only Resources tab: produced/pending resources with consumers + grants. */
 export const ResourcesTab = ({ instanceId }: { instanceId: string | null }) => {
   const { value, loading, error } = useInstanceApiQuery<{
     instance: {
@@ -136,8 +135,6 @@ const CreatedResourceCard = ({ row }: { row: ResourceRow }) => {
   const [payloadOpen, setPayloadOpen] = useState(false);
   const resource = row.resource as ProducedResource | null;
 
-  // Live query: consumers (connections/remote refs/env defaults/grants) track
-  // realtime events instead of going stale after the first render.
   const { value: consumersResult, error: consumersError } = useLiveRelayQuery<{
     resource: {
       connections?: { items?: (Connection | null)[] | null };

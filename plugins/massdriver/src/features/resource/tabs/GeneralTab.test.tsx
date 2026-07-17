@@ -46,11 +46,8 @@ describe('GeneralTab', () => {
       expect(screen.getByText('aws-sns.topic')).toBeInTheDocument(),
     );
     expect(screen.getByText('Provisioned')).toBeInTheDocument();
-    // Location derived from the instance id segments.
     expect(screen.getByText('proj : env')).toBeInTheDocument();
-    // Payload rendered as formatted JSON.
     expect(screen.getByText(/arn:aws:sns:topic/)).toBeInTheDocument();
-    // Export mutates, so the download button deep-links out to Massdriver.
     expect(
       screen.getByLabelText('Download payload in Massdriver'),
     ).toHaveAttribute('target', '_blank');

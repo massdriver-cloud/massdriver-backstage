@@ -5,7 +5,6 @@ import stylin from '@massdriver/ui/stylin';
 import { ReactNode } from 'react';
 import { AttributesSummaryCell } from './AttributesSummaryCell';
 
-/** Inline `<code>`-style span, mirroring the web app's `Code`. */
 export const Code = stylin('code')(({ theme }: { theme: any }) => ({
   fontFamily: theme.typography.fontFamilyMono ?? 'monospace',
   fontSize: '0.85em',
@@ -41,7 +40,6 @@ const AttributesColumnHeader = ({
   </HeaderRow>
 );
 
-/** Attributes column mirroring the web app's `buildAttributesColumn`. */
 export const buildAttributesColumn = ({
   directText,
   effectiveText,

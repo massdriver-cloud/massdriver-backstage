@@ -8,17 +8,6 @@ import {
 } from '../utils/instanceStatuses';
 import { chipClasses } from '../theme/muiClasses';
 
-/**
- * Presentational instance/deployment status pill — the web app's
- * `InstanceStatusPill` rendering (12% / 20% alpha tints of the flat status
- * color, lowercase label, dashed border for remote references). Takes a static
- * or compound status string; callers with a deployment at hand compose it via
- * `composeInstanceStatus`. The live, latest-deployment-aware variant wraps this
- * in `features/environment/components/InstanceStatusPill`.
- *
- * The pill is only clickable while the status is actionable (a deployment in
- * flight or failed), mirroring the web app's click-to-logs affordance.
- */
 export const InstanceStatusPill = ({
   status,
   onClick,
@@ -31,8 +20,6 @@ export const InstanceStatusPill = ({
   [key: string]: unknown;
 }) => {
   const clickable = Boolean(onClick) && isInstanceStatusActionable(status);
-  // Stop propagation so the pill click doesn't fall through to ancestor click
-  // handlers (e.g. a row or diagram node opening its own detail surface).
   const handleClick = clickable
     ? (event: { stopPropagation?: () => void }) => {
         event?.stopPropagation?.();
@@ -57,8 +44,6 @@ export const InstanceStatusPill = ({
 
 export default InstanceStatusPill;
 
-// Background and border use 12% / 20% alpha tints of the flat status color,
-// matching the web app's pill so surfaces stay visually consistent.
 const StyledChip = stylin(Chip, ['statusColor', 'external', 'clickable'])(
   ({
     theme,

@@ -11,7 +11,6 @@ import { useInstanceApiQuery } from '../useInstanceApiQuery';
 import { ALARMS_DOCS_URL, bucketAlarms } from '../helpers';
 import type { Alarm } from '../types';
 
-/** Read-only Monitor tab: firing + configured alarms. */
 export const MonitorTab = ({ instanceId }: { instanceId: string | null }) => {
   const { value, loading, error } = useInstanceApiQuery<{
     instance: {

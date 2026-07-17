@@ -16,9 +16,6 @@ const mockApi = (): jest.Mocked<MassdriverApi> => ({
   subscribe: jest.fn().mockResolvedValue(undefined),
 });
 
-// Surfaces the current URL search string so tests can assert that a row opens
-// the in-place dialog/drawer (which are driven by the `deployment` / `logs`
-// params, matching the web app's useDialogParam).
 const LocationProbe = () => {
   const { search } = useLocation();
   return <div data-testid="search">{search}</div>;
@@ -70,7 +67,6 @@ describe('DeploymentsTab', () => {
 
     await renderTab(api);
 
-    // Compound status label from composeInstanceStatus(PROVISION, RUNNING).
     await waitFor(() =>
       expect(screen.getByText('Provision Running')).toBeInTheDocument(),
     );
@@ -78,7 +74,6 @@ describe('DeploymentsTab', () => {
     expect(screen.getByText('"Deploying cache"')).toBeInTheDocument();
     expect(screen.getByText('joe')).toBeInTheDocument();
 
-    // The instance name still navigates internally to the instance drawer.
     expect(
       screen.getByRole('link', { name: 'proj-env-cache' }),
     ).toHaveAttribute(
@@ -86,7 +81,6 @@ describe('DeploymentsTab', () => {
       '/massdriver/projects/proj/environments/env/instances/cache',
     );
 
-    // "Details" is a button that opens the details dialog via `?deployment=`.
     fireEvent.click(screen.getByRole('button', { name: 'Details' }));
     await waitFor(() =>
       expect(screen.getByTestId('search').textContent).toContain(
@@ -94,7 +88,6 @@ describe('DeploymentsTab', () => {
       ),
     );
 
-    // "Logs" opens the logs drawer via `?logs=`.
     fireEvent.click(screen.getByRole('button', { name: 'Logs' }));
     await waitFor(() =>
       expect(screen.getByTestId('search').textContent).toContain(
@@ -102,7 +95,6 @@ describe('DeploymentsTab', () => {
       ),
     );
 
-    // The in-flight status pill is click-to-logs.
     fireEvent.click(screen.getByText('Provision Running'));
     await waitFor(() =>
       expect(screen.getByTestId('search').textContent).toContain(

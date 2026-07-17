@@ -1,4 +1,3 @@
-// Ported from the Massdriver web app
 const EXTENSION_LANGUAGE_MAP: Record<string, string> = {
   md: 'markdown',
   markdown: 'markdown',

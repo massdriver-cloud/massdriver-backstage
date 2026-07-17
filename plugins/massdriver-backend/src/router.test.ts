@@ -15,7 +15,6 @@ import type {
 import { openAbsintheSubscription } from './absinthe';
 import { createRouter } from './router';
 
-// Relay the upstream at the module boundary — never hit the real API/socket.
 jest.mock('@massdriver/backstage-plugin-common', () => ({
   ...jest.requireActual('@massdriver/backstage-plugin-common'),
   createMassdriverClient: jest.fn(),
@@ -46,7 +45,6 @@ const buildApp = async () => {
   const httpAuth = mockServices.httpAuth.mock();
   const app = express();
   app.use(await createRouter({ config, logger, httpAuth }));
-  // Map InputError → 400 the way the real backend does.
   app.use(MiddlewareFactory.create({ config, logger }).error());
   return { app, config, logger, httpAuth };
 };
@@ -190,7 +188,6 @@ describe('createRouter GET /content', () => {
     );
     expect(response.status).toBe(200);
     expect(response.headers['content-type']).toContain('image/svg+xml');
-    // supertest parses image/* bodies into a Buffer rather than `text`.
     expect(Buffer.from(response.body).toString('utf8')).toBe('<svg>icon</svg>');
   });
 
@@ -208,7 +205,6 @@ describe('createRouter GET /content', () => {
   });
 });
 
-/** POST /subscribe against a real listening server so SSE chunks flush live. */
 interface SseRequest {
   request: http.ClientRequest;
   response: Promise<http.IncomingMessage>;
@@ -289,9 +285,6 @@ describe('createRouter POST /subscribe', () => {
   });
 
   afterEach(async () => {
-    // Belt and braces: drive `onClose` on every opened subscription so each
-    // handler's keepalive interval is cleared even if a test never triggered
-    // its own teardown path.
     for (const call of openAbsintheSubscriptionMock.mock.calls) {
       call[0].onClose?.();
     }
@@ -373,9 +366,6 @@ describe('createRouter POST /subscribe', () => {
     await sse.ended;
   });
 
-  // Teardown is wired to `res.on('close')` — the response close event is the
-  // reliable client-disconnect signal (the request readable closes as soon as
-  // `express.json()` consumes the POST body, long before the browser leaves).
   it('closes the subscription when the client disconnects', async () => {
     const { port } = await listen();
     const sse = postSubscribe(port, {

@@ -6,7 +6,6 @@ import {
 } from '@backstage/core-components';
 import { InstanceStatus } from '@massdriver/backstage-plugin-common';
 
-/** Render a Massdriver instance status as a Backstage status indicator. */
 export const InstanceStatusIndicator = ({
   status,
 }: {
