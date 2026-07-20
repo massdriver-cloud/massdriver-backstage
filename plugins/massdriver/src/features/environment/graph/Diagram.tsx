@@ -7,6 +7,8 @@ import {
   ReactFlow,
   useEdgesState,
   useNodesState,
+  useStoreApi,
+  useUpdateNodeInternals,
   type Edge,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -15,6 +17,7 @@ import DownloadIcon from '@massdriver/ui/icons/DownloadIcon';
 import stylin from '@massdriver/ui/stylin';
 import DiagramNode from './DiagramNode';
 import useDiagramSnapshot from './useDiagramSnapshot';
+import { unmeasuredNodeIds } from './unmeasuredNodeIds';
 import type { DiagramNodeType } from './diagramFactory';
 
 const NODE_TYPES = { DiagramNode };
@@ -31,36 +34,34 @@ const Diagram = ({
   snapshotName = 'environment',
   onNodeClick,
   onPaneClick,
-  selectedComponentId,
 }: {
   nodes: DiagramNodeType[];
   edges: Edge[];
   snapshotName?: string;
   onNodeClick?: (scopedComponentId: string) => void;
   onPaneClick?: () => void;
-  selectedComponentId?: string;
 }) => {
   const nodeTypes = useMemo(() => NODE_TYPES, []);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const storeApi = useStoreApi();
+  const updateNodeInternals = useUpdateNodeInternals();
 
   useEffect(() => {
-    setNodes(
-      initialNodes.map(node => ({
-        ...node,
-        data: {
-          ...node.data,
-          isSelected: Boolean(
-            selectedComponentId && node.data?.id === selectedComponentId,
-          ),
-        },
-      })),
-    );
-  }, [initialNodes, selectedComponentId, setNodes]);
+    setNodes(initialNodes);
+  }, [initialNodes, setNodes]);
   useEffect(() => {
     setEdges(initialEdges);
   }, [initialEdges, setEdges]);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      const missing = unmeasuredNodeIds(storeApi.getState().nodeLookup);
+      if (missing.length > 0) updateNodeInternals(missing);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [nodes, storeApi, updateNodeInternals]);
 
   const { onSnapshotClick, isSnapshotting } = useDiagramSnapshot({
     wrapperRef,

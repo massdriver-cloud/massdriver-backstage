@@ -87,8 +87,9 @@ const EnvironmentGraphContent = () => {
         links: value?.project?.links ?? [],
         instances: value?.environment?.instances ?? [],
         connections: value?.environment?.connections ?? [],
+        selectedComponentId: scopedComponentId ?? null,
       }),
-    [value],
+    [value, scopedComponentId],
   );
 
   const environmentName = value?.environment?.name ?? 'Environment';
@@ -129,7 +130,6 @@ const EnvironmentGraphContent = () => {
                 snapshotName={environmentId || environmentName}
                 onNodeClick={openInstance}
                 onPaneClick={onPaneClick}
-                selectedComponentId={scopedComponentId}
               />
             </ReactFlowProvider>
           )}
