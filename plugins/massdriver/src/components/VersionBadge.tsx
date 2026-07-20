@@ -4,13 +4,10 @@ import Tooltip from '@massdriver/ui/Tooltip';
 import LockIcon from '@massdriver/ui/icons/LockIcon';
 import stylin from '@massdriver/ui/stylin';
 
-// A pinned version is a concrete semver (e.g. "1.2.3"); release-channel names
-// (e.g. "latest", "stable") are not. Inlined to avoid a `semver` dependency.
 const SEMVER_RE = /^\d+\.\d+\.\d+(?:[-+].+)?$/;
 const isPinnedVersion = (version?: string | null): boolean =>
   Boolean(version && SEMVER_RE.test(version));
 
-/** Version chip with a pinned-version lock warning. Read-only port. */
 const VersionBadge = ({
   version,
   showPinnedWarning,

@@ -3,8 +3,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { MassdriverThemeScope } from '../theme/MassdriverThemeScope';
 import { NotFound } from './NotFound';
 
-// NotFound's styled layout reads theme keys and its CTA is a react-router Link,
-// so it needs both the theme scope and a router.
 const renderInRouter = (element: React.ReactElement) =>
   render(
     <MemoryRouter>

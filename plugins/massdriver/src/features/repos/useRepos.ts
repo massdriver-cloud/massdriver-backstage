@@ -5,7 +5,6 @@ import {
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
 import { OCI_REPOS_LIST_QUERY } from './queries';
 
-/** A repository as returned by the API (mirrors the web app's selection). */
 export interface RepoListItem {
   id: string;
   name: string;
@@ -19,7 +18,6 @@ export interface RepoListItem {
   tags?: { items?: Array<{ tag: string; createdAt?: string } | null> } | null;
 }
 
-/** A repository row as rendered in the DataList (mirrors the web `toRepoRow`). */
 export interface RepoRow extends RepoListItem {
   name: string;
   description: string | null;
@@ -28,7 +26,6 @@ export interface RepoRow extends RepoListItem {
   updatedAtRaw?: string | null;
 }
 
-/** Transform a raw repo into a display row. Mirrors `toRepoRow` in repoColumns.js. */
 export const toRepoRow = (repo: RepoListItem): RepoRow => ({
   ...repo,
   name: repo.name || '',
@@ -41,7 +38,6 @@ export const toRepoRow = (repo: RepoListItem): RepoRow => ({
   updatedAt: formatRelativeTime(repo.updatedAt),
 });
 
-/** Server-side, cursor-paginated repositories list (matches the web app). */
 export const useReposPaginated = (): PaginatedResult<RepoListItem> =>
   usePaginatedRelayQuery<RepoListItem>(OCI_REPOS_LIST_QUERY, {
     responseKey: 'ociRepos',

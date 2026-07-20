@@ -63,7 +63,6 @@ const ENVIRONMENTS_QUERY = `
   }
 `;
 
-/** Read-only Environments tab: server-paginated list scoped to the project. */
 export const EnvironmentsTab = ({ projectId }: { projectId: string }) => {
   const api = useApi(massdriverApiRef);
   const { items, loading, error, hasMore, dataListParams } =

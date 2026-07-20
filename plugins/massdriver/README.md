@@ -6,6 +6,8 @@ resources — plus a status card and tab for any catalog entity you link to a
 Massdriver project, environment, or instance. Everything is read-only and
 updates live; actions deep-link into the Massdriver app.
 
+![Environment graph with live package statuses](https://raw.githubusercontent.com/massdriver-cloud/massdriver-backstage/main/docs/images/environment-graph.png)
+
 ## Packages
 
 | Package                                | Role                                                       |
@@ -114,6 +116,10 @@ variable, or your secret store, like any other Backstage secret.
 All views are read-only and update live. Actions that change infrastructure
 (deploy, decommission, configuration edits, …) deep-link into the Massdriver
 app.
+
+|                                                           Projects                                                           |                                                         Instance drawer                                                          |                                                         Deployment logs                                                          |
+| :--------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------: |
+| ![Projects list](https://raw.githubusercontent.com/massdriver-cloud/massdriver-backstage/main/docs/images/projects-list.png) | ![Instance drawer](https://raw.githubusercontent.com/massdriver-cloud/massdriver-backstage/main/docs/images/instance-drawer.png) | ![Deployment logs](https://raw.githubusercontent.com/massdriver-cloud/massdriver-backstage/main/docs/images/deployment-logs.png) |
 
 The plugin does **not** mirror infrastructure into the Backstage catalog; you
 link your existing catalog entities to Massdriver via annotations.

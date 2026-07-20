@@ -6,10 +6,6 @@ import Chip from '@massdriver/ui/Chip';
 import stylin from '@massdriver/ui/stylin';
 import { chipClasses } from '../../../../theme/muiClasses';
 
-// Read-only port of NodeHandleTooltip. The web app fetches the resource type
-// (for its icon) lazily on hover; that query is dropped here — the tooltip
-// shows the field name, resource-type id, and required/optional status only.
-
 const TOOLTIP_BG = 'rgba(34, 51, 84, 0.95)';
 const TOOLTIP_BORDER = 'rgba(255, 255, 255, 0.1)';
 const TOOLTIP_TEXT_MUTED = 'rgba(255, 255, 255, 0.7)';

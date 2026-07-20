@@ -12,8 +12,6 @@ type Handlers = { onData: (data: unknown) => void };
 
 describe('RealtimeProvider', () => {
   const createMockApi = () => {
-    // Capture each subscription's onData (keyed by document) so the test can
-    // emit environment and project events independently.
     const captured = new Map<string, (data: unknown) => void>();
     const api: jest.Mocked<MassdriverApi> = {
       appUrl: 'https://app.massdriver.cloud',
@@ -41,8 +39,6 @@ describe('RealtimeProvider', () => {
     return { api, captured };
   };
 
-  // Renders a probe that reports the current revision and lets the test emit
-  // realtime events through the captured subscription handlers.
   const setup = () => {
     const { api, captured } = createMockApi();
     const revisions: number[] = [];
@@ -96,7 +92,6 @@ describe('RealtimeProvider', () => {
     const { latestRevision, emitEnvironment } = setup();
 
     emitEnvironment();
-    // Not yet — the trailing-edge timer has not fired.
     act(() => jest.advanceTimersByTime(249));
     expect(latestRevision()).toBe(0);
 

@@ -14,7 +14,6 @@ const formatValue = (value: unknown): string => {
   }
 };
 
-/** Renders one side of a comparison row (source or target value). */
 export const ComparisonValueCell = ({
   side,
   isDifferent,

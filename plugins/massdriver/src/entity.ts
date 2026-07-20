@@ -6,7 +6,6 @@ import {
   ANNOTATION_PROJECT_ID,
 } from '@massdriver/backstage-plugin-common';
 
-/** The Massdriver resource an entity maps to. */
 export type MassdriverScope =
   | { kind: 'project'; projectId: string; orgId?: string }
   | { kind: 'environment'; environmentId: string; orgId?: string }
@@ -15,10 +14,6 @@ export type MassdriverScope =
 const annotation = (entity: Entity, key: string): string | undefined =>
   entity.metadata.annotations?.[key];
 
-/**
- * Resolve which Massdriver resource an entity represents from its annotations.
- * Instance is most specific, then environment, then project.
- */
 export const getMassdriverScope = (
   entity: Entity,
 ): MassdriverScope | undefined => {
@@ -38,6 +33,5 @@ export const getMassdriverScope = (
   return undefined;
 };
 
-/** True when the entity carries any Massdriver annotation. */
 export const isMassdriverEntity = (entity: Entity): boolean =>
   Boolean(getMassdriverScope(entity));

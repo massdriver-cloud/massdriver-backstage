@@ -6,15 +6,8 @@ import stylin from '@massdriver/ui/stylin';
 import { DisabledAction } from '../../../../components/DisabledAction';
 import type { SecretField } from '../types';
 
-// The secret value is never fetched (only `sha256`), so it is always masked.
 const MASKED_VALUE = '••••••••••••';
 
-/**
- * Read-only Secrets tab: mirrors the web app's per-secret line item (masked
- * value field, sha256 fingerprint, markdown description). Set/clear are
- * mutations, so they render as disabled controls with a tooltip pointing to
- * Massdriver (the web app is where secrets are actually managed).
- */
 export const SecretsTab = ({
   secretFields = [],
 }: {

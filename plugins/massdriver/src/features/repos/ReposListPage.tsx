@@ -8,9 +8,6 @@ import { PageLayout } from '../../components/PageLayout';
 import { buildRepoColumns } from './repoColumns';
 import { toRepoRow, useReposPaginated } from './useRepos';
 
-// Ported from the Massdriver web app. The web app's "New repository" button opens a dialog
-// driven by the `createOciRepo` URL param; here it deep-links out to Massdriver
-// with that param set (read-only parity).
 export const ReposListPage = () => {
   const api = useApi(massdriverApiRef);
   const { items, loading, error, hasMore, dataListParams } =

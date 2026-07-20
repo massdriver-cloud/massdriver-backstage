@@ -55,8 +55,6 @@ describe('InstancesTab', () => {
 
     await renderTab(api);
 
-    // The whole card is a single link (the web InstanceRow behavior), so its
-    // accessible name is the composed row text — assert by href + contents.
     const card = await screen.findByRole('link');
     expect(card).toHaveAttribute(
       'href',

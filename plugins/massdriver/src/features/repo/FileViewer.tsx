@@ -13,11 +13,6 @@ import { RepoEmptyState } from './RepoEmptyState';
 import { isMarkdownFile, languageFromExtension } from './FileViewer.helpers';
 import type { RepoFile } from './types';
 
-// Ported from the Massdriver web app (container + view
-// merged). The web app fetches file contents directly with the browser's
-// Massdriver token; here the fetch goes through the backend content proxy
-// (api.fetchText), so the real contents render inline (markdown via
-// GuideMarkdown, everything else via CodeViewer) exactly like the web app.
 export const FileViewer = ({ file }: { file: RepoFile | null }) => {
   const api = useApi(massdriverApiRef);
   const [content, setContent] = useState<string | null>(null);

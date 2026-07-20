@@ -1,8 +1,3 @@
-// Walks a JSON object/array recursively and yields one row per leaf value.
-// Leaf rows have jq-style paths (e.g. `.database.port`, `.containers[0].image`)
-// — the same convention `compareDeployments` uses for `ParamComparison.path`,
-// keeping the detail panel's display consistent with the diff dialog. Ported
-// verbatim from the web app's ViewDeploymentDetailsDialog/flattenParams.js.
 export interface ParamRow {
   id: string;
   path: string;

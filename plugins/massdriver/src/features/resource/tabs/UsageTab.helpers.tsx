@@ -19,11 +19,6 @@ import {
   RESOURCE_REMOTE_REFERENCES_QUERY,
 } from '../queries';
 
-// Ported from the Massdriver web app
-// Instance/project/environment links are internal (react-router). The status
-// column uses InstanceStatusPill — the faithful equivalent of the web helper's
-// tinted lowercase StatusChip (renderInstanceStatus).
-
 export type UsageType = 'connection' | 'reference' | 'default';
 
 interface UsageRow {
@@ -191,9 +186,6 @@ const projectColumn = () =>
     searchable: false,
   });
 
-// Connections and remote references describe the same thing — an instance
-// consuming this resource through a field — so they share a column layout and
-// differ only in the date header ("Connected" vs "Configured").
 const buildInstanceUsageColumns = (dateHeader: string) => [
   col.custom('instance', 'Instance', renderLink('instanceHref', 'instance'), {
     flex: 2,

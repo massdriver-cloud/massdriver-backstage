@@ -30,11 +30,6 @@ import {
   type HeaderProjectsResult,
 } from './queries';
 
-/**
- * Read-only environment graph header: back-to-project link, project + env
- * switchers, centered environment defaults, and right-hand actions. Ports the
- * web app's `GraphHeader` layout without any mutation surface.
- */
 export const GraphHeader = ({
   projectId,
   environmentId,
@@ -45,8 +40,6 @@ export const GraphHeader = ({
   const api = useApi(massdriverApiRef);
   const navigate = useNavigate();
 
-  // Live queries: a project/environment created or renamed in the web app
-  // shows up in the switchers on the next realtime event.
   const projectsQuery = useLiveRelayQuery<HeaderProjectsResult>(
     HEADER_PROJECTS_QUERY,
     {},
@@ -70,8 +63,6 @@ export const GraphHeader = ({
   const environment =
     environments.find(item => item.id === environmentId) ?? null;
 
-  // While loading (or if the header queries fail) fall back to the route ids —
-  // never pretend an existing project/environment is missing.
   const projectName = project?.name ?? (headerPending ? projectId : '—');
   const environmentFallback = headerPending
     ? parseEnvironmentId(environmentId).scopedEnvironmentId
@@ -82,8 +73,6 @@ export const GraphHeader = ({
     projectId,
   )}/environments?createEnvironment=true`;
 
-  // Switching project navigates to that project's first environment graph, or
-  // its overview if it has no environments (mirrors the web app).
   const handleProjectChange = async (selectedProjectId: string) => {
     if (selectedProjectId === projectId) return;
     try {

@@ -4,14 +4,6 @@ import Menu from '@massdriver/ui/Menu';
 import ArrowDropDownIcon from '@massdriver/ui/icons/ArrowDropDownIcon';
 import stylin from '@massdriver/ui/stylin';
 
-/**
- * A click-to-open dropdown built on `@massdriver/ui/Menu`. Replaces the web
- * app's Apollo-backed `InfiniteSelect` with a plain menu — the header already
- * has the full option list in memory, so no infinite scroll is needed.
- *
- * `trigger` renders the label; `children` is a render-prop given a `close`
- * callback to build the menu body.
- */
 export const Switcher = ({
   trigger,
   children,

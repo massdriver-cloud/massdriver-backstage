@@ -63,11 +63,8 @@ describe('ViewDeploymentDetailsDialog', () => {
     await waitFor(() =>
       expect(screen.getByText('Snapshot params')).toBeInTheDocument(),
     );
-    // Terminal label appears on both the status pill and the Status def-value.
     expect(screen.getAllByText('Provisioned').length).toBeGreaterThan(0);
-    // The full deployment id renders in the def list.
     expect(screen.getByText('proj-env-cache-abc123')).toBeInTheDocument();
-    // Effective attribute + a flattened snapshot param path.
     expect(screen.getByText('env')).toBeInTheDocument();
     expect(screen.getByText('.name')).toBeInTheDocument();
 

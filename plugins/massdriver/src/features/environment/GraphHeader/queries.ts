@@ -1,11 +1,3 @@
-// Queries backing the read-only environment graph header. `organizationId` is
-// injected by the backend relay, so callers pass only the other variables.
-
-// Both switcher queries carry an explicit cursor bound: the current
-// project/environment is resolved by `.find()` over the returned page, so an
-// unbounded (default-page) query could fail to resolve an entity that sorts
-// past the first page — the header would show '—' for a project/environment
-// that exists.
 export const HEADER_PROJECTS_QUERY = `
   query MassdriverHeaderProjects($organizationId: ID!) {
     projects(organizationId: $organizationId, cursor: { limit: 100 }) {

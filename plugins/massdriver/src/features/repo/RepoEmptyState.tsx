@@ -3,9 +3,6 @@ import Typography from '@massdriver/ui/Typography';
 import stylin from '@massdriver/ui/stylin';
 import { ReactNode } from 'react';
 
-// Ported from the Massdriver web app — the shared repo-feature
-// empty state (a disabled-tint icon circle + title + description + optional
-// action). `inline` renders just an italic caption for compact contexts.
 export const RepoEmptyState = ({
   variant = 'prominent',
   icon,

@@ -1,7 +1,5 @@
 import type { RepoFile } from './types';
 
-// Ported from the Massdriver web app
-
 export interface FileNode {
   name: string;
   path: string;
@@ -32,10 +30,6 @@ const materialize = (node: MutableNode): TreeNode => {
   return { name: node.name, path: node.path, folders, files };
 };
 
-/**
- * Build a nested tree from a flat list of files keyed by their path. Folders
- * sort before files; alpha within each group.
- */
 export const buildFileTree = (
   files: RepoFile[] | null | undefined,
 ): TreeNode => {
@@ -68,10 +62,6 @@ export const buildFileTree = (
   return materialize(root);
 };
 
-/**
- * Returns the set of folder paths that contain `selectedPath`, so the tree can
- * auto-expand to reveal the selection.
- */
 export const ancestorPaths = (
   selectedPath: string | null | undefined,
 ): Set<string> => {

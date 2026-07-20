@@ -1,12 +1,3 @@
-// Ported from the Massdriver web app (read path only — the
-// normalize-for-wire half backs mutation forms the read-only plugin doesn't
-// have).
-
-/**
- * Grant conditions come back from the API as either the literal `"*"` or a
- * JSON-encoded object string. Coerce both forms (and any defensive edge cases)
- * into the plain-object shape the cell components expect.
- */
 export const denormalizeConditionsFromWire = (
   conditions: unknown,
 ): Record<string, unknown> => {
@@ -18,7 +9,7 @@ export const denormalizeConditionsFromWire = (
         return parsed;
       }
     } catch {
-      // fall through to {}
+      // ignore
     }
     return {};
   }

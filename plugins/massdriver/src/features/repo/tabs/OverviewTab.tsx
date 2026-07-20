@@ -15,8 +15,6 @@ import { RepoEmptyState } from '../RepoEmptyState';
 import { RepoNoVersionsState } from '../RepoNoVersionsState';
 import type { RepoBundle } from '../types';
 
-// Ported from the Massdriver web app. Renders the
-// bundle's README; empty state links out to the source repository when known.
 export const OverviewTab = ({
   repoId,
   version,

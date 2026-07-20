@@ -11,7 +11,6 @@ const DIVISIONS: Array<{ amount: number; unit: Intl.RelativeTimeFormatUnit }> =
 
 const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'always' });
 
-/** Format an ISO timestamp as a relative time, e.g. "3 days ago". */
 export const formatRelativeTime = (iso: string | null | undefined): string => {
   if (!iso) {
     return '--';
@@ -30,7 +29,6 @@ export const formatRelativeTime = (iso: string | null | undefined): string => {
   return '--';
 };
 
-/** Format an amount as currency, mirroring the web app's `formatCurrency`. */
 export const formatCurrency = (
   amount: number | null | undefined,
   currency = 'USD',
@@ -42,7 +40,6 @@ export const formatCurrency = (
       )
     : fallback;
 
-/** Absolute, human-readable timestamp for tooltips. */
 export const formatAbsoluteTime = (iso: string | null | undefined): string => {
   if (!iso) {
     return '';

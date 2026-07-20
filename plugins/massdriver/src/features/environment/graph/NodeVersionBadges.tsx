@@ -6,10 +6,6 @@ import ArrowUpwardIcon from '@massdriver/ui/icons/ArrowUpwardIcon';
 import RefreshIcon from '@massdriver/ui/icons/RefreshIcon';
 import stylin from '@massdriver/ui/stylin';
 
-// Read-only port of NodeVersionBadges. The interactive ProposedDeploymentBadge
-// (which navigates on click) is dropped; the passive upgrade + redeploy badges
-// are kept.
-
 const NodeVersionBadges = ({
   availableUpgrade,
   deployedVersion,

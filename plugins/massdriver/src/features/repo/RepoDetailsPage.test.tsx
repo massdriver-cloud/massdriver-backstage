@@ -7,8 +7,6 @@ import { massdriverApiRef, MassdriverApi } from '../../api';
 import { MassdriverThemeScope } from '../../theme/MassdriverThemeScope';
 import { RepoDetailsPage } from './RepoDetailsPage';
 
-// renderInTestApp supplies a Router; drive params via a mock rather than
-// nesting another router. useNavigate stays real (spread from requireActual).
 let mockParams: Record<string, string> = {};
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -47,7 +45,6 @@ describe('RepoDetailsPage', () => {
       },
     });
 
-    // Versions tab is purely presentational (no extra query).
     await renderPage(api, {
       repoId: 'aws-s3',
       version: 'all',

@@ -22,8 +22,6 @@ const createMockApi = (queryResult: unknown = { deployments: { items: [] } }) =>
     subscribe: jest.fn().mockResolvedValue(undefined),
   } as unknown as jest.Mocked<MassdriverApi>);
 
-// The pill's styled chip reads Massdriver theme keys, and instance mode needs
-// the relay api, so render within both scopes.
 const renderPill = (element: React.ReactElement, api = createMockApi()) => {
   render(
     <TestApiProvider apis={[[massdriverApiRef, api]]}>

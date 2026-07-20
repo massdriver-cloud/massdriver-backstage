@@ -8,10 +8,6 @@ import { ReposListPage } from './features/repos/ReposListPage';
 import { ResourceDetailsPage } from './features/resource/ResourceDetailsPage';
 import { ResourcesListPage } from './features/resources/ResourcesListPage';
 
-/**
- * Internal drill-down routing for the embedded Massdriver views, mounted under
- * the plugin's `/massdriver` page. The index redirects to `/massdriver/projects`.
- */
 export const MassdriverRouter = () => (
   <Routes>
     <Route index element={<Navigate to="projects" replace />} />

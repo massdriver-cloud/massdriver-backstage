@@ -13,11 +13,6 @@ import { formatAbsoluteTime } from '../../utils/formatRelativeTime';
 import { internalRoutes } from '../../internalRoutes';
 import type { RepoRow } from './useRepos';
 
-// Ported from the Massdriver web app (buildRepoColumns).
-// The repo's brand icon (`repo.icon`, an auth-guarded SVG URL) is fetched
-// through the backend content proxy by AuthedIcon, exactly like the web app.
-// Edit/Delete mutate, so they deep-link into the web app's dialogs via the
-// same `?editOciRepo=` / `?deleteOciRepo=` URL params the app's list uses.
 export const buildRepoColumns = ({
   appUrl,
   organizationId,
@@ -78,7 +73,6 @@ export const buildRepoColumns = ({
   }),
   col.actions([
     {
-      // "View source code" is a read link — allowed under read-only parity.
       icon: <OpenInNewIcon fontSize="small" />,
       tooltip: (_row: RepoRow, { disabled }: { disabled: boolean }) =>
         disabled ? 'Source code not available' : 'View source code',

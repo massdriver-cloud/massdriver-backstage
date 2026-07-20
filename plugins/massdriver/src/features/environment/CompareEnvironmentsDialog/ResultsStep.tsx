@@ -13,7 +13,6 @@ import type { ComparisonRow } from './flattenComparison';
 
 const ALL_COMPONENTS = '__all__';
 
-/** Step 2 of the compare flow: the flattened diff rendered as a DataList. */
 export const ResultsStep = ({
   rows,
   sourceName,

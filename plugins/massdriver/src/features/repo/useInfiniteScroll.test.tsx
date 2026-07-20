@@ -47,11 +47,9 @@ describe('useInfiniteScroll', () => {
       { initialProps: { hasMore: true, loading: true } },
     );
 
-    // Sentinel is set, but loading is true → no observer is created.
     act(() => result.current(document.createElement('div')));
     expect(lastObserver()).toBeNull();
 
-    // Once loading resolves with more to load, the observer wires up.
     rerender({ hasMore: true, loading: false });
     expect(lastObserver()?.observe).toHaveBeenCalled();
   });

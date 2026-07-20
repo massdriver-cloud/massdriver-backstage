@@ -16,17 +16,8 @@ import express from 'express';
 import Router from 'express-promise-router';
 import { openAbsintheSubscription } from './absinthe';
 
-// Keep the downstream SSE connection (and any intermediary proxies) alive
-// between events. The upstream Absinthe socket has its own heartbeat.
 const SSE_KEEPALIVE_MS = 25_000;
 
-/**
- * Builds the Massdriver relay router.
- *
- * The client is created lazily on first use so the backend still boots when the
- * plugin is installed but not yet configured — misconfiguration surfaces as a
- * request error rather than a startup crash.
- */
 export async function createRouter({
   config,
   logger,
@@ -64,8 +55,6 @@ export async function createRouter({
   router.use(express.json());
 
   router.post('/graphql', async (req, res) => {
-    // Require an authenticated Backstage user; the relay then queries with the
-    // org's service-account token (org-wide read access — see plugin README).
     await httpAuth.credentials(req, { allow: ['user'] });
 
     const { query, variables } = (req.body ?? {}) as {
@@ -83,11 +72,6 @@ export async function createRouter({
     res.json({ data });
   });
 
-  // Authenticated content proxy. The web app fetches auth-guarded assets (OCI
-  // repo icon SVGs, repo tag file contents) directly with the browser's bearer
-  // token; this plugin's browser holds no token, so the backend fetches with
-  // the service-account token instead. Locked to the configured Massdriver API
-  // origin so this can't be used as an open proxy.
   router.get('/content', async (req, res) => {
     await httpAuth.credentials(req, { allow: ['user'] });
 
@@ -121,11 +105,6 @@ export async function createRouter({
     res.send(Buffer.from(await upstream.arrayBuffer()));
   });
 
-  // Server-Sent Events relay for GraphQL subscriptions. The browser cannot open
-  // the Massdriver Absinthe socket directly (it holds no token), so the backend
-  // opens it with the service-account token and streams each result down as an
-  // SSE `data:` frame. `organizationId` is injected server-side, mirroring the
-  // `/graphql` relay, so callers only declare `$organizationId` in the document.
   router.post('/subscribe', async (req, res) => {
     await httpAuth.credentials(req, { allow: ['user'] });
 
@@ -146,7 +125,6 @@ export async function createRouter({
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache, no-transform',
       Connection: 'keep-alive',
-      // Disable proxy buffering (nginx) so events flush immediately.
       'X-Accel-Buffering': 'no',
     });
     res.flushHeaders?.();
@@ -165,13 +143,10 @@ export async function createRouter({
       socketUrl: socketUrl(baseUrl),
       token: apiToken,
       query,
-      // Server-injected org id must win over request variables.
       variables: { ...(variables ?? {}), organizationId },
       logger,
       onData: data => write(null, data),
       onError: error => {
-        // `fatal` marks channel-level rejections (bad token/doc/environment)
-        // that retrying cannot fix — the frontend stops reconnecting on it.
         write('error', { message: error.message, fatal: Boolean(error.fatal) });
         teardown();
       },
@@ -187,10 +162,6 @@ export async function createRouter({
       if (!res.writableEnded) res.end();
     }
 
-    // Browser navigated away / closed the EventSource-style reader. The
-    // response 'close' event is the reliable disconnect signal — the request
-    // readable closes as soon as the JSON body is consumed, long before the
-    // client goes away.
     res.on('close', teardown);
   });
 

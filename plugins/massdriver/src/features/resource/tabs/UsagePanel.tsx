@@ -3,9 +3,6 @@ import DataList from '@massdriver/ui/DataList';
 import { usePaginatedRelayQuery } from '../../../hooks/usePaginatedRelayQuery';
 import { USAGE_TYPE_CONFIG, UsageType } from './UsageTab.helpers';
 
-// Ported from the Massdriver web app
-
-/** One usage list (connections / remote references / environment defaults). */
 export const UsagePanel = ({
   type,
   resourceId,

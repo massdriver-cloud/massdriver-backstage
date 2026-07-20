@@ -2,9 +2,6 @@ import IconTile from '@massdriver/ui/IconTile';
 import { ReactNode } from 'react';
 import useAuthedSvg from '../hooks/useAuthedSvg';
 
-// Ported from the Massdriver web app — renders an
-// auth-guarded SVG (e.g. an OCI repo's brand icon) in an IconTile, falling
-// back while loading or when the fetch fails.
 export const AuthedIcon = ({
   url,
   alt,

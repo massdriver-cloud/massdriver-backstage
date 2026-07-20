@@ -23,12 +23,6 @@ import {
 } from './queries';
 import type { Deployment } from '../InstanceDrawer/types';
 
-/**
- * Read-only deployment comparison dialog. Two steps: pick source + target
- * (SelectStep), then view the flattened param/version diff (ResultsStep). No
- * mutations — the web app's URL-param + infinite-scroll pickers are replaced
- * with local `useState` and a capped, in-memory deployment list.
- */
 export const CompareDeploymentsDialog = ({
   open,
   onClose,
@@ -64,8 +58,6 @@ export const CompareDeploymentsDialog = ({
     [deploymentsAsync.value],
   );
 
-  // Position numbers run oldest → newest (oldest = 1), independent of the list's
-  // display order, so "#N" stays stable regardless of sort.
   const positionMap = useMemo(() => {
     const ascending = [...deployments].sort((left, right) =>
       String(left.createdAt ?? '').localeCompare(String(right.createdAt ?? '')),

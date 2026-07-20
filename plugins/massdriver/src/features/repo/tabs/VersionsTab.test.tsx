@@ -32,7 +32,6 @@ describe('VersionsTab', () => {
     renderTab({ repo });
 
     expect(screen.getByText('Release channels')).toBeInTheDocument();
-    // "latest" appears as the channel name and as the newest-version chip.
     expect(screen.getAllByText('latest')).toHaveLength(2);
     expect(screen.getAllByText('v1.2.3').length).toBeGreaterThan(0);
     expect(screen.getByText('v1.2.2')).toBeInTheDocument();

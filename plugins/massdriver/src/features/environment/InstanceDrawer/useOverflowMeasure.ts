@@ -1,10 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-/**
- * Measures rendered tab widths against the container and returns how many tabs
- * fit before overflowing into a "more" menu. Ported from the web app's
- * `features/environments/components/InstanceTabs/useOverflowMeasure.js`.
- */
 export const useOverflowMeasure = ({
   itemCount,
   minVisible,

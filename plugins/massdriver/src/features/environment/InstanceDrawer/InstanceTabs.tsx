@@ -16,12 +16,6 @@ interface TabDef {
   label: string;
 }
 
-/**
- * Instance drawer tab bar. Ported from the web app's `InstanceTabs`: the
- * `@massdriver/ui` `Tabs`/`Tab` are custom (selection flows via context, the
- * change handler is an `onClick` per tab — not MUI's `onChange`). Overflowing
- * tabs collapse into a "more" menu.
- */
 export const InstanceTabs = ({
   tabs,
   activeTab,

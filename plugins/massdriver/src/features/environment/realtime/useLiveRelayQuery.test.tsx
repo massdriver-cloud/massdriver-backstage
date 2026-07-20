@@ -15,7 +15,6 @@ describe('useLiveRelayQuery', () => {
       query: jest.fn(),
       fetchText: jest.fn(),
       subscribe: jest.fn().mockImplementation(
-        // Keep the subscription stream open until aborted.
         (_query, _variables, _handlers, signal?: AbortSignal) =>
           new Promise<void>(resolve => {
             signal?.addEventListener('abort', () => resolve(), { once: true });
@@ -83,7 +82,6 @@ describe('useLiveRelayQuery', () => {
     );
     await waitFor(() => expect(result.current.value).toBeDefined());
 
-    // Switch entity: stale value must NOT stay visible.
     let resolveSecond!: (value: unknown) => void;
     api.query.mockImplementationOnce(
       () => new Promise(resolve => (resolveSecond = resolve)),
@@ -104,7 +102,6 @@ describe('useLiveRelayQuery', () => {
     jest.useFakeTimers();
     try {
       const api = createMockApi();
-      // Capture the environmentEvents handlers so the test can emit an event.
       let emitEvent: ((data: unknown) => void) | undefined;
       api.subscribe.mockImplementation(
         (_query, _variables, handlers, signal?: AbortSignal) => {
@@ -134,7 +131,6 @@ describe('useLiveRelayQuery', () => {
         }),
       );
 
-      // Realtime event → RealtimeProvider coalesces, then bumps revision.
       let resolveRefetch!: (value: unknown) => void;
       api.query.mockImplementationOnce(
         () => new Promise(resolve => (resolveRefetch = resolve)),
@@ -142,7 +138,6 @@ describe('useLiveRelayQuery', () => {
       act(() => emitEvent?.({ environmentEvents: { action: 'UPDATED' } }));
       act(() => jest.advanceTimersByTime(300));
 
-      // Refetch in flight: previous value stays, no loading flash.
       expect(result.current.loading).toBe(false);
       expect(result.current.value).toEqual({ thing: { id: 'a', version: 1 } });
 

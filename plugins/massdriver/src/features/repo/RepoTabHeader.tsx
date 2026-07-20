@@ -4,8 +4,6 @@ import Typography from '@massdriver/ui/Typography';
 import stylin from '@massdriver/ui/stylin';
 import { ReactNode } from 'react';
 
-// Ported from the Massdriver web app — a tab's title, optional
-// description, and optional trailing actions row.
 export const RepoTabHeader = ({
   title,
   description,

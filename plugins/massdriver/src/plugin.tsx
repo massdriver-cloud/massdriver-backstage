@@ -31,7 +31,6 @@ const page = PageBlueprint.make({
     routeRef: rootRouteRef,
     title: 'Massdriver',
     icon: <MassdriverIcon />,
-    // The Massdriver shell renders its own header; fill the content area.
     noHeader: true,
     loader: () =>
       Promise.all([

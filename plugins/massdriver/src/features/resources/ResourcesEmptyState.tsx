@@ -6,10 +6,6 @@ import stylin from '@massdriver/ui/stylin';
 import { ReactNode } from 'react';
 import { OpenInMassdriverButton } from '../../components/OpenInMassdriverButton';
 
-// Ported from the Massdriver web app
-// The web app's "Import a Resource" opens a dialog; in this read-only mirror it
-// deep-links into Massdriver instead.
-
 const CATALOG_REPO_URL =
   'https://github.com/massdriver-cloud/massdriver-catalog';
 
@@ -45,7 +41,6 @@ const STEPS: StepItem[] = [
   },
 ];
 
-/** Catalog-onboarding card shown when there are no resources and no active filters. */
 export const ResourcesEmptyState = ({ importUrl }: { importUrl?: string }) => (
   <Card>
     <Heading variant="h5">Set Up Your Massdriver Catalog</Heading>

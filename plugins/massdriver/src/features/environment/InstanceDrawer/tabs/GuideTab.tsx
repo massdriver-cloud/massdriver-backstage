@@ -7,7 +7,6 @@ import { TabState } from '../TabState';
 import { GUIDE_QUERY } from '../queries';
 import { useInstanceApiQuery } from '../useInstanceApiQuery';
 
-/** Read-only Guide tab: renders the bundle's operator guide markdown. */
 export const GuideTab = ({ instanceId }: { instanceId: string | null }) => {
   const { value, loading, error } = useInstanceApiQuery<{
     instance: { id: string; operatorGuide?: string | null } | null;

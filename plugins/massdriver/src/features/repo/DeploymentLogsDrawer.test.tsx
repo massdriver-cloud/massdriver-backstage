@@ -7,8 +7,6 @@ import { massdriverApiRef, MassdriverApi } from '../../api';
 import { MassdriverThemeScope } from '../../theme/MassdriverThemeScope';
 import { DeploymentLogsDrawer } from './DeploymentLogsDrawer';
 
-// LogViewer relies on ResizeObserver, which jsdom lacks; render its text prop
-// as a plain element so the drawer's header/logs can be asserted.
 jest.mock('@massdriver/ui/LogViewer', () => ({
   __esModule: true,
   default: ({ text }: { text: string }) => (
@@ -56,7 +54,6 @@ describe('DeploymentLogsDrawer', () => {
 
     await renderDrawer(api);
 
-    // Header: compound action label + status pill + backfilled log line.
     await waitFor(() =>
       expect(screen.getByText('Provisioned · cache')).toBeInTheDocument(),
     );
@@ -66,7 +63,6 @@ describe('DeploymentLogsDrawer', () => {
       screen.getByRole('button', { name: 'Download logs' }),
     ).toBeInTheDocument();
 
-    // Terminal deployment → no live tail subscription.
     expect(api.subscribe).not.toHaveBeenCalled();
     expect(api.query).toHaveBeenCalledWith(
       expect.stringContaining('MassdriverDeploymentLogs'),
@@ -76,9 +72,6 @@ describe('DeploymentLogsDrawer', () => {
 
   it('opens the live log tail for an in-flight deployment', async () => {
     const api = mockApi();
-    // Keep the SSE "stream" open until the component unmounts (abort), instead
-    // of resolving immediately — otherwise the reconnect loop schedules a
-    // backoff timer that outlives the test and leaks a worker handle.
     api.subscribe.mockImplementation(
       (_query, _variables, _handlers, signal?: AbortSignal) =>
         new Promise<void>(resolve => {

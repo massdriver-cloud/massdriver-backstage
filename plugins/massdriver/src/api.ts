@@ -8,51 +8,21 @@ import {
   MASSDRIVER_CONFIG_KEY,
 } from '@massdriver/backstage-plugin-common';
 
-/**
- * Subscription errors carry `fatal: true` when retrying cannot succeed — a 4xx
- * from the relay (unauthenticated/invalid request) or an upstream Absinthe
- * channel rejection (bad document / unknown environment). The reconnect loop in
- * `useMassdriverSubscription` stops on fatal errors instead of retrying forever.
- *
- * @public
- */
+/** @public */
 export type MassdriverSubscriptionError = Error & {
   fatal?: boolean;
   status?: number;
 };
 
-/**
- * Frontend API for talking to Massdriver via the backend relay.
- *
- * All queries are proxied through `plugin://massdriver/graphql`, where the
- * backend injects the service-account bearer token. The browser never sees the
- * token, and `organizationId` is injected server-side, so callers only declare
- * `$organizationId` in their operations.
- *
- * @public
- */
+/** @public */
 export interface MassdriverApi {
-  /** Web app origin used to build deep-links. */
   readonly appUrl: string;
-  /** Massdriver organization id, when configured on the frontend. */
   readonly organizationId: string;
   query<T = unknown>(
     query: string,
     variables?: Record<string, unknown>,
   ): Promise<T>;
-  /**
-   * Fetch an auth-guarded Massdriver asset (OCI repo icon SVG, repo tag file
-   * contents) as text, via the backend content proxy — the web app fetches
-   * these directly with the browser's bearer token, which this plugin's
-   * browser doesn't hold.
-   */
   fetchText(url: string): Promise<string>;
-  /**
-   * Open a GraphQL subscription via the backend SSE relay. Invokes
-   * `handlers.onData` with each streamed result's `data`. The returned promise
-   * resolves when the stream ends (server close, error, or abort). Pass a
-   * `signal` to tear the subscription down.
-   */
   subscribe<T = unknown>(
     query: string,
     variables: Record<string, unknown> | undefined,
@@ -138,15 +108,12 @@ export class MassdriverClientApi implements MassdriverApi {
         signal,
       });
     } catch (error) {
-      // A fetch abort is an intentional teardown, not an error.
       if (signal?.aborted) return;
       handlers.onError?.(error as Error);
       return;
     }
 
     if (!response.ok || !response.body) {
-      // 4xx (except 429) won't heal on retry — flag fatal so the reconnect
-      // loop stops instead of hammering the relay.
       const requestFailed: MassdriverSubscriptionError = Object.assign(
         new Error(
           `Massdriver subscription failed: ${response.status} ${response.statusText}`,
@@ -171,7 +138,7 @@ export class MassdriverClientApi implements MassdriverApi {
       let eventName: string | null = null;
       const dataLines: string[] = [];
       for (const line of frame.split('\n')) {
-        if (line.startsWith(':')) continue; // keepalive comment
+        if (line.startsWith(':')) continue;
         if (line.startsWith('event:')) eventName = line.slice(6).trim();
         else if (line.startsWith('data:')) dataLines.push(line.slice(5).trim());
       }
@@ -194,7 +161,6 @@ export class MassdriverClientApi implements MassdriverApi {
         const { done, value } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
-        // SSE frames are separated by a blank line.
         let index = buffer.indexOf('\n\n');
         while (index !== -1) {
           const frame = buffer.slice(0, index);

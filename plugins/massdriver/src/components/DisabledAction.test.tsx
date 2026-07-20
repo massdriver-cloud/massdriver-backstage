@@ -22,8 +22,6 @@ describe('DisabledAction', () => {
     const user = userEvent.setup();
     render(<DisabledAction label="Propose" tooltip="Do this in Massdriver" />);
 
-    // The disabled button swallows pointer events, so the span wrapper carries
-    // the hover — hover it to surface the tooltip.
     const wrapper = screen.getByRole('button', { name: 'Propose' })
       .parentElement as HTMLElement;
     await user.hover(wrapper);

@@ -1,7 +1,3 @@
-// Ported from the Massdriver web app
-// Compares an instance's current params against the params of its last
-// successful PROVISION deployment; drift means there is an undeployed plan.
-
 const parseMap = (value: unknown): Record<string, unknown> | null => {
   if (value == null) return null;
   if (typeof value === 'object') return value as Record<string, unknown>;

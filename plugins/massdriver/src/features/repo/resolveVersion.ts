@@ -1,4 +1,3 @@
-// Ported from the Massdriver web app
 export const ALL_VERSIONS = 'all';
 
 interface RepoVersions {
@@ -8,10 +7,6 @@ interface RepoVersions {
   } | null;
 }
 
-/**
- * The `BundleId` used to fetch a bundle for a given repo + version. When the
- * page is scoped to "all versions" we resolve the semver to `latest`.
- */
 export const bundleQueryId = (
   repoId?: string | null,
   version?: string | null,
@@ -21,11 +16,6 @@ export const bundleQueryId = (
   return `${repoId}@${semver}`;
 };
 
-/**
- * Resolve the concrete semver tag to load for a page version. "all"/empty →
- * the newest tag; a release-channel name → its tag; a tag → itself; otherwise
- * null.
- */
 export const resolveSelectedVersion = (
   version: string | null | undefined,
   repo: RepoVersions | null | undefined,

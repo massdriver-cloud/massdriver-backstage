@@ -3,9 +3,6 @@ import { MassdriverClientApi } from './api';
 
 const encoder = new TextEncoder();
 
-// Build a Response-like object whose `body.getReader()` streams the given
-// string chunks (each encoded to a Uint8Array), mirroring what the SSE parser
-// in `subscribe` reads off the fetch response.
 const streamResponse = (
   chunks: string[],
   {

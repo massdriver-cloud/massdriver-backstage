@@ -37,13 +37,6 @@ const downloadLogs = (text: string, deploymentId: string) => {
   URL.revokeObjectURL(url);
 };
 
-// Inner content. Mounted with key={deploymentId} so each open is a fresh
-// instance — fresh backfill query and brand-new log subscription, no stale
-// state carried across opens (mirrors the web drawer's keyed content). The
-// backfill is fetched with useAsync + api.query rather than the environment
-// feature's useLiveRelayQuery, which needs the environment RealtimeProvider
-// that does not exist on the repo page; the live tail then streams over the
-// SSE relay exactly as features/environment's DeploymentLogsPanel does.
 const DeploymentLogsContent = ({
   deploymentId,
   onClose,
@@ -63,7 +56,6 @@ const DeploymentLogsContent = ({
   const status = deployment?.status;
   const active = isDeploymentActive(status);
 
-  // Log lines streamed after the initial backfill.
   const [streamed, setStreamed] = useState<DeploymentLogLine[]>([]);
   useEffect(() => {
     setStreamed([]);
@@ -139,14 +131,6 @@ const DeploymentLogsContent = ({
   );
 };
 
-/**
- * In-place deployment logs drawer for the repo Deployments tab. Faithful port of
- * the Massdriver web app — a dark, right-anchored,
- * resizable Drawer driven by the same `logs` URL param the web reads via
- * useDialogParam (mirrored here with react-router's useSearchParams). Rendered
- * above MUI Dialog (zIndex.modal + 100) with an invisible backdrop, so it
- * overlays the details dialog with click-away-to-close, exactly as in the web.
- */
 export const DeploymentLogsDrawer = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const deploymentId = searchParams.get('logs');

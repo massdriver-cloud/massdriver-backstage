@@ -55,7 +55,6 @@ const COMPONENTS_QUERY = `
   }
 `;
 
-/** Read-only Components tab: components with status across environments. */
 export const ComponentsTab = ({ projectId }: { projectId: string }) => {
   const api = useApi(massdriverApiRef);
   const { value, loading, error } = useAsync(async () => {

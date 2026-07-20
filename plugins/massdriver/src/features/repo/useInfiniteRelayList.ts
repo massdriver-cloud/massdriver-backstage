@@ -16,14 +16,6 @@ export interface InfiniteRelayResult<T> {
   onLoadMore: () => void;
 }
 
-/**
- * Feature-local equivalent of the web app's `useInfiniteQuery` for the relay:
- * accumulates cursor pages into one growing list (`onLoadMore` appends the next
- * page). The accumulated list resets whenever the query inputs (variables/skip)
- * change, so a filter or sort change starts a fresh list. Page size defaults to
- * 20. Mirrors the web's Apollo `useInfiniteQuery` return shape
- * (`items`/`loading`/`loadingMore`/`error`/`hasMore`/`onLoadMore`).
- */
 export const useInfiniteRelayList = <T>(
   query: string,
   {
@@ -32,7 +24,6 @@ export const useInfiniteRelayList = <T>(
     pageSize = 20,
     skip = false,
   }: {
-    /** Key of the paginated page in the response; an array walks a nested path. */
     responseKey: string | string[];
     variables?: Record<string, unknown>;
     pageSize?: number;
@@ -41,8 +32,6 @@ export const useInfiniteRelayList = <T>(
 ): InfiniteRelayResult<T> => {
   const api = useApi(massdriverApiRef);
 
-  // Latest values read inside the async fetch without widening its deps — the
-  // effect keys off `resetKey` (a stable serialization) instead.
   const variablesRef = useRef(variables);
   variablesRef.current = variables;
   const path = Array.isArray(responseKey) ? responseKey : [responseKey];
@@ -77,7 +66,6 @@ export const useInfiniteRelayList = <T>(
             ...(cursorNext ? { next: cursorNext } : {}),
           },
         })) as Record<string, unknown>;
-        // A newer fetch superseded this one (filters changed mid-flight); drop it.
         if (requestId !== requestIdRef.current) return;
         const page = path.reduce<unknown>(
           (node, key) =>
@@ -100,12 +88,10 @@ export const useInfiniteRelayList = <T>(
         fetchingRef.current = false;
       }
     },
-    // path is derived from responseKey, which is part of resetKey.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [api, query, pageSize, resetKey],
   );
 
-  // Reset and re-fetch from the first page whenever the query inputs change.
   useEffect(() => {
     setItems([]);
     setNextCursor(null);

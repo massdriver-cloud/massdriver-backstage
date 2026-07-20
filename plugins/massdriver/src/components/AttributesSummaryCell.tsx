@@ -35,10 +35,6 @@ const Group = ({
   </Section>
 );
 
-/**
- * Read-only attributes cell mirroring the web app: a compact
- * "N direct · M effective" chip with a tooltip listing the entries.
- */
 export const AttributesSummaryCell = ({
   direct,
   effective,

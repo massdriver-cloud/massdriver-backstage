@@ -16,14 +16,6 @@ import {
 } from '../deploymentHelpers';
 import type { RepoDeployment } from '../types';
 
-// Ported from the Massdriver web app
-//
-// "Details" opens the in-place ViewDeploymentDetailsDialog (the `deployment`
-// URL param), "Logs" and the clickable status pill open the DeploymentLogsDrawer
-// (the `logs` param), and a plan row's "Planned deployment of <id>" link opens
-// the source deployment's details — all via the onViewDetails / onViewLogs
-// callbacks, matching the web. The instance name/link still navigates internally
-// to the instance drawer route (that navigation is correct).
 export const DeploymentRow = ({
   deployment,
   onViewLogs,
@@ -48,8 +40,6 @@ export const DeploymentRow = ({
       )
     : null;
 
-  // Plan deployments encode their source deployment id in the message
-  // ("Planning deployment <uuid>\n<source-message>").
   const planSource =
     deployment.action === 'PLAN' ? parsePlanMessage(deployment.message) : null;
 
@@ -220,8 +210,6 @@ const PlanSourceLink = stylin(Button)(({ theme }: { theme: any }) => ({
   marginLeft: theme.spacing(-1),
 }));
 
-// Wrap up to two lines so a real commit-message-style note is visible without
-// being clipped to a single line; longer messages still ellipsize.
 const Message = stylin(Typography)(({ theme }: { theme: any }) => ({
   fontStyle: 'italic',
   fontSize: theme.typography.caption.fontSize,

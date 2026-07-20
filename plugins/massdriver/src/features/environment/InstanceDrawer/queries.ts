@@ -1,7 +1,3 @@
-// GraphQL documents for the read-only instance drawer. All are proxied through
-// the backend relay, which injects `organizationId`, so callers pass only the
-// remaining variables (see api.ts). Every normalizable selection includes `id`.
-
 const MONEY = `{ amount currency }`;
 
 export const PANEL_QUERY = `
@@ -205,10 +201,6 @@ export const ALARMS_QUERY = `
   }
 `;
 
-// `deployments` is capped at a single page of 50 (cursor.limit) — the web app's
-// infinite scroll is dropped as an acceptable read-only simplification, so an
-// instance with more than 50 deployments shows only its 50 most-recent. The
-// second root field (`instance`) sources the "Initialized" footer row.
 export const HISTORY_QUERY = `
   query MassdriverInstanceHistory(
     $organizationId: ID!
@@ -244,8 +236,6 @@ export const HISTORY_QUERY = `
   }
 `;
 
-// Full snapshot of a single deployment for the read-only detail panel. `id` is a
-// `UUID!` here (the `deployment(id:)` field), unlike the list filter's `ID!`.
 export const DEPLOYMENT_QUERY = `
   query MassdriverDeployment($organizationId: ID!, $id: UUID!) {
     deployment(organizationId: $organizationId, id: $id) {
@@ -268,9 +258,6 @@ export const DEPLOYMENT_QUERY = `
   }
 `;
 
-// Initial log backfill for the read-only logs viewer. The live tail is streamed
-// separately via the `deploymentLogs` subscription (see realtime/queries.ts).
-// `id` is a `UUID!` here, matching `deployment(id:)`.
 export const DEPLOYMENT_LOGS_QUERY = `
   query MassdriverDeploymentLogs($organizationId: ID!, $id: UUID!) {
     deployment(organizationId: $organizationId, id: $id) {

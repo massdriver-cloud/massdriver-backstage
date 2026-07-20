@@ -1,6 +1,5 @@
 import type { InstanceStatus } from '@massdriver/backstage-plugin-common';
 
-/** OCI repo header shape (MassdriverOciRepoHeader). */
 export interface RepoHeader {
   id: string;
   name: string;
@@ -20,7 +19,6 @@ export interface RepoHeader {
   } | null;
 }
 
-/** A bundle as fetched for the Overview tab (MassdriverBundle). */
 export interface RepoBundle {
   id: string;
   name?: string | null;
@@ -33,7 +31,6 @@ export interface RepoBundle {
   updatedAt?: string | null;
 }
 
-/** An instance row on the repo Instances tab (MassdriverRepoInstances). */
 export interface RepoInstance {
   id: string;
   status: InstanceStatus;
@@ -52,7 +49,6 @@ export interface RepoInstance {
   } | null;
 }
 
-/** A deployment row on the repo Deployments tab (MassdriverRepoDeployments). */
 export interface RepoDeployment {
   id: string;
   status?: string | null;
@@ -74,7 +70,6 @@ export interface RepoDeployment {
   } | null;
 }
 
-/** Full deployment snapshot for the details dialog (MassdriverDeployment). */
 export interface DeploymentDetail {
   id: string;
   status?: string | null;
@@ -93,13 +88,11 @@ export interface DeploymentDetail {
   } | null;
 }
 
-/** A single log line streamed for a deployment. */
 export interface DeploymentLogLine {
   timestamp?: string | null;
   message?: string | null;
 }
 
-/** Deployment shape for the logs drawer (MassdriverDeploymentLogs). */
 export interface DeploymentLogs {
   id: string;
   status?: string | null;
@@ -112,7 +105,6 @@ export interface DeploymentLogs {
   logs?: (DeploymentLogLine | null)[] | null;
 }
 
-/** A file entry within a repo tag (MassdriverRepoTagFiles). */
 export interface RepoFile {
   name: string;
   mediaType?: string | null;

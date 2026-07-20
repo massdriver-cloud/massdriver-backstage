@@ -1,6 +1,6 @@
 {
   "name": "@massdriver/backstage-plugin-common",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "Apache-2.0",
   "homepage": "https://www.massdriver.cloud/",
   "description": "Shared config schema, annotations, and deep-link builders for the Massdriver Backstage plugin",

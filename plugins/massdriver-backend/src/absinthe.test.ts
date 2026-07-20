@@ -51,7 +51,6 @@ describe('parsePhoenixMessage', () => {
 
   it('returns null for a 4-tuple missing the payload slot', () => {
     const raw = JSON.stringify(['1', '2', '__absinthe__:control', 'phx_reply']);
-    // length 4 is not a valid v2 tuple → null
     expect(parsePhoenixMessage(raw)).toBeNull();
   });
 
@@ -87,7 +86,6 @@ describe('parsePhoenixMessage', () => {
   });
 });
 
-// Phoenix v2 wire tuple: [join_ref, ref, topic, event, payload].
 type PhoenixFrame = [
   string | null,
   string | null,
@@ -98,11 +96,6 @@ type PhoenixFrame = [
 
 const HEARTBEAT_INTERVAL_MS = 30_000;
 
-/**
- * Reply/emit helpers handed to a scripted server's per-frame handler. `reply`
- * echoes the incoming frame's join_ref/ref/topic back on a `phx_reply` (how a
- * Phoenix channel acknowledges a push); `send` emits an arbitrary frame.
- */
 interface ServerFrameApi {
   reply: (payload: Record<string, unknown>) => void;
   send: (frame: PhoenixFrame) => void;
@@ -113,16 +106,10 @@ type FrameHandler = (frame: PhoenixFrame, api: ServerFrameApi) => void;
 interface ScriptedServer {
   socketUrl: string;
   received: PhoenixFrame[];
-  /** Resolves with the server-side client socket once the client connects. */
   connection: Promise<WebSocket>;
   stop: () => Promise<void>;
 }
 
-/**
- * Start a real `ws` server on an ephemeral port that runs `handler` for every
- * frame the client pushes. This exercises the full Phoenix join/doc/data
- * correlation the way the live Absinthe endpoint would.
- */
 const startScriptedServer = async (
   handler: FrameHandler,
 ): Promise<ScriptedServer> => {
@@ -168,11 +155,6 @@ const startScriptedServer = async (
   };
 };
 
-/**
- * Emit an Absinthe `subscription:data` frame. The client correlates on the
- * payload's `subscriptionId` (mirroring `@absinthe/socket`), so a test can pass
- * a mismatching one to prove the frame is dropped.
- */
 const emitData = (
   send: (frame: PhoenixFrame) => void,
   topic: string,
@@ -187,10 +169,6 @@ const emitData = (
     { ...(subscriptionId ? { subscriptionId } : {}), result: { data } },
   ]);
 
-/**
- * A handler that acknowledges the join, accepts the doc with `subscriptionId`,
- * then runs `afterDoc` so a test can emit `subscription:data` frames.
- */
 const acceptAndEmit =
   (
     subscriptionId: string,
@@ -276,7 +254,6 @@ describe('openAbsintheSubscription', () => {
       { deploymentLogs: { message: 'one' } },
       { deploymentLogs: { message: 'two' } },
     ]);
-    // The client should have joined the control channel then pushed the doc.
     await waitFor(() => hasFrame(server.received, 'doc'), {
       label: 'doc push',
     });
@@ -296,7 +273,6 @@ describe('openAbsintheSubscription', () => {
     open(server, { onData: data => results.push(data) });
 
     await waitFor(() => results.length === 1, { label: 'the matching frame' });
-    // Give the stray frame a chance to (wrongly) arrive before asserting.
     await new Promise(resolve => setTimeout(resolve, 30));
     expect(results).toEqual([{ mine: true }]);
   });
@@ -317,7 +293,6 @@ describe('openAbsintheSubscription', () => {
     const joinError = onError.mock.calls[0][0] as AbsintheSubscriptionError;
     expect(joinError).toBeInstanceOf(Error);
     expect(joinError.message).toContain('unauthorized');
-    // Channel-level rejections are fatal so the frontend stops reconnecting.
     expect(joinError.fatal).toBe(true);
     await waitFor(() => onClose.mock.calls.length === 1, {
       label: 'socket close',
@@ -355,7 +330,6 @@ describe('openAbsintheSubscription', () => {
 
     await waitFor(() => results.length === 1, { label: 'inline data' });
     expect(results).toEqual([{ me: { id: 'user-1' } }]);
-    // Give any spurious second callback a chance to surface.
     await new Promise(resolve => setTimeout(resolve, 30));
     expect(results).toHaveLength(1);
   });
@@ -435,7 +409,6 @@ describe('openAbsintheSubscription', () => {
     await waitFor(() => onError.mock.calls.length === 1, { label: 'onError' });
     const creationError = onError.mock.calls[0][0] as AbsintheSubscriptionError;
     expect(creationError.message).toContain('socket construction failed');
-    // Non-channel (transport/creation) errors are retryable — no fatal flag.
     expect(creationError.fatal).toBeUndefined();
     await waitFor(() => onClose.mock.calls.length === 1, { label: 'onClose' });
   });

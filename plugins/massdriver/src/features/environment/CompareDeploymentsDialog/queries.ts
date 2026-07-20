@@ -1,9 +1,5 @@
 import type { DeploymentComparison } from './flattenDeploymentComparison';
 
-// Field-by-field diff of two deployments. `organizationId` is injected by the
-// relay; callers pass sourceId + targetId only. NOTE: `compareDeployments` takes
-// `UUID!` ids (unlike the deployments-list filter, which takes `ID!`) — the
-// relay rejects the query if this is mismatched.
 export const COMPARE_DEPLOYMENTS_QUERY = `
   query MassdriverCompareDeployments(
     $organizationId: ID!
@@ -32,9 +28,6 @@ export interface CompareDeploymentsResult {
   compareDeployments: DeploymentComparison | null;
 }
 
-// Feeds the two deployment pickers. Filtered by instance only (unaffected by the
-// History tab's action filter) and capped at a single page of 50 — the web app's
-// infinite-scroll picker is dropped as an acceptable read-only simplification.
 export const DEPLOYMENTS_BY_INSTANCE_QUERY = `
   query MassdriverDeploymentsByInstance(
     $organizationId: ID!

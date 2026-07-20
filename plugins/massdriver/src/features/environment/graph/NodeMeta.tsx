@@ -22,7 +22,6 @@ export const countActiveAlarms = (
     alarm => alarm?.currentState?.status === ALARM_STATUS,
   ).length;
 
-/** The 2×2 meta grid on a diagram node: alarms / cost / last-edited. */
 const NodeMeta = ({
   alarms,
   cost,

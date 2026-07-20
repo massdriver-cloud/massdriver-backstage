@@ -1,18 +1,10 @@
 import { DEFAULT_API_URL, graphqlUrl } from './urls';
 
-/**
- * Options for {@link createMassdriverClient}.
- *
- * @public
- */
+/** @public */
 export interface MassdriverClientOptions {
-  /** Service-account bearer token. Never leaves the backend. */
   token: string;
-  /** Massdriver organization id; auto-injected into every query's variables. */
   organizationId: string;
-  /** API origin. Defaults to {@link DEFAULT_API_URL}. */
   baseUrl?: string;
-  /** Override the fetch implementation (defaults to the global `fetch`). */
   fetchImpl?: typeof fetch;
 }
 
@@ -33,16 +25,7 @@ export class MassdriverApiError extends Error {
   }
 }
 
-/**
- * Create a minimal, framework-agnostic client for the Massdriver v2 GraphQL API.
- *
- * Injects the `Authorization: Bearer` header and defaults `organizationId` into
- * every query's variables so operations only need to declare `$organizationId`.
- * Used server-side by the backend relay; the token must never be exposed to the
- * browser.
- *
- * @public
- */
+/** @public */
 export const createMassdriverClient = (
   options: MassdriverClientOptions,
 ): MassdriverClient => {
@@ -64,7 +47,6 @@ export const createMassdriverClient = (
         },
         body: JSON.stringify({
           query,
-          // Injected org id must win over caller-supplied variables.
           variables: { ...variables, organizationId },
         }),
       });
@@ -81,10 +63,6 @@ export const createMassdriverClient = (
         errors?: Array<{ message: string }>;
       };
 
-      // When the query still returned data, hand it back even if there are
-      // field-level errors (e.g. a NOT_FOUND on a nullable field like
-      // `environment(id:)`). This lets callers render a 404 from a null field
-      // instead of surfacing a 500. Only a total failure (no data) throws.
       if (body.data !== undefined && body.data !== null) {
         return body.data;
       }

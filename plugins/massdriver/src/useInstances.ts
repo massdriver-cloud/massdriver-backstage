@@ -11,10 +11,6 @@ import {
   InstancesPageResult,
 } from './queries';
 
-/**
- * Fetch the Massdriver instances for a scope. Projects and environments return
- * a full (cursor-paginated) list; an instance scope returns just that instance.
- */
 export const useMassdriverInstances = (
   scope: MassdriverScope | undefined,
 ): AsyncState<InstanceRow[]> => {

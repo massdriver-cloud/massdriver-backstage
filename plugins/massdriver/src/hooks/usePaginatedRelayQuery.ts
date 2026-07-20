@@ -13,7 +13,6 @@ export interface PaginatedResult<T> {
   loading: boolean;
   error?: Error;
   hasMore: boolean;
-  /** Spread onto DataList (controlled state + change handler). */
   dataListParams: {
     state: DataListState;
     onStateChange: (state: DataListState) => void;
@@ -25,11 +24,6 @@ interface RelayPage<T> {
   cursor?: { next?: string | null } | null;
 }
 
-/**
- * Server-side cursor pagination for a DataList, over the relay. Mirrors the web
- * app's `usePaginatedQuery` but keeps state local (no URL persistence) and
- * fetches through `massdriverApiRef` instead of Apollo.
- */
 export const usePaginatedRelayQuery = <T>(
   query: string,
   {
@@ -41,16 +35,12 @@ export const usePaginatedRelayQuery = <T>(
     baseFilter,
     variables,
   }: {
-    /** Key of the paginated page in the response; an array walks a nested path
-     * (e.g. `['resource', 'connections']`). */
     responseKey: string | string[];
     sortFieldMap?: Record<string, string>;
     defaultSort?: DataListSort | null;
     pageSize?: number;
     filterFromSearch?: (search: string) => Record<string, unknown>;
-    /** Filter always applied (e.g. scoping by project), merged with search. */
     baseFilter?: Record<string, unknown>;
-    /** Extra query variables (e.g. the parent entity `id` for nested pages). */
     variables?: Record<string, unknown>;
   },
 ): PaginatedResult<T> => {
@@ -94,7 +84,6 @@ export const usePaginatedRelayQuery = <T>(
         (node as Record<string, unknown> | null | undefined)?.[key],
       data,
     ) as RelayPage<T> | undefined;
-    // Re-fetch whenever the effective query inputs change.
   }, [
     api,
     query,

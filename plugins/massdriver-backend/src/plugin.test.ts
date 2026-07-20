@@ -21,8 +21,6 @@ describe('massdriverPlugin', () => {
 
   it('registers and mounts the relay route', async () => {
     const { server } = await startBackend();
-    // The route is mounted at /api/massdriver — a request reaches the handler
-    // rather than 404ing.
     const response = await request(server)
       .post('/api/massdriver/graphql')
       .send({ query: '{ me { id } }' });

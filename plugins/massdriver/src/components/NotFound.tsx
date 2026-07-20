@@ -6,7 +6,6 @@ import SearchOffIcon from '@mui/icons-material/SearchOff';
 import { RouterLinkAdapter } from './RouterLinkAdapter';
 import { internalRoutes } from '../internalRoutes';
 
-/** Read-only 404 for unknown routes or unresolved Massdriver ids. */
 export const NotFound = ({
   title = 'Not found',
   message = "We couldn't find what you were looking for. It may have been deleted, or the link may be incorrect.",

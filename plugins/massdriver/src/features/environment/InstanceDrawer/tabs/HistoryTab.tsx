@@ -36,10 +36,6 @@ import {
 } from './DeploymentReadOnlyActions';
 import { selectClasses } from '../../../../theme/muiClasses';
 
-// --- Sort + filter controls (ported verbatim from the web app's
-// historyControls.js). Centralised so label rendering and the DeploymentsSort
-// input mapping stay in lockstep. ------------------------------------------
-
 const SORT_OPTIONS = [
   { value: 'UPDATED_AT_DESC', label: 'Recently active first' },
   { value: 'UPDATED_AT_ASC', label: 'Least recently active first' },
@@ -74,12 +70,6 @@ interface HistoryResult {
   instance: HistoryInstance | null;
 }
 
-/**
- * Read-only History tab: the web app's deployment history, faithfully ported.
- * Mutations (approve/reject/plan/rollback) render as disabled `DisabledAction`
- * controls; logs link out to Massdriver. Compare + per-row detail panels are
- * driven by local state (the drawer uses `?tab=`, not URL dialog params).
- */
 export const HistoryTab = ({ instanceId }: { instanceId: string | null }) => {
   const openLogs = useOpenLogs();
   const [sortValue, setSortValue] = useState(DEFAULT_SORT_VALUE);
@@ -89,8 +79,6 @@ export const HistoryTab = ({ instanceId }: { instanceId: string | null }) => {
   >(null);
   const [compareOpen, setCompareOpen] = useState(false);
 
-  // Live query: realtime revision bumps keep the rendered list mounted;
-  // changing instance/filter/sort resets to a fresh loading state.
   const { value, loading, error } = useLiveRelayQuery<HistoryResult>(
     HISTORY_QUERY,
     instanceId

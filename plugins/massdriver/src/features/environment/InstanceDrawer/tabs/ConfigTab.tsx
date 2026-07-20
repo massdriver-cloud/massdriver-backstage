@@ -38,8 +38,6 @@ interface ConfigInstance {
   uiSchema?: string | null;
 }
 
-// paramsSchema / uiSchema / params come back as JSON-encoded strings; parse to
-// objects the way the web app's `parseMap` does for the same fields.
 const parseMap = (value: unknown): any => {
   if (value == null) return undefined;
   if (typeof value === 'object') return value;
@@ -52,14 +50,6 @@ const parseMap = (value: unknown): any => {
 
 const noop = () => {};
 
-/**
- * Read-only instance config. Mirrors the web app's ConfigTab: a Form/JSON view
- * toggle, the schema-driven RJSF `Form` (rendered `readonly`, submit suppressed
- * via `<></>` children), the raw-params `CodeBlock`, and a disabled Propose
- * button. Everything is read-only — the drawer header's "Open in Massdriver"
- * deep-links here to actually edit/propose/deploy. Data-fetching fields resolve
- * through the relay via the injected `formsDataSource`.
- */
 export const ConfigTab = ({ instanceId }: { instanceId: string | null }) => {
   const { value, loading, error } = useInstanceApiQuery<{
     instance: ConfigInstance | null;
@@ -186,7 +176,6 @@ const Header = stylin(Box)(({ theme }: { theme: any }) => ({
   minHeight: theme.spacing(5.5),
 }));
 
-// Ported from the Massdriver web app
 const ViewToggle = stylin(ToggleButtonGroup)(({ theme }: { theme: any }) => ({
   width: theme.spacing(16),
   height: theme.spacing(3.5),

@@ -55,9 +55,6 @@ const formatParamValue = (value: unknown): string => {
   }
 };
 
-// Present-value cell mirroring the web dialog's ComparisonValueCell (that
-// component lives under features/environment here, which repo code can't
-// import — so its read-only rendering is inlined).
 const renderValueCell = (_value: unknown, row: { value: unknown }) => {
   const value = row.value;
   if (value == null) return <NullLiteral>null</NullLiteral>;
@@ -95,9 +92,6 @@ const isActiveStatus = (derivedStatus?: string | null): boolean => {
   return isDeploymentActive(deploymentStatus);
 };
 
-// Heading reads as "{component} · {action verb} [time-ago]". Active deployments
-// drop the trailing time-ago (it reads oddly for an in-flight thing); terminal
-// states keep it. Ported from the web dialog's buildHeading.
 const buildHeading = (
   componentName: string | null | undefined,
   derivedStatus: string | null,
@@ -113,17 +107,6 @@ const buildHeading = (
   return componentName ? `${componentName} · ${verb}${tail}` : `${verb}${tail}`;
 };
 
-/**
- * In-place deployment details dialog for the repo Deployments tab. Faithful port
- * of the Massdriver web app — driven by the same
- * `deployment` URL param the web reads via useDialogParam (mirrored here with
- * react-router's useSearchParams). The web repo page passes
- * `canApprove={false} canPlan={false}` (and no canRollback), under which the web
- * view renders no approve/reject/plan/rollback affordance at all — so none are
- * ported. The status pill and a "View logs" button open the logs drawer (the
- * `logs` param); the plan/rollback source links re-target the `deployment`
- * param, as in the web.
- */
 export const ViewDeploymentDetailsDialog = () => {
   const api = useApi(massdriverApiRef);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -181,8 +164,6 @@ export const ViewDeploymentDetailsDialog = () => {
   const isProposed = deployment?.status === 'PROPOSED';
   const hasLogs = deploymentHasLogs(deployment?.status);
 
-  // Keep the dialog open beneath the logs drawer (which renders above it),
-  // matching the web — the drawer's own `logs` param drives it.
   const onViewLogs = () => {
     if (!deployment) return;
     setParam('logs', deployment.id);

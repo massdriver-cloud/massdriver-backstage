@@ -1,12 +1,4 @@
-/**
- * Catalog annotations that link a Backstage entity to a Massdriver resource.
- *
- * Frontend components render Massdriver UI only when the relevant annotation is
- * present on an entity. Add them to your own `catalog-info.yaml` to link an
- * entity to a Massdriver project, environment, or instance.
- *
- * @public
- */
+/** @public */
 export const ANNOTATION_ORG_ID = 'massdriver.cloud/org-id';
 
 /** @public */

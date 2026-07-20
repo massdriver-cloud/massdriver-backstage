@@ -13,8 +13,6 @@ type Handlers = {
 };
 
 describe('useMassdriverSubscription', () => {
-  // Each subscribe call records its handlers/signal and hands back a controller
-  // to end that stream, so the test drives reconnect + backoff deterministically.
   const createMockApi = () => {
     const streams: Array<{
       handlers: Handlers;
@@ -51,8 +49,6 @@ describe('useMassdriverSubscription', () => {
         </TestApiProvider>
       );
 
-  // Let the microtask that awaits `api.subscribe` settle so the reconnect loop
-  // advances (subscribe resolves → attempt++ → sleep is scheduled).
   const flushMicrotasks = async () => {
     await act(async () => {
       await Promise.resolve();
@@ -98,10 +94,8 @@ describe('useMassdriverSubscription', () => {
     const expectedDelays = [1000, 2000, 4000, 8000, 10_000, 10_000];
     for (let attempt = 0; attempt < expectedDelays.length; attempt += 1) {
       const callsBefore = api.subscribe.mock.calls.length;
-      // End the current stream → the loop schedules a backoff sleep.
       act(() => streams[streams.length - 1].end());
       await flushMicrotasks();
-      // No resubscribe before the backoff elapses.
       expect(api.subscribe).toHaveBeenCalledTimes(callsBefore);
 
       act(() => jest.advanceTimersByTime(expectedDelays[attempt] - 1));
@@ -124,7 +118,6 @@ describe('useMassdriverSubscription', () => {
     );
     await flushMicrotasks();
 
-    // Fail a few times to grow the backoff.
     act(() => streams[streams.length - 1].end());
     await flushMicrotasks();
     act(() => jest.advanceTimersByTime(1000));
@@ -135,9 +128,7 @@ describe('useMassdriverSubscription', () => {
     await flushMicrotasks();
     expect(api.subscribe).toHaveBeenCalledTimes(3);
 
-    // A healthy data message resets the counter…
     act(() => streams[streams.length - 1].handlers.onData({ ok: true }));
-    // …so the next failure reconnects after the base 1s delay again.
     const callsBefore = api.subscribe.mock.calls.length;
     act(() => streams[streams.length - 1].end());
     await flushMicrotasks();
@@ -160,7 +151,6 @@ describe('useMassdriverSubscription', () => {
     unmount();
     expect(streams[0].signal?.aborted).toBe(true);
 
-    // The aborted stream's promise resolved; advancing timers must not reconnect.
     await flushMicrotasks();
     act(() => jest.advanceTimersByTime(60_000));
     await flushMicrotasks();
@@ -194,7 +184,6 @@ describe('useMassdriverSubscription', () => {
     const { api } = createMockApi();
 
     const { rerender } = renderHook(
-      // Fresh inline callbacks each render — held in refs, so no teardown.
       () =>
         useMassdriverSubscription(
           QUERY,

@@ -6,12 +6,6 @@ import {
   useState,
 } from 'react';
 
-/**
- * Drag-to-resize width for the right-anchored instance panel. Mirrors the
- * `@massdriver/ui/Drawer` `useResizable` behaviour (which we can't use directly
- * because MUI's Drawer doesn't paint inside Backstage). Clamps between
- * `minWidth` and the panel's positioned parent width.
- */
 export const useResizableWidth = ({
   defaultWidth = 720,
   minWidth = 575,

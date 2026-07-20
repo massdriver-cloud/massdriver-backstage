@@ -1,6 +1,5 @@
 import type { Component, Connection, Instance, Link } from './diagramFactory';
 
-// Blueprint of a project's components + links (the graph's static topology).
 export const PROJECT_BLUEPRINT_QUERY = `
   query MassdriverProjectBlueprint($organizationId: ID!, $projectId: ID!) {
     project(organizationId: $organizationId, id: $projectId) {
@@ -30,7 +29,6 @@ export interface ProjectBlueprintResult {
   } | null;
 }
 
-// Deployed instances + live connections in an environment.
 export const ENVIRONMENT_BLUEPRINT_QUERY = `
   query MassdriverEnvironmentBlueprint(
     $organizationId: ID!
@@ -82,7 +80,6 @@ export interface EnvironmentBlueprintResult {
   } | null;
 }
 
-// Per-node metadata (cost, alarms, versions, last-edited, undeployed plan).
 export const NODE_META_QUERY = `
   query MassdriverNodeInstanceMeta($organizationId: ID!, $id: ID!) {
     instance(organizationId: $organizationId, id: $id) {

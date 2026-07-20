@@ -1,19 +1,11 @@
-/**
- * Lifecycle status of a Massdriver instance (deployed component).
- *
- * @public
- */
+/** @public */
 export type InstanceStatus =
   | 'INITIALIZED'
   | 'PROVISIONED'
   | 'DECOMMISSIONED'
   | 'FAILED';
 
-/**
- * Status of a Massdriver deployment.
- *
- * @public
- */
+/** @public */
 export type DeploymentStatus =
   | 'PROPOSED'
   | 'REJECTED'
@@ -24,11 +16,7 @@ export type DeploymentStatus =
   | 'FAILED'
   | 'ABORTED';
 
-/**
- * A Massdriver project, as fetched for catalog sync and read-only views.
- *
- * @public
- */
+/** @public */
 export interface MassdriverProject {
   id: string;
   name: string;

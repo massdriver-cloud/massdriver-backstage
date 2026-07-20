@@ -9,11 +9,6 @@ import CompareArrowsIcon from '@massdriver/ui/icons/CompareArrowsIcon';
 import SwapHorizIcon from '@massdriver/ui/icons/SwapHorizIcon';
 import type { HeaderEnvironment } from '../GraphHeader/queries';
 
-/**
- * Step 1 of the compare flow: pick two environments. Simplified from the web
- * app's infinite-scroll autocompletes to plain Selects — the dialog already has
- * the project's full environment list in memory.
- */
 export const SelectStep = ({
   source,
   target,

@@ -4,10 +4,6 @@ import { RouterLinkAdapter } from '../../components/RouterLinkAdapter';
 import { formatAbsoluteTime } from '../../utils/formatRelativeTime';
 import type { ProjectRow } from './useProjects';
 
-/**
- * Projects list columns, matching the web app's `buildProjectColumns`. The Name
- * column links internally (react-router) to the project details route.
- */
 export const buildProjectColumns = () => [
   col.link('name', 'Name', (row: ProjectRow) => row.id, {
     flex: 2,

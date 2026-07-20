@@ -72,7 +72,6 @@ const useProjectOverview = (projectId: string) => {
   }, [api, projectId]);
 };
 
-/** Read-only project Overview tab: metadata, cost summary, environments. */
 export const OverviewTab = ({ projectId }: { projectId: string }) => {
   const { value: project, loading, error } = useProjectOverview(projectId);
 
