@@ -9,6 +9,8 @@ resources — all read-only and updating live. Anything that changes
 infrastructure deep-links into the Massdriver app, so Backstage stays a safe
 window onto production.
 
+![Environment graph with live package statuses](docs/images/environment-graph.png)
+
 ## What you get
 
 - **Projects** — an organization-wide projects list with per-project details,
@@ -24,6 +26,10 @@ window onto production.
   entity, with "Open in Massdriver" deep-links.
 - **Live updates** — views refresh in realtime via a backend relay; no
   polling, no page reloads.
+
+|                    Projects                     |                   Instance drawer                   |                   Deployment logs                   |
+| :---------------------------------------------: | :-------------------------------------------------: | :-------------------------------------------------: |
+| ![Projects list](docs/images/projects-list.png) | ![Instance drawer](docs/images/instance-drawer.png) | ![Deployment logs](docs/images/deployment-logs.png) |
 
 Every view is read-only. Deploys, decommissions, and configuration edits
 deep-link into the Massdriver app — the plugin never mutates your
