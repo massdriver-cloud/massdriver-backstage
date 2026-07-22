@@ -1,6 +1,6 @@
 {
   "name": "@massdriver/backstage-plugin-backend",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Backstage backend plugin for Massdriver: authenticated GraphQL relay and realtime SSE bridge — the browser never holds a Massdriver token",
   "license": "Apache-2.0",
   "homepage": "https://www.massdriver.cloud/",
