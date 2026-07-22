@@ -16,7 +16,6 @@ export interface Config {
     /**
      * API origin for GraphQL. Point this at a self-hosted Massdriver instance to
      * override. Defaults to https://api.massdriver.cloud.
-     * @visibility frontend
      */
     baseUrl?: string;
   };
