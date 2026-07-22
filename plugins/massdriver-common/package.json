@@ -3,7 +3,7 @@
   "version": "1.0.4",
   "license": "Apache-2.0",
   "homepage": "https://www.massdriver.cloud/",
-  "description": "Shared config schema, annotations, and deep-link builders for the Massdriver Backstage plugin",
+  "description": "Shared config readers, annotations, and deep-link builders for the Massdriver Backstage plugin",
   "repository": {
     "type": "git",
     "url": "https://github.com/massdriver-cloud/massdriver-backstage",
@@ -31,7 +31,6 @@
       "@massdriver/backstage-plugin-common"
     ]
   },
-  "configSchema": "config.d.ts",
   "sideEffects": false,
   "dependencies": {
     "@backstage/config": "^1.3.8"
@@ -48,7 +47,6 @@
     "@backstage/cli": "^0.36.3"
   },
   "files": [
-    "dist",
-    "config.d.ts"
+    "dist"
   ]
 }

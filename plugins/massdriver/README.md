@@ -94,8 +94,8 @@ massdriver:
   copy its token. See the [Massdriver docs](https://docs.massdriver.cloud) for
   details on service accounts.
 
-`apiToken` is declared with `secret` visibility in the config schema: Backstage
-strips it from frontend config automatically. Still, keep it out of committed
+`apiToken` is declared with `secret` visibility in the backend plugin's config
+schema: Backstage strips it from frontend config automatically. Still, keep it out of committed
 files — put it in `app-config.local.yaml` (gitignored), an environment
 variable, or your secret store, like any other Backstage secret.
 
