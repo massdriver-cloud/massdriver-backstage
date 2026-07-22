@@ -58,5 +58,6 @@ plugins/massdriver-backend/src/router.ts              ← Relay: POST /graphql +
 plugins/massdriver-backend/src/absinthe.ts            ← Headless Phoenix v2/Absinthe WS client
 plugins/massdriver-common/src/urls.ts                 ← IDs, origins, deep-link builders
 plugins/massdriver-common/src/client.ts               ← Server-side GraphQL client (token + orgId injection)
-plugins/massdriver-common/config.d.ts                 ← Config schema + visibility
+plugins/massdriver/config.d.ts                        ← Frontend config schema (organizationId, appUrl)
+plugins/massdriver-backend/config.d.ts                ← Backend config schema (apiToken @visibility secret, baseUrl)
 ```

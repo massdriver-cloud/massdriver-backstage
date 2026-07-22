@@ -14,9 +14,8 @@ It contains:
   `massdriver.cloud/org-id`) for linking Backstage entities to Massdriver
   resources.
 - **Config readers** for the `massdriver` app-config block (`organizationId`,
-  `apiToken`, `baseUrl`, `appUrl`). The config _schemas_ ship with the frontend
-  and backend plugins, each declaring the keys it reads — including the
-  `secret` visibility that keeps `apiToken` backend-only.
+  `apiToken`, `baseUrl`, `appUrl`); the config schemas themselves ship with
+  the frontend and backend plugins.
 - **ID and deep-link helpers** — parsing Massdriver composite IDs and building
   URLs into the Massdriver web app.
 - The server-side GraphQL client used by the backend relay.
