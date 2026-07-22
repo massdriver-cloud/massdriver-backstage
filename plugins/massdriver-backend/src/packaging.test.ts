@@ -20,7 +20,10 @@ describe('package publishing', () => {
       resolve(packageRoot, packageJson.configSchema),
       'utf8',
     );
-    const apiTokenBlock = schemaSource.slice(0, schemaSource.indexOf('apiToken'));
+    const apiTokenBlock = schemaSource.slice(
+      0,
+      schemaSource.indexOf('apiToken'),
+    );
     const lastVisibility = apiTokenBlock.lastIndexOf('@visibility');
     expect(apiTokenBlock.slice(lastVisibility)).toContain('@visibility secret');
   });
