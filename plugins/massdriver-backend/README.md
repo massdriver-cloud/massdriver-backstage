@@ -41,6 +41,12 @@ massdriver:
   apiToken: ${MASSDRIVER_API_TOKEN} # secret — backend only
 ```
 
+The `massdriver` block is covered by a
+[config schema](https://github.com/massdriver-cloud/massdriver-backstage/blob/main/plugins/massdriver-common/config.d.ts)
+shipped with `@massdriver/backstage-plugin-common`: `apiToken` is declared
+`@visibility secret`, so Backstage keeps it out of frontend config and redacts
+it in logs and `config:print` output.
+
 ## Deployment note
 
 The backend needs outbound HTTPS **and WebSocket (WSS)** access to your
