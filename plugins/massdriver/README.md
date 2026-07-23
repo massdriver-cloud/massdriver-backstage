@@ -79,7 +79,7 @@ massdriver:
 | --------------------------- | ---------------------- | -------- | ---------- | -------------------------------------------------------------------------------------------- |
 | `massdriver.organizationId` | `MASSDRIVER_ORG_ID`    | yes      | frontend   | Your Massdriver organization ID.                                                             |
 | `massdriver.apiToken`       | `MASSDRIVER_API_TOKEN` | yes      | **secret** | Service-account bearer token used by the backend relay. Never sent to the browser.           |
-| `massdriver.baseUrl`        | `MASSDRIVER_API_URL`   | no       | frontend   | Massdriver API origin. Only set for self-hosted installations.                               |
+| `massdriver.baseUrl`        | `MASSDRIVER_API_URL`   | no       | backend    | Massdriver API origin. Only set for self-hosted installations.                               |
 | `massdriver.appUrl`         | `MASSDRIVER_APP_URL`   | no       | frontend   | Massdriver web app origin, used to build deep-links. Only set for self-hosted installations. |
 
 ### Getting the values
@@ -95,9 +95,10 @@ massdriver:
   details on service accounts.
 
 `apiToken` is declared with `secret` visibility in the config schema: Backstage
-strips it from frontend config automatically. Still, keep it out of committed
-files — put it in `app-config.local.yaml` (gitignored), an environment
-variable, or your secret store, like any other Backstage secret.
+strips it from frontend config and redacts it in logs automatically. Still,
+keep it out of committed files — put it in `app-config.local.yaml`
+(gitignored), an environment variable, or your secret store, like any other
+Backstage secret.
 
 ## What you get
 

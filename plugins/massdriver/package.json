@@ -1,6 +1,6 @@
 {
   "name": "@massdriver/backstage-plugin",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Backstage frontend plugin for Massdriver: projects, environment graphs, instance details, and catalog entity cards — read-only, with live updates",
   "license": "Apache-2.0",
   "homepage": "https://www.massdriver.cloud/",
@@ -30,6 +30,7 @@
       "@massdriver/backstage-plugin-common"
     ]
   },
+  "configSchema": "config.d.ts",
   "sideEffects": false,
   "scripts": {
     "start": "backstage-cli package start",
@@ -83,6 +84,7 @@
     "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "config.d.ts"
   ]
 }

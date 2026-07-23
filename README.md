@@ -86,7 +86,7 @@ troubleshooting — is in the
 | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
 | [`@massdriver/backstage-plugin`](https://www.npmjs.com/package/@massdriver/backstage-plugin)                 | Frontend: pages, entity card, entity tab                   |
 | [`@massdriver/backstage-plugin-backend`](https://www.npmjs.com/package/@massdriver/backstage-plugin-backend) | Backend: authenticated GraphQL relay + realtime SSE bridge |
-| [`@massdriver/backstage-plugin-common`](https://www.npmjs.com/package/@massdriver/backstage-plugin-common)   | Shared config schema, annotations, deep-link builders      |
+| [`@massdriver/backstage-plugin-common`](https://www.npmjs.com/package/@massdriver/backstage-plugin-common)   | Shared config readers, annotations, deep-link builders     |
 
 ## Security model
 
