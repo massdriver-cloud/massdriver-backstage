@@ -16,7 +16,6 @@ export const SecretsTab = ({
   <Root>
     {secretFields.length > 0 ? (
       secretFields.map(field => {
-        const isSet = Boolean(field.sha256);
         return (
           <Item key={field.name}>
             <SecretTitle>
@@ -24,8 +23,8 @@ export const SecretsTab = ({
             </SecretTitle>
             <ValueRow>
               <MaskedField
-                value={isSet ? MASKED_VALUE : ''}
-                placeholder={isSet ? '' : 'No value set'}
+                value={field.isSet ? MASKED_VALUE : ''}
+                placeholder={field.isSet ? '' : 'No value set'}
                 size="small"
                 fullWidth
                 disabled
@@ -37,7 +36,7 @@ export const SecretsTab = ({
                   size="small"
                   tooltip="This view is read-only. Open in Massdriver to set this secret."
                 />
-                {isSet ? (
+                {field.isSet ? (
                   <DisabledAction
                     label="Clear"
                     variant="text"
@@ -48,11 +47,6 @@ export const SecretsTab = ({
                 ) : null}
               </Actions>
             </ValueRow>
-            {isSet && field.sha256 ? (
-              <Meta title={field.sha256}>
-                sha256: {field.sha256.slice(0, 12)}…
-              </Meta>
-            ) : null}
             {field.description ? (
               <Description>
                 <FormsMarkdown>{field.description}</FormsMarkdown>
@@ -106,15 +100,6 @@ const Actions = stylin(Box)(({ theme }: { theme: any }) => ({
   alignItems: 'center',
   gap: theme.spacing(0.5),
   flexShrink: 0,
-}));
-
-const Meta = stylin(Typography)(({ theme }: { theme: any }) => ({
-  fontSize: theme.typography.pxToRem(11),
-  color: theme.palette.text.secondary,
-  fontFamily: theme.typography.fontFamilyMono,
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
 }));
 
 const Description = stylin(Box)(({ theme }: { theme: any }) => ({

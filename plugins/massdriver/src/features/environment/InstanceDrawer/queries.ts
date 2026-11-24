@@ -17,7 +17,7 @@ export const PANEL_QUERY = `
         dailyAverage ${MONEY}
         monthlyAverage ${MONEY}
       }
-      secretFields { name required title description sha256 }
+      secretFields { name required title description isSet }
       alarms(cursor: { limit: 50 }) {
         cursor { next }
         items { id currentState { id status } }

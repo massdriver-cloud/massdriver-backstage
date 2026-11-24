@@ -52,7 +52,7 @@ export interface SecretField {
   required?: boolean | null;
   title?: string | null;
   description?: string | null;
-  sha256?: string | null;
+  isSet: boolean;
 }
 
 export interface PanelInstance {
